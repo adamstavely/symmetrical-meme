@@ -16,10 +16,6 @@ What is this stuff everyone's talking about?
 
 The shared vocabulary everyone needs before any hands-on work.
 
-## Color
-
-#1338b0
-
 ## Quiz length
 
 10

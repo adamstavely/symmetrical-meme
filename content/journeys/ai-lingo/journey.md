@@ -1,4 +1,4 @@
-# AI Lingo
+# AI for the Rest of Us
 
 ## ID
 

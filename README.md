@@ -1,4 +1,4 @@
-# Interchange learning app
+# Crucible learning app
 
 A local, static learning app built around the original Interchange HTML design. Includes the transit map, sequential learning, flashcards, flags and review drills, journey checkpoints, a final exam, a searchable printable glossary, and progress saved in this browser.
 
@@ -20,14 +20,14 @@ Read [EDITOR-GUIDE.md](EDITOR-GUIDE.md). All live learning content is in `conten
 Each journey is a folder (today: `content/journeys/ai-lingo/`):
 
 - `journey.md`: journey title, id and description.
-- `tracks/<n>/metadata.md`: line name, color, quiz length, and other track metadata.
+- `tracks/<n>/metadata.md`: line name, quiz length, and other track metadata.
 - `tracks/<n>/knowledge-check.md`: end-of-track and drill questions for that track.
 - `tracks/<n>/terms/`: lesson text, flashcard front/back, examples and related terms for that track.
 - `tracks/<n>/activities/`: optional practice activities for that track.
 - `exam/metadata.md`: exam title, description, question count and passing score.
 - `exam/questions.md`: the full final/practice exam bank.
 
-Add another journey by creating a sibling folder under `content/journeys/`. The runtime currently boards one active journey (AI Lingo when present).
+Add another journey by creating a sibling folder under `content/journeys/`. The runtime currently loads one active journey (AI Lingo when present).
 
 ## Implementation
 

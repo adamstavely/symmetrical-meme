@@ -16,10 +16,6 @@ How do I work with these tools day to day?
 
 The practical vocabulary of a hands-on user.
 
-## Color
-
-#cc3311
-
 ## Quiz length
 
 10

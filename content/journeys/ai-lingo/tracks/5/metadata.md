@@ -16,10 +16,6 @@ How do we keep this safe, fair, and accountable?
 
 The vocabulary of oversight and risk.
 
-## Color
-
-#875500
-
 ## Quiz length
 
 10

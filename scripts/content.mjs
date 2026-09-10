@@ -1,3 +1,4 @@
+import {existsSync,readFileSync} from 'node:fs';
 import {readFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 export function parseMarkdown(text, file='content') {
@@ -86,13 +87,67 @@ function parseQuestionFields(d, TERMS){
   const term=id(d,'Term');if(!TERMS.some(t=>t.id===term))throw Error(`${d.file}: unknown Term ${term}`);
   return {id:d.id,term,prompt:required(d,'Prompt'),options,explanation:required(d,'Explanation')};
 }
-function parseActivityStep(raw){
+function localAssetPath(raw, field, {pattern, example, label}){
+  const value=required(raw,field).trim();
+  if(/^https?:\/\//i.test(value)) throw Error(`${raw.file}: ${field} must be a local asset path, not a URL`);
+  const normalized=value.replace(/^\.\//,'');
+  if(!pattern.test(normalized)) throw Error(`${raw.file}: ${field} must look like ${example} (${label})`);
+  if(!existsSync(normalized)) throw Error(`${raw.file}: missing ${normalized} — add the file under assets/ before building`);
+  return './'+normalized;
+}
+function readableTranscript(text, ext){
+  const raw=String(text||'').replace(/^\uFEFF/,'').trim();
+  if(!raw) return '';
+  if(ext==='txt'||ext==='md') return raw;
+  const blocks=raw.split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);
+  return blocks.map(block=>{
+    const lines=block.split('\n').map(l=>l.trim()).filter(Boolean);
+    return lines.filter(l=>!/^\d+$/.test(l) && !/-->/.test(l) && !/^WEBVTT\b/i.test(l) && !/^NOTE\b/i.test(l) && !/^STYLE\b/i.test(l)).join(' ').trim();
+  }).filter(Boolean).join('\n\n');
+}
+export function parseActivityStep(raw){
   const type=required(raw,'Type');
-  if(!['read','prompt','checklist','quiz'].includes(type)) throw Error(`${raw.file}: Type must be read, prompt, checklist, or quiz`);
+  if(!['read','prompt','checklist','quiz','video'].includes(type)) throw Error(`${raw.file}: Type must be read, prompt, checklist, quiz, or video`);
   const step={id:raw.id,type};
   if(type==='read'){ step.body=required(raw,'Body'); }
   else if(type==='prompt'){ step.prompt=required(raw,'Prompt'); step.hint=raw.fields.Hint||''; step.example=raw.fields.Example||''; }
   else if(type==='checklist'){ step.prompt=required(raw,'Prompt'); step.options=parseOptionsList(raw).map(o=>({text:o.text})); }
+  else if(type==='video'){
+    step.src=localAssetPath(raw,'Src',{
+      pattern:/^assets\/videos\/[a-zA-Z0-9][a-zA-Z0-9._-]*\.(mp4|webm|ogg)$/,
+      example:'assets/videos/name.mp4',
+      label:'mp4, webm, or ogg under assets/videos/',
+    });
+    step.caption=raw.fields.Caption||'';
+    step.poster=raw.fields.Poster
+      ? localAssetPath({file:raw.file,fields:{Poster:raw.fields.Poster}},'Poster',{
+          pattern:/^assets\/(?:videos\/)?[a-zA-Z0-9][a-zA-Z0-9._-]*\.(png|jpg|jpeg|webp)$/,
+          example:'assets/videos/name.jpg or assets/name.png',
+          label:'png, jpg, jpeg, or webp under assets/',
+        })
+      : '';
+    step.transcript='';
+    step.transcriptFile='';
+    step.trackSrc='';
+    if(raw.fields.Transcript){
+      const transcriptValue=raw.fields.Transcript.trim();
+      if(/^assets\/videos\//.test(transcriptValue.replace(/^\.\//,'')) || /^https?:\/\//i.test(transcriptValue)){
+        step.transcriptFile=localAssetPath({file:raw.file,fields:{Transcript:transcriptValue}},'Transcript',{
+          pattern:/^assets\/videos\/[a-zA-Z0-9][a-zA-Z0-9._-]*\.(txt|vtt|srt|md)$/,
+          example:'assets/videos/name.vtt or assets/videos/name.txt',
+          label:'txt, vtt, srt, or md under assets/videos/',
+        });
+        const abs=step.transcriptFile.slice(2);
+        const ext=abs.split('.').pop().toLowerCase();
+        const text=readFileSync(abs,'utf8');
+        step.transcript=readableTranscript(text,ext);
+        if(!step.transcript) throw Error(`${raw.file}: Transcript file ${abs} is empty`);
+        if(ext==='vtt') step.trackSrc=step.transcriptFile;
+      }else{
+        step.transcript=transcriptValue;
+      }
+    }
+  }
   else { step.prompt=required(raw,'Prompt'); step.options=parseOptionsList(raw,{requireCorrect:true}); step.explanation=required(raw,'Explanation'); }
   return step;
 }
@@ -117,7 +172,8 @@ async function loadJourney(root, slug){
   if(String(n)!==dir) throw Error(`${meta.file}: ## ID (${n}) must match folder tracks/${dir}/`);
   const checkFile=join(trackPath,'knowledge-check.md');
   const bank=parseQuestionBank(await readFile(join(base,'tracks',dir,'knowledge-check.md'),'utf8'),checkFile);
-  LINES.push({n,name:required(meta,'Name'),journey:meta.title,q:required(meta,'Question'),blurb:required(meta,'Description'),c:required(meta,'Color'),quizLength:number(meta,'Quiz length',1,100),questions:bank.questions,file:meta.file});
+  if(meta.fields.Color) throw Error(`${meta.file}: ## Color is no longer used — remove it (tracks share Crucible brand accents)`);
+  LINES.push({n,name:required(meta,'Name'),journey:meta.title,q:required(meta,'Question'),blurb:required(meta,'Description'),c:'#FF5722',quizLength:number(meta,'Quiz length',1,100),questions:bank.questions,file:meta.file});
 
   for(const f of await listMd(join('tracks',dir,'terms'))){
    const d=await read(join('tracks',dir,'terms',f));
@@ -142,7 +198,6 @@ async function loadJourney(root, slug){
  }
  unique(LINES,'n');
  LINES.sort((a,b)=>a.n-b.n);
- for(const l of LINES)if(!/^#[0-9a-f]{6}$/i.test(l.c))throw Error(`journeys/${slug} track ${l.n}: Color must be a six-digit hex color`);
 
  TERMS.sort((a,b)=>a.line-b.line||a.order-b.order);
  ACTIVITIES.sort((a,b)=>a.line-b.line||a.order-b.order);

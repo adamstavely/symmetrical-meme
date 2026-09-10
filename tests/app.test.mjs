@@ -4,19 +4,19 @@ import vm from 'node:vm';
 import {readFile,mkdtemp,cp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {loadContent,parseMarkdown} from '../scripts/content.mjs';
+import {loadContent,parseMarkdown,parseActivityStep} from '../scripts/content.mjs';
 const content=await loadContent();
 const html=await readFile('index.html','utf8');
 const code=html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
 function app(){
  const storage=new Map();
  class DCLogic {props={accent:'#ff3d7f'};setState(p,cb){this.state={...this.state,...p};cb?.();}}
- const context=vm.createContext({DCLogic,React:{createElement:(...args)=>args},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},window:{},setTimeout,console});
+ const context=vm.createContext({DCLogic,React:{createElement:(...args)=>args},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},window:{},setTimeout,console,fetch:async()=>({ok:false,status:401,json:async()=>({})})});
  const Component=vm.runInContext(code+'\nComponent',context);const a=new Component();
  Object.assign(a,content);a.ACTIVITIES=content.ACTIVITIES||[];a.STOPS=a.TERMS.concat(a.ACTIVITIES).sort((x,y)=>x.line-y.line||x.order-y.order);
  a.PROGRAMS=(content.JOURNEYS||[]).map(j=>({id:j.id,name:j.title,blurb:j.description,live:j.id===content.ACTIVE_JOURNEY,lines:j.lines,count:j.count}));
  a.byId=Object.fromEntries(a.STOPS.map(t=>[t.id,t]));a.byLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.STOPS.filter(t=>t.line===l.n)]));
- a.termsByLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.TERMS.filter(t=>t.line===l.n)]));a.state.ready=true;a.state.actStep=0;a.state.actDraft='';a.state.actChecks={};a.state.actPick=null;a.state.actRevealed=false;return a;
+ a.termsByLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.TERMS.filter(t=>t.line===l.n)]));a.state.ready=true;a.state.actStep=0;a.state.actDraft='';a.state.actChecks={};a.state.actPick=null;a.state.actRevealed=false;a.state.actTranscriptOpen=false;return a;
 }
 test('content migrates all original definitions and references',async()=>{
  const original=await import('../original/terms.js');assert.equal(content.TERMS.length,81);
@@ -30,6 +30,14 @@ test('learning and flashcards update and persist progress',()=>{
  const a=app();a.startLine(1);const first=a.current();a.gotIt();assert.equal(a.state.learned[first.id],true);assert.equal(a.current().id,a.byLine[1][1].id);
  a.pickDeck('line',1);a.flip();assert.equal(a.state.flipped,true);a.stillFuzzy();assert.equal(a.state.flagged[first.id],true);assert.equal(a.load().flagged[first.id],true);assert.equal(a.state.sIdx,1);
  a.state.learned['removed-term']=true;assert.equal(a.travelled(),1);
+});
+test('display name and place persist across sessions',async()=>{
+ const a=app();a.state.userNameDraft='Ada Lovelace';await a.saveUserName();
+ assert.equal(a.state.userName,'Ada Lovelace');assert.equal(a.state.needsName,false);assert.equal(a.state.userId,'ada-lovelace');
+ a.startLine(2);a.set({view:'learn',pos:3});
+ const loaded=a.load();assert.equal(loaded.view,'learn');assert.equal(loaded.line,2);assert.equal(loaded.pos,3);
+ assert.equal(a.nameFromDn('CN=Grace Hopper,O=Navy'),'Grace Hopper');
+ assert.notEqual(a.storageKey('ada'), a.storageKey('ben'));
 });
 function finish(a,correct){while(a.state.view==='quiz'){const q=a.state.quiz;const current=q.qs[q.i];a.pickOption(current.options.findIndex(o=>o.ok===correct));assert.ok(a.renderVals().isQuiz);a.quizPrimary();}return a.state.result;}
 test('checkpoint locks answers, scores and supports missed review',()=>{
@@ -52,11 +60,38 @@ test('activities sit on the line and complete through steps',()=>{
  while(a.current()?.id===act.id){const step=a.activityStep();if(step?.type==='quiz'&&!a.state.actRevealed)a.pickActOption(step.options.findIndex(o=>o.ok));a.activityContinue();}
  assert.equal(a.state.learned[act.id],true);
 });
+test('video activity steps require local assets and render in learn',async()=>{
+ const clip='assets/videos/test-clip.mp4';
+ const transcript='assets/videos/test-clip.vtt';
+ await writeFile(clip,'fake');
+ await writeFile(transcript,'WEBVTT\n\n00:00:00.000 --> 00:00:02.000\nWelcome to the forge.\n\n00:00:02.500 --> 00:00:04.000\nWatch, then continue.\n');
+ try{
+  const step=parseActivityStep({id:'watch',file:'t.md',fields:{Type:'video',Src:clip,Caption:'Short intro',Poster:'assets/crucible-logo.png',Transcript:transcript}});
+  assert.equal(step.type,'video');assert.equal(step.src,'./assets/videos/test-clip.mp4');assert.equal(step.caption,'Short intro');assert.equal(step.poster,'./assets/crucible-logo.png');
+  assert.equal(step.transcriptFile,'./assets/videos/test-clip.vtt');assert.equal(step.trackSrc,'./assets/videos/test-clip.vtt');
+  assert.match(step.transcript,/Welcome to the forge/);assert.match(step.transcript,/Watch, then continue/);
+  assert.doesNotMatch(step.transcript,/-->/);
+  assert.throws(()=>parseActivityStep({id:'watch',file:'t.md',fields:{Type:'video',Src:'https://example.com/x.mp4'}}),/local asset path/);
+  assert.throws(()=>parseActivityStep({id:'watch',file:'t.md',fields:{Type:'video',Src:'assets/videos/missing.mp4'}}),/missing/);
+  assert.throws(()=>parseActivityStep({id:'watch',file:'t.md',fields:{Type:'video',Src:clip,Transcript:'https://example.com/t.vtt'}}),/local asset path/);
+  const inline=parseActivityStep({id:'watch',file:'t.md',fields:{Type:'video',Src:clip,Transcript:'Inline words for learners.'}});
+  assert.equal(inline.transcript,'Inline words for learners.');assert.equal(inline.trackSrc,'');
+  const a=app();
+  const act={id:'video-demo',line:2,order:999,kind:'activity',activityKind:'tutorial',t:'Video demo',pos:'tutorial',pr:'tutorial',d:'Watch locally.',rel:[],apply:'',steps:[step]};
+  a.ACTIVITIES=a.ACTIVITIES.concat(act);a.STOPS=a.TERMS.concat(a.ACTIVITIES).sort((x,y)=>x.line-y.line||x.order-y.order);
+  a.byId=Object.fromEntries(a.STOPS.map(t=>[t.id,t]));a.byLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.STOPS.filter(t=>t.line===l.n)]));
+  a.jumpTo(act.id);let vals=a.renderVals();
+  assert.equal(vals.actIsVideo,true);assert.equal(vals.actVideoSrc,'./assets/videos/test-clip.mp4');assert.equal(vals.actHasCaption,true);assert.equal(vals.actStepKind,'WATCH');
+  assert.equal(vals.actHasTranscript,true);assert.equal(vals.actHasTrack,true);assert.equal(vals.actTranscriptOpen,false);assert.equal(vals.actTranscriptLabel,'Show transcript');
+  a.toggleActTranscript();vals=a.renderVals();assert.equal(vals.actTranscriptOpen,true);assert.equal(vals.actTranscriptLabel,'Hide transcript');
+  a.activityContinue();assert.equal(a.state.learned[act.id],true);
+ }finally{await rm(clip,{force:true});await rm(transcript,{force:true});}
+});
 test('malformed and duplicate Markdown headings fail clearly',()=>{
  assert.throws(()=>parseMarkdown('No heading','bad.md'),/bad.md/);assert.throws(()=>parseMarkdown('# Title\n## ID\na\n## ID\nb'),/repeated/);
 });
 test('editor mistakes fail validation with actionable messages',async()=>{
- const dir=await mkdtemp(join(tmpdir(),'interchange-test-'));try{
+ const dir=await mkdtemp(join(tmpdir(),'crucible-test-'));try{
  await cp('content',dir,{recursive:true});const p=join(dir,'journeys/ai-lingo/tracks/1/knowledge-check.md');const original=await readFile(p,'utf8');
  await writeFile(p,original.replace('- [x] Artificial Intelligence (AI)','- [ ] Artificial Intelligence (AI)'));await assert.rejects(()=>loadContent(dir),/exactly one correct/);
  await writeFile(p,original.replace('### Term\n\nai','### Term\n\nmissing'));await assert.rejects(()=>loadContent(dir),/unknown Term/);

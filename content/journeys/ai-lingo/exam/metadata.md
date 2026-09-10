@@ -1,4 +1,4 @@
-# Grand Terminus · Final exam
+# Final Temper · Final exam
 
 ## Question count
 
@@ -10,4 +10,4 @@
 
 ## Description
 
-Questions drawn from the whole network. Complete every stop to unlock the exam, or take an ungraded practice attempt.
+Questions drawn from the whole forge. Complete every piece to unlock the exam, or take an ungraded practice attempt.

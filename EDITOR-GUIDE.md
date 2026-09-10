@@ -1,4 +1,4 @@
-# Updating Interchange
+# Updating Crucible
 
 Open any `.md` file in a text editor. Change the words beneath a heading, save, then restart the local app and refresh its page. If you use GitHub's file editor, pull those edits onto this computer before restarting.
 
@@ -26,13 +26,13 @@ content/journeys/<journey-id>/
       …
 ```
 
-AI Lingo lives at `content/journeys/ai-lingo/`. Add another journey by copying that folder structure (see `templates/`) and giving it a new id. The runtime currently boards one active journey (AI Lingo when present); hub support for switching journeys comes later.
+AI Lingo lives at `content/journeys/ai-lingo/`. Add another journey by copying that folder structure (see `templates/`) and giving it a new id. The runtime currently loads one active journey (AI Lingo when present); hub support for switching journeys comes later.
 
 ## Edit a journey or track
 
 Open `journey.md` for the featured title and description. Keep `## ID` identical to the folder name.
 
-Each track is a numbered folder under `tracks/`. `metadata.md` sets the line name, driving question (`## Question`), description, color, and checkpoint length (`## Quiz length`). `## ID` must match the folder name (`tracks/1/` → `1`). Colors use six-digit hex values such as `#1338b0`.
+Each track is a numbered folder under `tracks/`. `metadata.md` sets the line name, driving question (`## Question`), description, and checkpoint length (`## Quiz length`). `## ID` must match the folder name (`tracks/1/` → `1`). Tracks do not set their own colors — the app uses shared Crucible brand accents.
 
 `knowledge-check.md` holds every end-of-track / drill question as `## Question: id` blocks (see `templates/knowledge-check.md`). Quiz length cannot exceed the number of those blocks. Terms live in that track's `terms/` folder; optional practice activities live in `activities/`.
 
@@ -45,6 +45,14 @@ Open a file in `tracks/<n>/terms/`. The title is the flashcard front; Definition
 To add a term, copy `templates/term.md` into the track's `terms/` folder and give it a unique filename and ID. Use lowercase words joined by hyphens for IDs. `## Track` must match the parent folder number; Order determines its position on that line and must be unique among that track's terms and activities. Keep at least two terms per track. Add a matching `## Question: …` block in the same track's `knowledge-check.md` so the term works in review drills.
 
 To add an activity, copy `templates/activity.md` into the track's `activities/` folder. Activity Order shares the same uniqueness pool as terms on that track.
+
+Activity steps use `## Step: id` blocks. Supported `### Type` values:
+
+- `read` — `### Body`
+- `prompt` — `### Prompt`, optional `### Hint` and `### Example`
+- `checklist` — `### Prompt` plus `- [ ]` options (no required correct mark)
+- `quiz` — `### Prompt`, options with exactly one `- [x]`, and `### Explanation`
+- `video` — local clip only. Put the file in `assets/videos/` (`.mp4`, `.webm`, or `.ogg`), then set `### Src` to that path, for example `assets/videos/intro.mp4`. Optional `### Caption` and `### Poster` (image under `assets/` or `assets/videos/`). Optional `### Transcript`: either paste plain text, or point at a file next to the clip (`assets/videos/intro.vtt`, `.srt`, `.txt`, or `.md`). File transcripts are copied with the build; `.vtt` also wires closed captions on the player. Outside URLs are rejected.
 
 Keep IDs unchanged when renaming a term. Before deleting a term, remove its knowledge-check and exam question blocks and remove its ID from other terms' Related sections. Learners' old marks for removed terms do not count toward current progress.
 

@@ -1,4 +1,4 @@
-# Grand Terminus · Exam questions
+# Final Temper · Exam questions
 
 ## Question: new-term-exam
 

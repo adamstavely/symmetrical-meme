@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Interchange · AI Lingo</title>
+<title>Crucible · AI for the Rest of Us</title>
 <link rel="stylesheet" href="./app.css">
 <script src="./vendor/react.js"></script>
 <script src="./vendor/react-dom.js"></script>
@@ -17,88 +17,84 @@
 
 <div class="app-shell" style="height:100vh;background:#eef0f3;font-family:'Libre Franklin',system-ui,sans-serif;color:#15171a;display:flex;flex-direction:column;overflow:hidden">
 
-  <div role="banner" class="topbar" style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:#15171a;color:#f4f6f8;flex:none;z-index:20">
-    <div style="display:flex;align-items:center;gap:12px;cursor:pointer" role="button" tabindex="0" onClick="{{ goHub }}">
-      <svg aria-hidden="true" focusable="false" width="30" height="30" viewBox="0 0 30 30" style="display:block;flex:none">
-        <path d="M 3 21 L 10 21 L 21 10 L 27 10" fill="none" stroke="{{ accent }}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M 3 9 L 10 9 L 21 20 L 27 20" fill="none" stroke="#f4f6f8" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path>
-        <circle cx="15.5" cy="15" r="4.2" fill="#15171a" stroke="#f4f6f8" stroke-width="2.6"></circle>
-      </svg>
-      <span style="font-size:1.1875rem;font-weight:800;letter-spacing:-.035em">Interchange</span>
-      <span style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#a6adb8;border-left:1px solid #353a42;padding-left:12px">{{ crumb }}</span>
+  <div role="banner" class="topbar" style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:#111827;color:#FFFFFF;flex:none;z-index:20">
+    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;min-width:0" role="button" tabindex="0" onClick="{{ goHub }}">
+      <img class="topbar-logo" src="./assets/crucible-logo.png" width="32" height="44" alt="" aria-hidden="true">
+      <span style="font-size:1.1875rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase">Crucible</span>
+      <span style="font-size:0.875rem;font-weight:600;letter-spacing:.16em;color:#E2E8F0;border-left:1px solid rgba(226,232,240,.25);padding-left:12px">{{ crumb }}</span>
     </div>
     <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
-      <div role="navigation" aria-label="Main" class="main-nav" style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:34px;font-size:0.875rem;font-weight:600">
+      <div role="navigation" aria-label="Main" class="main-nav" style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:20px;font-size:0.9375rem;font-weight:600">
         <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navMapBg }};color:{{ navMapColor }}" role="button" tabindex="0" onClick="{{ goMap }}">Learn</span>
         <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navCardsBg }};color:{{ navCardsColor }}" role="button" tabindex="0" onClick="{{ goCards }}">Study</span>
         <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navExamBg }};color:{{ navExamColor }}" role="button" tabindex="0" onClick="{{ goExam }}">Exam</span>
         <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navGlossBg }};color:{{ navGlossColor }}" role="button" tabindex="0" onClick="{{ goGlossary }}">Glossary</span>
       </div>
     </sc-if>
+    <div class="topbar-actions">
+      <span class="topbar-bell" role="button" tabindex="0" aria-label="Notifications">
+        <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      </span>
+      <span class="topbar-avatar" role="button" tabindex="0" aria-label="{{ userAccountLabel }}">
+        <span class="topbar-avatar-mark" aria-hidden="true">{{ userInitials }}</span>
+      </span>
+    </div>
   </div>
 
   <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
   <div role="main" data-view="Hub" data-step="{{ focusStep }}" style="flex:1;min-height:0;overflow-y:auto">
 <h1 id="view-title" tabindex="-1" class="view-title">Learning journeys</h1>
 
-    <div style="background:#15171a;color:#f4f6f8;padding:0">
-      <div style="max-width:1240px;margin:0 auto;padding:48px 30px 44px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:40px;align-items:center">
-        <div>
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.18em;color:{{ accent }}">LEARNING JOURNEYS</div>
-          <div style="font-size:3.25rem;font-weight:800;letter-spacing:-.045em;line-height:1.02;margin-top:12px;max-width:17ch;text-wrap:pretty">Build the vocabulary your work runs on.</div>
-          <div style="font-size:0.96875rem;color:#a6adb8;margin-top:14px;max-width:58ch;line-height:1.6">Each journey maps a subject as a network. Lines group the terms that belong together, stops are the terms themselves, and a knowledge check waits at the end of every line.</div>
-          <div style="display:flex;gap:36px;margin-top:30px;flex-wrap:wrap">
-            <sc-for list="{{ heroStats }}" as="s" hint-placeholder-count="3">
-              <div>
-                <div style="font-size:2.0rem;font-weight:800;letter-spacing:-.04em;line-height:1">{{ s.n }}</div>
-                <div style="font-size:0.875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a6adb8;margin-top:6px">{{ s.l }}</div>
-              </div>
-            </sc-for>
-          </div>
+    <div class="hero-container">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="hero-brand">CRUCIBLE</div>
+          <div class="hero-headline">Grow the tech acumen. Keep the tradecraft.</div>
+          <p class="hero-support">Short journeys that build shared fluency, enough language to work with technical teammates, then take it back into the craft you already practice.</p>
         </div>
-        <div style="height:230px">{{ heroMini }}</div>
+        <img class="hero-logo" src="./assets/crucible-logo.png" width="317" height="432" alt="" aria-hidden="true">
       </div>
     </div>
 
-    <div style="max-width:1240px;margin:0 auto;padding:26px 30px 56px">
+    <div class="hub-content">
 
-      <div style="background:#fff;border:1px solid #d5d9df;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 360px;cursor:pointer;box-shadow:0 14px 34px -26px rgba(0,0,0,.5)" role="button" tabindex="0" onClick="{{ featGo }}">
-        <div style="padding:28px 30px 26px;display:flex;flex-direction:column;gap:18px">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+      <div class="hub-featured" role="button" tabindex="0" onClick="{{ featGo }}">
+        <div class="hub-featured-body">
+          <div class="hub-featured-head">
             <div>
-              <div style="font-size:1.875rem;font-weight:800;letter-spacing:-.035em">{{ featName }}</div>
-              <div style="font-size:0.875rem;color:#565c66;margin-top:6px;line-height:1.55;max-width:48ch;text-wrap:pretty">{{ featBlurb }}</div>
+              <div class="hub-featured-title">{{ featName }}</div>
+              <div class="hub-featured-blurb">{{ featBlurb }}</div>
             </div>
-            <span style="font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:6px 10px;border-radius:5px;white-space:nowrap;background:#15171a;color:#f4f6f8">{{ featPill }}</span>
+            <span class="hub-pill hub-pill--live">{{ featPill }}</span>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+          <div class="hub-tracks">
             <sc-for list="{{ featLines }}" as="l" hint-placeholder-count="5">
-              <div>
-                <div style="display:flex;align-items:center;gap:7px"><span style="width:14px;height:5px;border-radius:3px;flex:none;background:{{ l.color }}"></span><span style="font-size:0.875rem;font-weight:700">{{ l.name }}</span><span style="font-size:0.875rem;color:#565c66;margin-left:auto">{{ l.count }}</span></div>
-                <div style="height:4px;border-radius:2px;background:#e6e9ee;margin-top:5px"><div style="height:100%;border-radius:2px;width:{{ l.w }};background:{{ l.color }}"></div></div>
-                <div style="font-size:0.875rem;color:#565c66;margin-top:4px">{{ l.journey }}</div>
+              <div class="hub-track">
+                <div class="hub-track-head"><span class="hub-track-swatch" style="background:{{ l.color }}"></span><span class="hub-track-name">{{ l.name }}</span><span class="hub-track-count">{{ l.count }}</span></div>
+                <div class="hub-track-rail"><div class="hub-track-fill" style="width:{{ l.w }};background:{{ l.color }}"></div></div>
+                <div class="hub-track-journey">{{ l.journey }}</div>
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e5ea;padding-top:16px;gap:14px;flex-wrap:wrap">
-            <span style="font-size:0.875rem;color:#565c66">{{ featStat }}</span>
-            <span style="background:{{ accent }};color:#fff;border-radius:8px;padding:12px 22px;font-size:0.875rem;font-weight:800;white-space:nowrap">{{ featCta }}</span>
+          <div class="hub-featured-foot">
+            <span class="hub-featured-stat">{{ featStat }}</span>
+            <span class="hub-cta" style="background:{{ accent }}">{{ featCta }}</span>
           </div>
         </div>
-        <div style="background:#eef0f3;border-left:1px solid #e2e5ea;padding:22px 20px;display:flex;align-items:center">{{ featMini }}</div>
+        <div class="hub-featured-side">{{ featMini }}</div>
       </div>
 
       <sc-if value="{{ hasBadges }}" hint-placeholder-val="{{ false }}">
-        <div>
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#565c66;margin:34px 0 14px">YOUR BADGES</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+        <div class="hub-section">
+          <div class="hub-kicker">YOUR BADGES</div>
+          <div class="hub-grid">
             <sc-for list="{{ badgeList }}" as="b" hint-placeholder-count="1">
-              <div style="background:#15171a;color:#f4f6f8;border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:20px">
-                <div style="width:104px;height:104px;flex:none">{{ b.el }}</div>
-                <div style="min-width:0">
-                  <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:{{ accent }}">{{ b.kicker }}</div>
-                  <div style="font-size:1.25rem;font-weight:800;letter-spacing:-.03em;margin-top:5px;text-wrap:pretty">{{ b.title }}</div>
-                  <div style="font-size:0.875rem;color:#a6adb8;margin-top:6px;line-height:1.5">{{ b.note }}</div>
+              <div class="hub-badge">
+                <div class="hub-badge-mark">{{ b.el }}</div>
+                <div class="hub-badge-copy">
+                  <div class="hub-badge-kicker" style="color:{{ accent }}">{{ b.kicker }}</div>
+                  <div class="hub-badge-title">{{ b.title }}</div>
+                  <div class="hub-badge-note">{{ b.note }}</div>
                 </div>
               </div>
             </sc-for>
@@ -106,42 +102,49 @@
         </div>
       </sc-if>
 
-      <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#565c66;margin:34px 0 14px">NEXT ON THE NETWORK</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px">
-        <sc-for list="{{ programs }}" as="p" hint-placeholder-count="3">
-          <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
-            <div style="background:#f5f6f8;border-bottom:1px solid #e2e5ea;height:132px;padding:12px 14px">{{ p.mini }}</div>
-            <div style="padding:18px 20px 18px;display:flex;flex-direction:column;gap:10px;flex:1">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
-                <div style="font-size:1.1875rem;font-weight:800;letter-spacing:-.03em">{{ p.name }}</div>
-                <span style="font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:5px 8px;border-radius:5px;white-space:nowrap;background:#e6e9ee;color:#565c66">IN DEVELOPMENT</span>
+      <sc-if value="{{ hasPrograms }}" hint-placeholder-val="{{ true }}">
+      <div class="hub-section">
+        <div class="hub-kicker">MORE JOURNEYS AHEAD</div>
+        <div class="hub-grid hub-grid--programs">
+          <sc-for list="{{ programs }}" as="p" hint-placeholder-count="3">
+            <div class="hub-program">
+              <div class="hub-program-preview">{{ p.mini }}</div>
+              <div class="hub-program-body">
+                <div class="hub-program-head">
+                  <div class="hub-program-name">{{ p.name }}</div>
+                  <span class="hub-pill hub-pill--cold">IN DEVELOPMENT</span>
+                </div>
+                <div class="hub-program-blurb">{{ p.blurb }}</div>
+                <div class="hub-program-meta">{{ p.lines }}</div>
+                <div class="hub-program-stat">{{ p.stat }}</div>
               </div>
-              <div style="font-size:0.875rem;color:#565c66;line-height:1.5;text-wrap:pretty">{{ p.blurb }}</div>
-              <div style="font-size:0.875rem;color:#565c66;margin-top:auto;padding-top:10px;border-top:1px solid #e2e5ea">{{ p.lines }}</div>
-              <div style="font-size:0.875rem;color:#565c66">{{ p.stat }}</div>
             </div>
-          </div>
-        </sc-for>
+          </sc-for>
+        </div>
       </div>
+      </sc-if>
     </div>
   </div>
   </sc-if>
 
   <sc-if value="{{ isMap }}" hint-placeholder-val="{{ false }}">
   <div role="main" data-view="Map" data-step="{{ focusStep }}" style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden">
-<h1 id="view-title" tabindex="-1" class="view-title">Learning map</h1>
+<h1 id="view-title" tabindex="-1" class="view-title">The forge</h1>
     <div style="display:flex;align-items:stretch;background:#15171a;color:#f4f6f8;border-top:1px solid #353a42;flex:none">
       <div style="flex:1;min-width:280px;padding:13px 24px 14px">
         <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:{{ accent }}">{{ nextLabel }}</div>
         <div style="font-size:1.6875rem;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:4px;text-wrap:pretty">{{ nextStop }}</div>
         <div style="font-size:0.875rem;color:#a6adb8;margin-top:4px">{{ nextSub }}</div>
       </div>
-      <div style="flex:none;display:flex;align-items:center;padding:0 24px 13px">
-        <div style="background:{{ accent }};color:#fff;border-radius:8px;padding:12px 24px;font-size:0.875rem;font-weight:800;cursor:pointer;white-space:nowrap" role="button" tabindex="0" onClick="{{ boardRide }}">Board ride →</div>
+      <div style="flex:none;display:flex;align-items:center;gap:16px;padding:0 24px 13px">
+        <sc-if value="{{ canResetJourney }}" hint-placeholder-val="{{ false }}">
+          <span style="cursor:pointer;font-size:0.875rem;font-weight:600;color:#a6adb8;white-space:nowrap" role="button" tabindex="0" onClick="{{ resetJourney }}">Reset progress</span>
+        </sc-if>
+        <div style="background:{{ accent }};color:#fff;border-radius:8px;padding:12px 24px;font-size:0.875rem;font-weight:800;cursor:pointer;white-space:nowrap" role="button" tabindex="0" onClick="{{ boardRide }}">Enter the forge →</div>
       </div>
       <div style="flex:none;padding:13px 24px 14px;display:flex;gap:26px;align-items:center;border-left:1px solid #353a42">
         <div>
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#a6adb8">STOPS TRAVELLED</div>
+          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#a6adb8">PIECES FORGED</div>
           <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px"><span style="font-size:1.75rem;font-weight:800;letter-spacing:-.04em;line-height:1">{{ travelled }}</span><span style="font-size:0.875rem;color:#a6adb8">/ {{ totalTerms }}</span></div>
         </div>
         <div>
@@ -152,27 +155,19 @@
     </div>
 
     <div class="map-layout" style="display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;padding:13px 20px 15px;flex:1;min-height:0">
-      <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:12px 14px 8px;display:flex;flex-direction:column;min-height:0">
+      <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:16px 16px 12px;display:flex;flex-direction:column;min-height:0;overflow:auto">
         <div style="flex:1;min-height:0">{{ mapEl }}</div>
-        <nav class="map-a11y" aria-label="Stops by line">
-          <p>Network overview. Browse every stop by line, or search the glossary.</p>
+        <nav class="map-a11y" aria-label="Pieces by track">
+          <p>Forge overview. Browse every piece by track, or search the glossary.</p>
           <div class="stop-list"><sc-for list="{{ mapGroups }}" as="g"><details><summary>{{ g.title }}</summary><div class="stop-buttons"><sc-for list="{{ g.stops }}" as="s"><button type="button" onClick="{{ s.onClick }}">{{ s.title }}</button></sc-for></div></details></sc-for></div>
         </nav>
-        <div style="margin:6px 2px 2px;background:#eef0f3;border:1px solid #d5d9df;border-radius:10px;padding:9px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:7px 20px">
+        <div class="forge-key" style="margin:10px 2px 2px;background:#eef0f3;border:1px solid #d5d9df;border-radius:10px;padding:9px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:7px 18px">
           <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#565c66">KEY</div>
-          <sc-for list="{{ keyLines }}" as="k" hint-placeholder-count="5">
-            <div style="display:flex;align-items:center;gap:8px;cursor:pointer" role="button" tabindex="0" onClick="{{ k.onClick }}">
-              <span style="width:20px;height:6px;border-radius:3px;background:{{ k.color }}"></span>
-              <span style="font-size:0.875rem;font-weight:700">{{ k.line }}</span>
-              <span style="font-size:0.875rem;color:#565c66">{{ k.name }}</span>
-            </div>
-          </sc-for>
-          <div style="display:flex;align-items:center;gap:22px;border-left:1px solid #d5d9df;padding-left:24px;flex-wrap:wrap">
-            <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #15171a"></span><span style="font-size:0.875rem;color:#565c66">learned</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #a5abb5"></span><span style="font-size:0.875rem;color:#565c66">ahead</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="width:14px;height:14px;background:#fff;border:4px solid #a5abb5"></span><span style="font-size:0.875rem;color:#565c66">activity</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#15171a;border:4px solid #15171a"></span><span style="font-size:0.875rem;color:#565c66">terminus · exam</span></div>
-          </div>
+          <div style="display:flex;align-items:center;gap:9px"><span class="forge-key-bead is-learned"></span><span style="font-size:0.875rem;color:#565c66">forged</span></div>
+          <div style="display:flex;align-items:center;gap:9px"><span class="forge-key-bead"></span><span style="font-size:0.875rem;color:#565c66">ahead</span></div>
+          <div style="display:flex;align-items:center;gap:9px"><span class="forge-key-bead is-current"></span><span style="font-size:0.875rem;color:#565c66">you are here</span></div>
+          <div style="display:flex;align-items:center;gap:9px"><span class="forge-key-bead is-activity"></span><span style="font-size:0.875rem;color:#565c66">activity</span></div>
+          <div style="display:flex;align-items:center;gap:9px"><span class="forge-key-temper"></span><span style="font-size:0.875rem;color:#565c66">final temper · exam</span></div>
         </div>
       </div>
 
@@ -194,7 +189,7 @@
         </div>
       </div>
       <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:15px 17px;flex:none">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px"><span style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66">STILL FUZZY</span><span style="font-size:0.875rem;font-weight:800;color:#cc3311">{{ needsCount }}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px"><span style="display:inline-flex;align-items:center;gap:8px;font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66"><svg class="fuzzy-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 11a2 2 0 1 1-4 0 4 4 0 0 1 8 0 6 6 0 0 1-12 0 8 8 0 0 1 16 0 10 10 0 1 1-20 0 11.93 11.93 0 0 1 2.42-7.22 2 2 0 1 1 3.16 2.44"/></svg>STILL FUZZY<span style="font-size:0.875rem;font-weight:800;letter-spacing:normal;color:#cc3311">{{ needsCount }}</span></span><span style="cursor:pointer;font-size:0.875rem;font-weight:600;color:#1338b0;letter-spacing:normal" role="button" tabindex="0" onClick="{{ goFlagged }}">View all</span></div>
         <sc-if value="{{ hasNeeds }}" hint-placeholder-val="{{ true }}">
           <div>
             <div style="display:flex;flex-direction:column;gap:9px">
@@ -205,7 +200,7 @@
                 </div>
               </sc-for>
             </div>
-            <div style="margin-top:14px;background:#15171a;color:#f4f6f8;border-radius:8px;text-align:center;padding:10px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ startDrill }}">Run the detour</div>
+            <div style="margin-top:14px;background:#15171a;color:#f4f6f8;border-radius:8px;text-align:center;padding:10px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ startDrill }}">Run the reheat</div>
           </div>
         </sc-if>
         <sc-if value="{{ noNeeds }}" hint-placeholder-val="{{ false }}">
@@ -214,7 +209,7 @@
       </div>
 
       <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:15px 17px;flex:none">
-        <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:11px">COMPLETION</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:11px"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/></svg>COMPLETION</div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <sc-for list="{{ completion }}" as="c" hint-placeholder-count="5">
             <div style="cursor:pointer" role="button" tabindex="0" onClick="{{ c.onClick }}">
@@ -226,80 +221,78 @@
       </div>
 
       <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:15px 17px;flex:none">
-        <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:9px">TERM OF THE DAY</div>
+        <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:9px"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M8 13h.01"/><path d="M12 13h.01"/><path d="M16 13h.01"/><path d="M8 17h.01"/><path d="M12 17h.01"/><path d="M16 17h.01"/></svg>TERM OF THE DAY</div>
         <div style="font-size:1.3125rem;font-weight:800;letter-spacing:-.03em;text-wrap:pretty">{{ totdName }}</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66;margin-top:3px">{{ totdPr }}</div>
         <div style="font-size:0.875rem;line-height:1.55;margin-top:9px">{{ totdDef }}</div>
         <div style="display:flex;align-items:center;gap:7px;margin-top:11px;cursor:pointer" role="button" tabindex="0" onClick="{{ totdGo }}"><span style="width:14px;height:6px;border-radius:3px;background:{{ totdColor }}"></span><span style="font-size:0.875rem;font-weight:700;color:{{ totdColor }}">{{ totdLine }}</span></div>
       </div>
 
-      <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:0.875rem;color:#1338b0;font-weight:600;padding:2px 4px 4px;flex:none">
-        <span style="cursor:pointer" role="button" tabindex="0" onClick="{{ printGlossary }}">Printable glossary</span>
-        <span style="cursor:pointer" role="button" tabindex="0" onClick="{{ goFlagged }}">Still fuzzy terms</span>
-        <span style="cursor:pointer;color:#565c66" role="button" tabindex="0" onClick="{{ resetAll }}">Reset progress</span>
-      </div>
       </div>
     </div>
   </div>
   </sc-if>
 
   <sc-if value="{{ isLearn }}" hint-placeholder-val="{{ false }}">
-  <div role="main" data-view="Learn" data-step="{{ focusStep }}" style="flex:1;min-height:0;overflow-y:auto;padding:16px 20px 28px">
+  <div role="main" data-view="Learn" data-step="{{ focusStep }}" class="learn-shell">
 <h1 id="view-title" tabindex="-1" class="view-title">{{ curName }}</h1>
-    <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:start">
+    <div class="learn-grid">
 
-      <div style="grid-column:1/-1;background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;font-size:0.875rem;color:#565c66;flex-wrap:wrap;gap:12px">
-        <span style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600" role="button" tabindex="0" onClick="{{ goMap }}"><span style="width:18px;height:18px;border-radius:50%;border:4px solid {{ lineColor }}"></span>← {{ lineLabel }}</span>
-        <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">
-          <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="19"><span class="progress-tick" aria-hidden="true" style="width:14px;height:5px;border-radius:3px;background:{{ t.bg }};cursor:pointer" onClick="{{ t.onClick }}"></span></sc-for>
+      <div class="learn-progress">
+        <span class="learn-progress-back" role="button" tabindex="0" onClick="{{ goMap }}"><span class="learn-progress-mark" aria-hidden="true"></span>← {{ lineLabel }}</span>
+        <div class="learn-beads" aria-hidden="true">
+          <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="19"><span class="{{ t.cls }}" onClick="{{ t.onClick }}"></span></sc-for>
         </div>
-        <span style="font-family:'JetBrains Mono',monospace">{{ stopLabel }}</span>
+        <span class="learn-progress-count">{{ stopLabel }}</span>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div class="learn-main">
 
         <sc-if value="{{ isTerm }}" hint-placeholder-val="{{ true }}">
         <div>
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px -24px rgba(0,0,0,.5)">
-          <div style="height:6px;background:{{ lineColor }}"></div>
-          <div style="padding:26px 30px 28px">
-            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap">
-              <span style="color:#fff;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:4px 9px;border-radius:4px;background:{{ lineColor }}">{{ lineTag }}</span>
-              <span style="border:1px solid #a5abb5;color:#565c66;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">{{ posTag }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66;margin-left:4px">{{ curPr }}</span>
-              <sc-if value="{{ isFlagged }}" hint-placeholder-val="{{ false }}"><span style="background:#fbeeea;border:1px solid #cc3311;color:#cc3311;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">STILL FUZZY</span></sc-if>
+        <div class="piece-hero">
+          <div class="piece-hero-edge" aria-hidden="true"></div>
+          <div class="piece-hero-body">
+            <div class="piece-meta">
+              <span class="piece-kicker">{{ trackKicker }}</span>
+              <span class="piece-tag">{{ lineTag }}</span>
+              <sc-if value="{{ isFlagged }}" hint-placeholder-val="{{ false }}"><span class="piece-tag-fuzzy">STILL FUZZY</span></sc-if>
             </div>
-            <div style="font-size:3.0rem;font-weight:800;letter-spacing:-.04em;line-height:1.04;text-wrap:pretty">{{ curName }}</div>
-            <div style="height:1px;background:#e2e5ea;margin:22px 0 20px"></div>
-            <div style="font-size:1.0625rem;line-height:1.65;max-width:62ch;text-wrap:pretty">{{ curDef }}</div>
+            <div class="piece-title-row">
+              <div class="piece-title">{{ curName }}</div>
+              <span class="piece-tag-muted">{{ posTag }}</span>
+              <span class="piece-pron">{{ curPr }}</span>
+            </div>
+            <div class="piece-rule" aria-hidden="true"></div>
+            <div class="piece-def">{{ curDef }}</div>
+
+            <div class="piece-section">
+              <div class="piece-section-kicker">IN USE</div>
+              <div class="piece-usage">“{{ curUsage }}”</div>
+            </div>
+
+            <div class="piece-section">
+              <div class="piece-section-head">
+                <div class="piece-section-kicker">HOW IT APPLIES TO OUR WORK</div>
+                <span class="piece-section-tag" style="color:{{ applyTagColor }}">{{ applyTag }}</span>
+              </div>
+              <div class="piece-apply" style="color:{{ applyColor }}">{{ curApply }}</div>
+            </div>
           </div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid {{ lineColor }};margin-top:14px">
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:9px">IN USE</div>
-          <div style="font-style:italic;font-size:1.03125rem;line-height:1.6;text-wrap:pretty">“{{ curUsage }}”</div>
-        </div>
-
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid #15171a;margin-top:14px">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:9px">
-            <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66">HOW IT APPLIES TO OUR WORK</div>
-            <span style="font-size:0.875rem;font-weight:800;letter-spacing:.1em;color:{{ applyTagColor }}">{{ applyTag }}</span>
+        <div class="piece-actions">
+          <div class="piece-actions-row">
+            <div class="learn-cta" role="button" tabindex="0" onClick="{{ gotIt }}">{{ gotItLabel }}</div>
+            <div class="learn-cta-secondary" role="button" tabindex="0" onClick="{{ stillFuzzy }}">Still fuzzy</div>
+            <div class="learn-cta-ghost" role="button" tabindex="0" onClick="{{ prevStop }}">← Previous piece</div>
           </div>
-          <div style="font-size:1.03125rem;line-height:1.6;text-wrap:pretty;color:{{ applyColor }}">{{ curApply }}</div>
-        </div>
-
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 22px;margin-top:14px">
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <div style="color:#fff;font-size:0.875rem;font-weight:700;padding:13px 26px;border-radius:8px;cursor:pointer;background:{{ lineColor }}" role="button" tabindex="0" onClick="{{ gotIt }}">{{ gotItLabel }}</div>
-            <div style="border:1.5px solid #a5abb5;font-size:0.875rem;font-weight:600;padding:12px 22px;border-radius:8px;cursor:pointer" role="button" tabindex="0" onClick="{{ stillFuzzy }}">Still fuzzy</div>
-            <div style="font-size:0.875rem;font-weight:600;padding:12px 16px;border-radius:8px;cursor:pointer;color:#565c66;margin-left:auto" role="button" tabindex="0" onClick="{{ prevStop }}">← Previous stop</div>
-          </div>
-          <div style="display:flex;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid #e2e5ea;font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66;flex-wrap:wrap">
-            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">Alt Shift 1</span>got it</span>
-            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">Alt Shift 2</span>still fuzzy</span>
-            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">Alt Shift ← →</span>prev / next stop</span>
-            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">Alt Shift C</span>flashcard</span>
-            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">Alt Shift Esc</span>back to map</span>
+          <div class="piece-shortcuts">
+            <span><span class="kbd">Alt Shift 1</span>got it</span>
+            <span><span class="kbd">Alt Shift 2</span>still fuzzy</span>
+            <span><span class="kbd">Alt Shift ← →</span>prev / next piece</span>
+            <span><span class="kbd">Alt Shift C</span>flashcard</span>
+            <span><span class="kbd">Alt Shift Esc</span>back to forge</span>
           </div>
         </div>
         </div>
@@ -307,109 +300,135 @@
 
         <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
         <div>
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px -24px rgba(0,0,0,.5)">
-          <div style="height:6px;background:{{ lineColor }}"></div>
-          <div style="padding:26px 30px 28px">
-            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap">
-              <span style="color:#fff;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:4px 9px;border-radius:4px;background:{{ lineColor }}">{{ lineTag }}</span>
-              <span style="border:1px solid #15171a;color:#15171a;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">ACTIVITY</span>
-              <span style="border:1px solid #a5abb5;color:#565c66;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">{{ posTag }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66;margin-left:4px">{{ actStepLabel }}</span>
+        <div class="piece-hero is-activity">
+          <div class="piece-hero-edge" aria-hidden="true"></div>
+          <div class="piece-hero-body">
+            <div class="piece-meta">
+              <span class="piece-kicker">{{ trackKicker }}</span>
+              <span class="piece-tag">{{ lineTag }}</span>
+              <span class="piece-tag-outline">ACTIVITY</span>
+              <span class="piece-tag-muted">{{ posTag }}</span>
+              <span class="piece-step-label">{{ actStepLabel }}</span>
             </div>
-            <div style="font-size:2.5rem;font-weight:800;letter-spacing:-.04em;line-height:1.04;text-wrap:pretty">{{ curName }}</div>
-            <div style="height:1px;background:#e2e5ea;margin:22px 0 20px"></div>
-            <div style="font-size:1.0625rem;line-height:1.65;max-width:62ch;text-wrap:pretty">{{ curDef }}</div>
-          </div>
-        </div>
+            <div class="piece-title">{{ curName }}</div>
+            <div class="piece-rule" aria-hidden="true"></div>
+            <div class="piece-def">{{ curDef }}</div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:22px 26px;margin-top:14px">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap">
-            <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66">{{ actStepKind }}</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66">{{ actStepLabel }}</div>
-          </div>
-
-          <sc-if value="{{ actIsRead }}" hint-placeholder-val="{{ true }}">
-            <div style="font-size:1.0625rem;line-height:1.65;max-width:62ch;text-wrap:pretty">{{ actBody }}</div>
-          </sc-if>
-
-          <sc-if value="{{ actIsPrompt }}" hint-placeholder-val="{{ false }}">
-            <div>
-              <div style="font-size:1.03125rem;line-height:1.55;margin-bottom:12px;text-wrap:pretty">{{ actPrompt }}</div>
-              <textarea rows="7" style="width:100%;box-sizing:border-box;border:1.5px solid #c3c8d0;border-radius:10px;padding:14px 16px;font:inherit;font-size:0.96875rem;line-height:1.55;resize:vertical" placeholder="Write here…" value="{{ actDraft }}" onChange="{{ setActDraft }}"></textarea>
-              <sc-if value="{{ actHasHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;font-size:0.875rem;color:#565c66;line-height:1.55"><span style="font-weight:800;letter-spacing:.08em;color:#15171a">HINT · </span>{{ actHint }}</div></sc-if>
-              <sc-if value="{{ actHasExample }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;background:#f4f5f7;border:1px solid #e2e5ea;border-radius:10px;padding:14px 16px"><div style="font-size:0.875rem;font-weight:800;letter-spacing:.12em;color:#565c66;margin-bottom:8px">EXAMPLE</div><div style="font-size:0.9375rem;line-height:1.55;text-wrap:pretty">{{ actExample }}</div></div></sc-if>
-            </div>
-          </sc-if>
-
-          <sc-if value="{{ actIsChecklist }}" hint-placeholder-val="{{ false }}">
-            <div>
-              <div style="font-size:1.03125rem;line-height:1.55;margin-bottom:14px;text-wrap:pretty">{{ actPrompt }}</div>
-              <div style="display:flex;flex-direction:column;gap:10px">
-                <sc-for list="{{ actChecks }}" as="c" hint-placeholder-count="4">
-                  <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:0.96875rem;line-height:1.45">
-                    <input type="checkbox" checked="{{ c.checked }}" onChange="{{ c.onChange }}" style="margin-top:3px;width:16px;height:16px;flex:none">
-                    <span>{{ c.text }}</span>
-                  </label>
-                </sc-for>
+            <div class="piece-section piece-step">
+              <div class="learn-step-heat" aria-hidden="true"><span style="width:{{ actStepPct }}"></span></div>
+              <div class="piece-step-head">
+                <div class="piece-section-kicker">{{ actStepKind }}</div>
+                <div class="piece-step-label">{{ actStepLabel }}</div>
               </div>
-            </div>
-          </sc-if>
 
-          <sc-if value="{{ actIsQuiz }}" hint-placeholder-val="{{ false }}">
-            <div>
-              <div style="font-size:1.03125rem;line-height:1.55;margin-bottom:14px;text-wrap:pretty">{{ actPrompt }}</div>
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <sc-for list="{{ actOptions }}" as="o" hint-placeholder-count="4">
-                  <div style="border:1.5px solid {{ o.border }};background:{{ o.bg }};border-radius:10px;padding:12px 14px;cursor:pointer;font-size:0.96875rem;line-height:1.45;display:flex;gap:10px;align-items:flex-start" role="button" tabindex="0" onClick="{{ o.onClick }}">
-                    <span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:800;flex:none;background:{{ o.markBg }};color:{{ o.markFg }}" aria-hidden="true">{{ o.mark }}</span>
-                    <span>{{ o.text }}</span>
+              <sc-if value="{{ actIsRead }}" hint-placeholder-val="{{ true }}">
+                <div class="piece-def">{{ actBody }}</div>
+              </sc-if>
+
+              <sc-if value="{{ actIsPrompt }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div class="piece-prompt">{{ actPrompt }}</div>
+                  <textarea class="piece-textarea" rows="7" placeholder="Write here…" value="{{ actDraft }}" onChange="{{ setActDraft }}"></textarea>
+                  <sc-if value="{{ actHasHint }}" hint-placeholder-val="{{ false }}"><div class="piece-hint"><span class="piece-hint-label">HINT · </span>{{ actHint }}</div></sc-if>
+                  <sc-if value="{{ actHasExample }}" hint-placeholder-val="{{ false }}"><div class="piece-example"><div class="piece-example-kicker">EXAMPLE</div><div class="piece-def" style="font-size:0.9375rem">{{ actExample }}</div></div></sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ actIsChecklist }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div class="piece-prompt">{{ actPrompt }}</div>
+                  <div class="piece-checks">
+                    <sc-for list="{{ actChecks }}" as="c" hint-placeholder-count="4">
+                      <label class="piece-check">
+                        <input type="checkbox" checked="{{ c.checked }}" onChange="{{ c.onChange }}">
+                        <span>{{ c.text }}</span>
+                      </label>
+                    </sc-for>
                   </div>
-                </sc-for>
-              </div>
-              <sc-if value="{{ actRevealed }}" hint-placeholder-val="{{ false }}">
-                <div style="margin-top:14px;background:#f4f5f7;border:1px solid #e2e5ea;border-radius:10px;padding:14px 16px;font-size:0.9375rem;line-height:1.55;text-wrap:pretty">{{ actExplain }}</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ actIsQuiz }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div class="piece-prompt">{{ actPrompt }}</div>
+                  <div class="piece-options">
+                    <sc-for list="{{ actOptions }}" as="o" hint-placeholder-count="4">
+                      <div class="piece-option" style="border-color:{{ o.border }};background:{{ o.bg }}" role="button" tabindex="0" onClick="{{ o.onClick }}">
+                        <span class="piece-option-mark" style="background:{{ o.markBg }};color:{{ o.markFg }}" aria-hidden="true">{{ o.mark }}</span>
+                        <span>{{ o.text }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ actRevealed }}" hint-placeholder-val="{{ false }}">
+                    <div class="piece-explain">{{ actExplain }}</div>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ actIsVideo }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <sc-if value="{{ actHasTrack }}" hint-placeholder-val="{{ false }}">
+                    <video class="piece-video" controls playsInline="{{ true }}" preload="metadata" src="{{ actVideoSrc }}" poster="{{ actVideoPoster }}">
+                      <track kind="captions" srcLang="en" label="English" default="{{ true }}" src="{{ actTrackSrc }}">
+                    </video>
+                  </sc-if>
+                  <sc-if value="{{ actNoTrack }}" hint-placeholder-val="{{ true }}">
+                    <video class="piece-video" controls playsInline="{{ true }}" preload="metadata" src="{{ actVideoSrc }}" poster="{{ actVideoPoster }}"></video>
+                  </sc-if>
+                  <sc-if value="{{ actHasCaption }}" hint-placeholder-val="{{ false }}">
+                    <div class="piece-video-caption">{{ actCaption }}</div>
+                  </sc-if>
+                  <sc-if value="{{ actHasTranscript }}" hint-placeholder-val="{{ false }}">
+                    <div class="piece-transcript">
+                      <div class="piece-transcript-toggle" role="button" tabindex="0" aria-expanded="{{ actTranscriptOpen }}" onClick="{{ toggleActTranscript }}">{{ actTranscriptLabel }}</div>
+                      <sc-if value="{{ actTranscriptOpen }}" hint-placeholder-val="{{ false }}">
+                        <div class="piece-transcript-body">{{ actTranscript }}</div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                </div>
               </sc-if>
             </div>
-          </sc-if>
+          </div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 22px;margin-top:14px">
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <div style="color:#fff;font-size:0.875rem;font-weight:700;padding:13px 26px;border-radius:8px;cursor:pointer;background:{{ actContinueBg }};opacity:{{ actContinueOpacity }}" role="button" tabindex="0" onClick="{{ activityContinue }}">{{ actContinueLabel }}</div>
-            <div style="font-size:0.875rem;font-weight:600;padding:12px 16px;border-radius:8px;cursor:pointer;color:#565c66;margin-left:auto" role="button" tabindex="0" onClick="{{ prevStop }}">← Previous stop</div>
+        <div class="piece-actions">
+          <div class="piece-actions-row">
+            <div class="{{ actContinueCls }}" role="button" tabindex="0" onClick="{{ activityContinue }}">{{ actContinueLabel }}</div>
+            <div class="learn-cta-ghost" role="button" tabindex="0" onClick="{{ prevStop }}">← Previous piece</div>
           </div>
         </div>
         </div>
         </sc-if>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-        <div style="background:#15171a;color:#f4f6f8;border-radius:14px;padding:18px 20px">
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#a6adb8;margin-bottom:8px">THIS LINE</div>
-          <div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:1.875rem;font-weight:800;letter-spacing:-.03em;line-height:1">{{ lineDone }}</span><span style="font-size:0.875rem;color:#a6adb8">{{ lineDoneOf }}</span></div>
-          <div style="font-size:0.875rem;color:#a6adb8;margin-top:8px;line-height:1.5">{{ lineHint }}</div>
-          <div style="margin-top:13px;border:1.5px solid #f4f6f8;border-radius:7px;text-align:center;padding:9px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ startCheckpoint }}">{{ checkpointLabel }}</div>
+      <div class="learn-aside">
+        <div class="piece-aside-dark">
+          <div class="piece-aside-kicker">THIS TRACK</div>
+          <div class="piece-aside-stat"><strong>{{ lineDone }}</strong><span>{{ lineDoneOf }}</span></div>
+          <div class="piece-aside-hint">{{ lineHint }}</div>
+          <div class="{{ checkpointCls }}" role="button" tabindex="0" onClick="{{ startCheckpoint }}">{{ checkpointLabel }}</div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 20px">
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:6px">INTERCHANGES</div>
-          <div style="display:flex;flex-direction:column">
+        <div class="piece-aside-card">
+          <div class="piece-aside-kicker">RELATED TERMS</div>
+          <div>
             <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
-              <div style="border-bottom:1px solid #e2e5ea;padding:10px 0;display:flex;gap:10px;align-items:center;cursor:pointer" role="button" tabindex="0" onClick="{{ r.onClick }}">
-                <span style="width:10px;height:10px;border-radius:50%;flex:none;border:3px solid {{ r.color }}"></span>
-                <div style="min-width:0"><div style="font-size:0.875rem;font-weight:600;text-wrap:pretty">{{ r.name }}</div><div style="font-size:0.875rem;color:#565c66">{{ r.line }}</div></div>
+              <div class="piece-related-row" role="button" tabindex="0" onClick="{{ r.onClick }}">
+                <span class="piece-related-dot" aria-hidden="true"></span>
+                <div style="min-width:0"><div class="piece-related-name">{{ r.name }}</div><div class="piece-related-line">{{ r.line }}</div></div>
               </div>
             </sc-for>
           </div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 20px">
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:12px">{{ comingLabel }}</div>
-          <div style="position:relative;padding-left:16px">
-            <div style="position:absolute;left:3px;top:6px;bottom:6px;width:3px;border-radius:2px;background:#e2e5ea"></div>
-            <div style="display:flex;flex-direction:column;gap:11px;font-size:0.875rem">
+        <div class="piece-aside-card">
+          <div class="piece-aside-kicker">{{ comingLabel }}</div>
+          <div class="piece-coming">
+            <div class="piece-coming-rail" aria-hidden="true"></div>
+            <div class="piece-coming-list">
               <sc-for list="{{ coming }}" as="c" hint-placeholder-count="5">
-                <div style="position:relative;cursor:pointer;text-wrap:pretty" role="button" tabindex="0" onClick="{{ c.onClick }}"><span style="position:absolute;left:-16px;top:4px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid #a5abb5"></span>{{ c.name }}</div>
+                <div class="piece-coming-item" role="button" tabindex="0" onClick="{{ c.onClick }}"><span class="piece-coming-bead" aria-hidden="true"></span>{{ c.name }}</div>
               </sc-for>
             </div>
           </div>
@@ -427,7 +446,7 @@
         <div>
           <div style="font-size:0.875rem;font-weight:800;letter-spacing:.18em;color:{{ accent }}">STUDY</div>
           <div style="font-size:2.75rem;font-weight:800;letter-spacing:-.045em;line-height:1.03;margin-top:10px">Pick a deck.</div>
-          <div style="font-size:0.9375rem;color:#a6adb8;margin-top:11px;max-width:56ch;line-height:1.6">One deck per line, plus a Still fuzzy deck that pulls everything you flagged or missed from across the whole network.</div>
+          <div style="font-size:0.9375rem;color:#a6adb8;margin-top:11px;max-width:56ch;line-height:1.6">One deck per line, plus a Still fuzzy deck that pulls everything you flagged or missed from across the whole forge.</div>
           <div style="display:flex;gap:34px;margin-top:24px;flex-wrap:wrap">
             <sc-for list="{{ studyStats }}" as="s" hint-placeholder-count="3">
               <div>
@@ -470,7 +489,7 @@
         <div style="background:#15171a;color:#f4f6f8;border-radius:14px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:11px" role="button" tabindex="0" onClick="{{ fuzzyGo }}">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
             <div>
-              <div style="font-size:1.1875rem;font-weight:800;letter-spacing:-.03em">Still fuzzy</div>
+              <div style="display:inline-flex;align-items:center;gap:8px;font-size:1.1875rem;font-weight:800;letter-spacing:-.03em"><svg class="fuzzy-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 11a2 2 0 1 1-4 0 4 4 0 0 1 8 0 6 6 0 0 1-12 0 8 8 0 0 1 16 0 10 10 0 1 1-20 0 11.93 11.93 0 0 1 2.42-7.22 2 2 0 1 1 3.16 2.44"/></svg>Still fuzzy</div>
               <div style="font-size:0.875rem;color:#a6adb8;margin-top:3px">Everything you flagged or missed, across all lines</div>
             </div>
             <span style="font-size:1.625rem;font-weight:800;letter-spacing:-.04em;color:{{ accent }}">{{ fuzzyCount }}</span>
@@ -481,8 +500,8 @@
           <div style="font-size:0.875rem;font-weight:700;color:{{ accent }}">{{ fuzzyCta }}</div>
         </div>
         <div style="background:#fff;border:1px dashed #b9bfc9;border-radius:14px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:9px" role="button" tabindex="0" onClick="{{ allGo }}">
-          <div style="font-size:1.1875rem;font-weight:800;letter-spacing:-.03em">Whole network</div>
-          <div style="font-size:0.875rem;color:#565c66">All {{ totalTerms }} terms together. The long haul.</div>
+          <div style="font-size:1.1875rem;font-weight:800;letter-spacing:-.03em">Whole forge</div>
+          <div style="font-size:0.875rem;color:#565c66">All {{ totalTerms }} terms together. The full heat.</div>
           <div style="font-size:0.875rem;font-weight:700;color:#1338b0;margin-top:auto">Study all {{ totalTerms }} →</div>
         </div>
       </div>
@@ -585,8 +604,8 @@
           <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:12px">MISSED THIS ROUND</div>
           <div style="display:flex;flex-direction:column;gap:10px">
             <sc-for list="{{ missedList }}" as="m" hint-placeholder-count="3">
-              <div style="display:flex;gap:10px;align-items:baseline;cursor:pointer" role="button" tabindex="0" onClick="{{ m.onClick }}">
-                <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ m.color }}"></span>
+              <div style="display:flex;gap:10px;align-items:flex-start;cursor:pointer" role="button" tabindex="0" onClick="{{ m.onClick }}">
+                <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ m.color }};margin-top:0.4em"></span>
                 <div><span style="font-size:0.875rem;font-weight:700">{{ m.name }}</span><div style="font-size:0.875rem;color:#3d424a;line-height:1.5;margin-top:2px">{{ m.def }}</div></div>
               </div>
             </sc-for>
@@ -594,7 +613,7 @@
         </div>
       </sc-if>
       <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap">
-        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:13px 26px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ goMap }}">Back to the map</div>
+        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:13px 26px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ goMap }}">Back to the forge</div>
         <sc-if value="{{ hasMissed }}" hint-placeholder-val="{{ false }}"><div style="border:1.5px solid #a5abb5;border-radius:8px;padding:12px 24px;font-size:0.875rem;font-weight:600;cursor:pointer" role="button" tabindex="0" onClick="{{ startDrill }}">Drill the misses</div></sc-if>
       </div>
     </div>
@@ -607,8 +626,8 @@
     <div style="background:#15171a;color:#f4f6f8">
       <div style="max-width:1080px;margin:0 auto;padding:40px 30px 36px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:36px;align-items:center">
         <div>
-          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.18em;color:{{ accent }}">GRAND TERMINUS</div>
-          <div style="font-size:2.875rem;font-weight:800;letter-spacing:-.045em;line-height:1.03;margin-top:10px;max-width:15ch;text-wrap:pretty">Where the lines meet.</div>
+          <div style="font-size:0.875rem;font-weight:800;letter-spacing:.18em;color:{{ accent }}">FINAL TEMPER</div>
+          <div style="font-size:2.875rem;font-weight:800;letter-spacing:-.045em;line-height:1.03;margin-top:10px;max-width:15ch;text-wrap:pretty">Where the work is proven.</div>
           <div style="font-size:0.9375rem;color:#a6adb8;margin-top:12px;max-width:54ch;line-height:1.6">{{ examDescription }}</div>
           <div style="display:inline-flex;align-items:center;gap:10px;margin-top:22px;background:#22262d;border:1px solid #353a42;border-radius:999px;padding:9px 16px">
             <span style="width:9px;height:9px;border-radius:50%;background:{{ accent }}"></span>
@@ -619,7 +638,7 @@
       </div>
     </div>
     <div style="max-width:1080px;margin:0 auto;padding:28px 30px 56px">
-      <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#565c66;margin-bottom:14px">ROUNDELS REQUIRED</div>
+      <div style="font-size:0.875rem;font-weight:800;letter-spacing:.16em;color:#565c66;margin-bottom:14px">MARKS REQUIRED</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px">
         <sc-for list="{{ lockedRoundels }}" as="r" hint-placeholder-count="5">
           <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer" role="button" tabindex="0" onClick="{{ r.onClick }}">
@@ -633,9 +652,9 @@
         </sc-for>
       </div>
       <div style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;align-items:center">
-        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:13px 26px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ goMap }}">Back to the map</div>
+        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:13px 26px;font-size:0.875rem;font-weight:700;cursor:pointer" role="button" tabindex="0" onClick="{{ goMap }}">Back to the forge</div>
         <div style="border:1.5px solid #a5abb5;border-radius:8px;padding:12px 24px;font-size:0.875rem;font-weight:600;cursor:pointer" role="button" tabindex="0" onClick="{{ forceExam }}">Take a practice exam</div>
-        <span style="font-size:0.875rem;color:#565c66">A practice run does not count toward your roundels.</span>
+        <span style="font-size:0.875rem;color:#565c66">A practice run does not count toward your marks.</span>
       </div>
     </div>
   </div>
@@ -683,28 +702,25 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b51b55&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#b51b55&quot;,&quot;#1338b0&quot;,&quot;#007a5e&quot;,&quot;#cc3311&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;quizLength&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:5,&quot;max&quot;:19,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Learning&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FF5722&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#FF5722&quot;,&quot;#22D3EE&quot;,&quot;#1338b0&quot;,&quot;#007a5e&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;quizLength&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:5,&quot;max&quot;:19,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Learning&quot;}}">
 class Component extends DCLogic {
   PROGRAMS = [];
 
   state = { ready:false, view:'hub', line:1, pos:0, sIdx:0, scope:'line', scopeLine:1, flipped:false, query:'', flaggedOnly:false,
     learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, streak:1, week:[], quiz:null, result:null,
-    actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false };
+    actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false, actTranscriptOpen:false,
+    userName:'', userNameDraft:'', needsName:false, userId:'', authenticated:false, canEditName:true };
 
   KEY = 'ailingo.v1';
-  GEO = {
-    1:{ pts:[[90,130],[1044,130],[1044,520],[1050,520]], d:'M 90 130 L 1024 130 Q 1044 130 1044 150 L 1044 517 Q 1044 520 1047 520 L 1050 520', dir:-1 },
-    2:{ pts:[[90,300],[830,300],[1050,520]], d:'M 90 300 L 810 300 Q 830 300 844.1 314.1 L 1050 520', dir:-1 },
-    3:{ pts:[[90,780],[560,780],[820,520],[1050,520]], d:'M 90 780 L 540 780 Q 560 780 574.1 765.9 L 805.9 534.1 Q 820 520 840 520 L 1050 520', dir:1 },
-    4:{ pts:[[200,860],[200,620],[440,380],[1200,380],[1200,520],[1050,520]], d:'M 200 860 L 200 640 Q 200 620 214.1 605.9 L 425.9 394.1 Q 440 380 460 380 L 1180 380 Q 1200 380 1200 400 L 1200 500 Q 1200 520 1180 520 L 1050 520', dir:1 },
-    5:{ pts:[[90,700],[870,700],[1050,520]], d:'M 90 700 L 850 700 Q 870 700 884.1 685.9 L 1050 520', dir:1 }
-  };
-  PACK = 0.86;
+  SAFE_VIEWS = { hub:1, map:1, learn:1, decks:1, cards:1, glossary:1, locked:1 };
+  userId = '';
+  remotePersist = false;
+  identityHeader = '';
 
   async componentDidMount() {
     let m;
     try { m = await import('./content.js'); } catch (error) { this.setState({error:'Content could not load. Refresh the page or rebuild the app.'}); return; }
-    document.title='Interchange · '+m.COURSE.title;
+    document.title='Crucible · '+m.COURSE.title;
     this.COURSE=m.COURSE; this.EXAM=m.EXAM; this.QUESTIONS=m.QUESTIONS;
     this.PROGRAMS=(m.JOURNEYS||[{id:m.ACTIVE_JOURNEY||'ai-lingo',title:m.COURSE.title,description:m.COURSE.description,lines:m.LINES.map(l=>l.name),count:m.TERMS.length}]).map(j=>({id:j.id,name:j.title||m.COURSE.title,blurb:j.description||m.COURSE.description,live:j.id===(m.ACTIVE_JOURNEY||'ai-lingo'),lines:j.lines||[],count:j.count||0}));
     this.TERMS = m.TERMS; this.ACTIVITIES = m.ACTIVITIES || []; this.LINES = m.LINES;
@@ -712,126 +728,305 @@ class Component extends DCLogic {
     this.byId = {}; this.STOPS.forEach(t => { this.byId[t.id] = t; });
     this.byLine = {}; this.LINES.forEach(l => { this.byLine[l.n] = this.STOPS.filter(t => t.line === l.n); });
     this.termsByLine = {}; this.LINES.forEach(l => { this.termsByLine[l.n] = this.TERMS.filter(t => t.line === l.n); });
-    const saved = this.load();
+    const identity = await this.fetchIdentity();
+    this.userId = identity.id || '';
+    this.remotePersist = !!identity.authenticated;
+    this.identityHeader = (identity.source === 'query' || identity.source === 'proxy') ? (identity.id || '') : '';
+    let saved = {};
+    if (identity.authenticated) {
+      saved = (await this.loadRemote()) || {};
+      if (!this.hasProgress(saved)) {
+        const legacy = this.loadLocal(true);
+        if (this.hasProgress(legacy)) {
+          saved = Object.assign({}, legacy, { userName: identity.name || legacy.userName || '' });
+          await this.persistRemote(this.progressPayload(saved));
+        }
+      }
+    } else {
+      saved = this.loadLocal(false);
+    }
     if(!this.byLine[saved.line]) saved.line=this.LINES[0].n;
     saved.scopeLine=saved.line;
     saved.pos=Math.max(0,Math.min(Number(saved.pos)||0,this.byLine[saved.line].length-1));
-    this.setState(Object.assign({ ready:true, actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false }, saved, this.streakState(saved)));
+    if(!this.SAFE_VIEWS[saved.view]) saved.view='hub';
+    const userName = (identity.name || saved.userName || '').trim().slice(0,80);
+    const canEditName = !identity.authenticated || identity.source === 'query';
+    this.setState(Object.assign({ ready:true, actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false, actTranscriptOpen:false,
+      userId:this.userId, authenticated:!!identity.authenticated, canEditName,
+      userName, userNameDraft:userName, needsName:false }, saved, { userName, userId:this.userId }, this.streakState(saved)));
     this.onKey = e => this.handleKey(e);
     window.addEventListener('keydown', this.onKey);
   }
   componentWillUnmount(){ if (this.onKey) window.removeEventListener('keydown', this.onKey); }
 
-  load(){ try { const r = JSON.parse(localStorage.getItem(this.KEY) || '{}');
-    return { learned:r.learned||{}, flagged:r.flagged||{}, miss:r.miss||{}, scores:r.scores||{}, badges:r.badges||{}, streak:r.streak||1, line:r.line||this.LINES[0].n, pos:r.pos||0 }; } catch(e){ return {}; } }
-  save(extra){ const s = Object.assign({}, this.state, extra||{});
-    try { localStorage.setItem(this.KEY, JSON.stringify({ learned:s.learned, flagged:s.flagged, miss:s.miss, scores:s.scores, badges:s.badges, streak:s.streak, line:s.line, pos:s.pos, day:this.today() })); } catch(e){} }
+  storageKey(userId){ const id=userId||this.userId; return id ? this.KEY+'.u:'+id : this.KEY+'.anon'; }
+  hasProgress(p){ if(!p) return false; return !!(Object.keys(p.learned||{}).length || Object.keys(p.flagged||{}).length || Object.keys(p.scores||{}).length || Object.keys(p.badges||{}).length || p.pos || (p.view && p.view!=='hub')); }
+  progressPayload(s){
+    return { learned:s.learned||{}, flagged:s.flagged||{}, miss:s.miss||{}, scores:s.scores||{}, badges:s.badges||{}, streak:s.streak||1, line:s.line||this.LINES[0].n, pos:s.pos||0, view:s.view||'hub', userName:s.userName||'', day:s.day||this.today() };
+  }
+  normalizeProgress(r){
+    return { learned:r.learned||{}, flagged:r.flagged||{}, miss:r.miss||{}, scores:r.scores||{}, badges:r.badges||{}, streak:r.streak||1, line:r.line||this.LINES[0].n, pos:r.pos||0, view:r.view||'hub', userName:typeof r.userName==='string'?r.userName:'', day:typeof r.day==='string'?r.day:null };
+  }
+  load(){ return this.loadLocal(false); }
+  loadLocal(includeLegacy){
+    try {
+      let r = JSON.parse(localStorage.getItem(this.storageKey()) || '{}');
+      if (includeLegacy && !this.hasProgress(r)) {
+        const legacy = JSON.parse(localStorage.getItem(this.KEY) || '{}');
+        if (this.hasProgress(legacy)) r = legacy;
+      }
+      return this.normalizeProgress(r);
+    } catch(e){ return this.normalizeProgress({}); }
+  }
+  save(extra){
+    const s = Object.assign({}, this.state, extra||{});
+    const payload = this.progressPayload(s);
+    try { localStorage.setItem(this.storageKey(s.userId||this.userId), JSON.stringify(payload)); } catch(e){}
+    if (this.remotePersist && (s.userId||this.userId)) this.persistRemote(payload);
+  }
+  authHeaders(extra){
+    const headers = Object.assign({ Accept:'application/json' }, extra||{});
+    if (this.identityHeader) headers['X-Dev-User'] = this.identityHeader;
+    return headers;
+  }
+  async persistRemote(payload){
+    try {
+      await fetch('/api/progress', { method:'PUT', credentials:'same-origin', headers:this.authHeaders({ 'Content-Type':'application/json' }), body:JSON.stringify(payload) });
+    } catch(e){}
+  }
+  async loadRemote(){
+    try {
+      const res = await fetch('/api/progress', { credentials:'same-origin', headers:this.authHeaders() });
+      if (!res.ok) return null;
+      return this.normalizeProgress(await res.json());
+    } catch(e){ return null; }
+  }
   today(){ return new Date().toISOString().slice(0,10); }
+  nameFromDn(dn){
+    if(!dn) return '';
+    const m = String(dn).match(/(?:^|,)\s*CN\s*=\s*([^,\/]+)/i);
+    return (m ? m[1] : String(dn)).replace(/^"|"$/g,'').trim();
+  }
+  sanitizeUserId(raw){
+    return String(raw||'').trim().toLowerCase().replace(/[^a-z0-9._@+-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,120);
+  }
+  initialsFromName(name){
+    const parts = String(name||'').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '??';
+    if (parts.length === 1) {
+      const w = parts[0].replace(/[^A-Za-z0-9]/g,'');
+      return ((w[0]||'?')+(w[1]||'?')).toUpperCase();
+    }
+    const first = parts[0].replace(/[^A-Za-z0-9]/g,'')[0] || '?';
+    const last = parts[parts.length-1].replace(/[^A-Za-z0-9]/g,'')[0] || '?';
+    return (first+last).toUpperCase();
+  }
+  async fetchIdentity(){
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const q = (params.get('user') || params.get('name') || '').trim();
+      const url = q ? '/whoami?user='+encodeURIComponent(q) : '/whoami';
+      const res = await fetch(url, { credentials:'same-origin', headers:{ Accept:'application/json' } });
+      if(res.ok){
+        const data = await res.json();
+        return {
+          id: data.id || '',
+          name: (data.name || data.displayName || this.nameFromDn(data.dn || data.subject) || '').trim().slice(0,80),
+          authenticated: !!data.authenticated,
+          source: data.source || '',
+          requireAuth: !!data.requireAuth
+        };
+      }
+    } catch(e){}
+    return { id:'', name:'', authenticated:false, source:'', requireAuth:false };
+  }
+  saveUserName = async () => {
+    const userName = String(this.state.userNameDraft || '').trim().slice(0,80);
+    if(!userName) return;
+    const userId = this.sanitizeUserId(userName);
+    if(!userId) return;
+    this.userId = userId;
+    this.identityHeader = userId;
+    this.remotePersist = true;
+    let saved = (await this.loadRemote()) || this.loadLocal(false);
+    if(!this.byLine[saved.line]) saved.line=this.LINES[0].n;
+    saved.pos=Math.max(0,Math.min(Number(saved.pos)||0,this.byLine[saved.line].length-1));
+    if(!this.SAFE_VIEWS[saved.view]) saved.view='hub';
+    this.set(Object.assign({}, saved, this.streakState(saved), {
+      userId:this.userId, userName, userNameDraft:userName, needsName:false, authenticated:true, canEditName:true
+    }));
+  };
   streakState(saved){
-    let day = null, streak = saved && saved.streak ? saved.streak : 1;
-    try { day = (JSON.parse(localStorage.getItem(this.KEY)||'{}')).day; } catch(e){}
+    let day = saved && saved.day ? saved.day : null;
+    let streak = saved && saved.streak ? saved.streak : 1;
+    if (day == null) {
+      try { day = (JSON.parse(localStorage.getItem(this.storageKey())||'{}')).day; } catch(e){}
+    }
     const t = this.today();
     if (day && day !== t) { const diff = (new Date(t) - new Date(day)) / 86400000; streak = diff <= 1.5 ? streak + 1 : 1; }
-    const week = []; for (let i=6;i>=0;i--){ week.push({ bg: i < streak ? (this.props.accent || '#b51b55') : '#353a42' }); }
-    return { streak, week:week.reverse() };
+    const week = []; for (let i=6;i>=0;i--){ week.push({ bg: i < streak ? (this.props.accent || '#FF5722') : '#353a42' }); }
+    return { streak, week:week.reverse(), day:t };
   }
 
   set(patch){ this.setState(patch, () => this.save()); }
 
-  // ---- geometry ----
-  segs(p){ const o=[]; for(let i=0;i<p.length-1;i++){ const a=p[i],b=p[i+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]); if(L>0.5) o.push({a,b,L}); } return o; }
-  at(p,t){ const q=this.segs(p), T=q.reduce((x,s)=>x+s.L,0); let d=t*T;
-    for(const s of q){ if(d<=s.L){ const k=d/s.L; return [s.a[0]+(s.b[0]-s.a[0])*k, s.a[1]+(s.b[1]-s.a[1])*k, Math.abs(s.b[0]-s.a[0])<1?'v':(Math.abs(s.b[1]-s.a[1])<1?'h':'d')]; } d-=s.L; }
-    const l=q[q.length-1]; return [l.b[0], l.b[1], 'h']; }
-
+  // ---- forge lanes (replaces metro geometry) ----
   isLearned(id){ return !!this.state.learned[id]; }
   lineDone(n){ return this.byLine[n].filter(t => this.isLearned(t.id)).length; }
+  trackHasProgress(n){
+    const list = this.byLine[n] || [];
+    for (let i = 0; i < list.length; i++) {
+      const id = list[i].id;
+      if (this.state.learned[id] || this.state.flagged[id] || this.state.miss[id]) return true;
+    }
+    return this.state.scores['line'+n] != null;
+  }
+  journeyHasProgress(){
+    if (this.state.scores.exam != null) return true;
+    if (this.state.badges && Object.keys(this.state.badges).length) return true;
+    return this.LINES.some(l => this.trackHasProgress(l.n));
+  }
   firstUnlearned(n){ const a = this.byLine[n]; const i = a.findIndex(t => !this.isLearned(t.id)); return i < 0 ? 0 : i; }
-  // single source of truth for "next stop": where you are, unless you're already past it
   nextStopIdx(n){ const a = this.byLine[n];
     if (n === this.state.line && a[this.state.pos] && !this.isLearned(a[this.state.pos].id)) return this.state.pos;
     return this.firstUnlearned(n); }
 
   buildMap(){
-    const h = React.createElement, kids = [];
-    this.LINES.forEach(L => {
-      const g = this.GEO[L.n], done = this.lineDone(L.n), frac = done / this.byLine[L.n].length;
-      kids.push(h('path', { key:'g'+L.n, d:g.d, fill:'none', stroke:L.c, strokeOpacity:.42, strokeWidth:11, strokeLinecap:'round', strokeLinejoin:'round' }));
-      if (done > 0) kids.push(h('path', { key:'p'+L.n, d:g.d, pathLength:1, fill:'none', stroke:L.c, strokeWidth:11, strokeLinecap:'round', strokeLinejoin:'round', strokeDasharray:(frac*this.PACK).toFixed(3)+' 1' }));
-    });
-    const hubClick = { style:{cursor:'pointer'}, onClick:this.goExam };
-    kids.push(h('circle',Object.assign({key:'h1',cx:1050,cy:520,r:30,fill:'#fff',stroke:'#15171a',strokeWidth:6},hubClick)));
-    kids.push(h('circle',Object.assign({key:'h2',cx:1050,cy:520,r:13,fill:'#15171a'},hubClick)));
-    kids.push(h('text',Object.assign({key:'h3',x:1050,y:588,fontSize:15,fontWeight:800,fill:'#15171a',textAnchor:'middle'},hubClick),'GRAND TERMINUS'));
-    kids.push(h('text',Object.assign({key:'h4',x:1050,y:607,fontSize:11,fontWeight:600,fill:'#565c66',textAnchor:'middle'},hubClick), this.vocabDone() === this.TERMS.length ? 'Final exam · '+this.EXAM.count+' questions · open' : 'Final exam · '+this.EXAM.count+' questions · locked'));
+    const h = React.createElement;
     const cur = this.current();
-    this.LINES.forEach(L => {
-      const g = this.GEO[L.n], list = this.byLine[L.n];
-      list.forEach((t, i) => {
-        const [x, y, o] = this.at(g.pts, (i/(list.length-1))*this.PACK);
-        const learned = this.isLearned(t.id), isCur = cur && cur.id === t.id, isAct = t.kind === 'activity';
-        const jump = () => this.openStop(L.n, i);
-        if (isAct) {
-          const s = isCur ? 11 : 6;
-          kids.push(h('rect', { key:t.id+'d', x:x-s, y:y-s, width:s*2, height:s*2, rx:2, fill:'#fff', stroke:learned?L.c:'#a5abb5', strokeWidth:isCur?5:4, style:{cursor:'pointer'}, onClick:jump }));
-          if (isCur) kids.push(h('rect', { key:t.id+'c', x:x-4.5, y:y-4.5, width:9, height:9, rx:1, fill:L.c, style:{cursor:'pointer'}, onClick:jump }));
-        } else {
-          kids.push(h('circle', { key:t.id+'d', cx:x, cy:y, r:isCur?15:7.5, fill:'#fff', stroke:learned?L.c:'#a5abb5', strokeWidth:isCur?5:4, style:{cursor:'pointer'}, onClick:jump }));
-          if (isCur) kids.push(h('circle', { key:t.id+'c', cx:x, cy:y, r:6, fill:L.c, style:{cursor:'pointer'}, onClick:jump }));
-        }
-        if (this.state.flagged[t.id]) kids.push(h('circle', { key:t.id+'f', cx:x+11, cy:y-11, r:4, fill:'#cc3311' }));
-        const fill = learned ? '#15171a' : (isCur ? L.c : '#565c66');
-        const w = isCur ? 700 : (learned ? 600 : 500);
-        const short = (isAct ? '◈ ' : '') + t.t.replace(/\s*\(.*?\)\s*/g, '').trim();
-        if (o === 'v') {
-          const left = L.n === 4;
-          kids.push(h('text', { key:t.id+'l', x:x+(left?-17:17), y:y+3.6, fontSize:10.5, fontWeight:w, fill, textAnchor:left?'end':'start', style:{cursor:'pointer'}, onClick:jump }, short));
-        } else {
-          const dy = g.dir < 0 ? -11 : 13, ang = g.dir < 0 ? -45 : 45, px = x+11, py = y+dy;
-          kids.push(h('text', { key:t.id+'l', x:px, y:py, fontSize:10.5, fontWeight:w, fill, transform:'rotate('+ang+' '+px+' '+py+')', style:{cursor:'pointer'}, onClick:jump }, (isCur&&!isAct?'▸ ':'')+short));
-        }
-        if (isCur) {
-          const fy = y + 52;
-          kids.push(h('g', { key:'flag' },
-            h('path', { d:'M '+x+' '+(fy-22)+' L '+(x+8)+' '+(fy-10)+' L '+(x-8)+' '+(fy-10)+' Z', fill:L.c }),
-            h('rect', { x:x-88, y:fy-10, width:176, height:30, rx:6, fill:L.c }),
-            h('text', { x:x, y:fy+10, fontSize:11.5, fontWeight:800, fill:'#fff', textAnchor:'middle', letterSpacing:1 }, 'YOU ARE HERE')));
-        }
+    const lanes = this.LINES.map(L => {
+      const list = this.byLine[L.n];
+      const done = this.lineDone(L.n);
+      const beads = list.map((t, i) => {
+        const learned = this.isLearned(t.id);
+        const isCur = !!(cur && cur.id === t.id);
+        const isAct = t.kind === 'activity';
+        const short = ((isAct ? 'Activity: ' : '') + t.t.replace(/\s*\(.*?\)\s*/g, '').trim());
+        const cls = 'forge-bead'
+          + (isAct ? ' is-activity' : '')
+          + (learned ? ' is-learned' : '')
+          + (isCur ? ' is-current' : '')
+          + (this.state.flagged[t.id] ? ' is-flagged' : '');
+        return h('button', {
+          key: t.id,
+          type: 'button',
+          className: cls,
+          title: short,
+          'aria-label': short + (learned ? ' · forged' : isCur ? ' · current' : ' · ahead'),
+          onClick: () => this.openStop(L.n, i)
+        });
       });
+      const cleared = done === list.length;
+      const heat = Math.round((done / Math.max(list.length, 1)) * 100) + '%';
+      const started = this.trackHasProgress(L.n);
+      const actions = [
+        h('button', {
+          key: 'enter',
+          type: 'button',
+          className: 'forge-lane-enter',
+          onClick: () => this.startLine(L.n)
+        }, cleared ? 'Review track →' : 'Enter track →')
+      ];
+      if (started) {
+        actions.push(h('button', {
+          key: 'reset',
+          type: 'button',
+          className: 'forge-lane-reset',
+          onClick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.resetTrack(L.n); }
+        }, 'Reset progress'));
+      }
+      return h('article', { key: L.n, className: 'forge-lane' + (cleared ? ' is-cleared' : '') },
+        h('div', {
+          className: 'forge-lane-head',
+          role: 'button',
+          tabIndex: 0,
+          onClick: () => this.startLine(L.n),
+          onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.startLine(L.n); } }
+        },
+          h('div', { className: 'forge-lane-copy' },
+            h('div', { className: 'forge-lane-kicker' }, 'TRACK ' + L.n),
+            h('div', { className: 'forge-lane-title' }, L.name),
+            h('div', { className: 'forge-lane-sub' }, L.journey)
+          ),
+          h('div', { className: 'forge-lane-meta' },
+            h('div', { className: 'forge-lane-count' }, done + ' / ' + list.length),
+            h('div', { className: 'forge-lane-status' }, cleared ? 'Cleared' : 'In the fire')
+          )
+        ),
+        h('div', { className: 'forge-lane-body' },
+          h('div', { className: 'forge-lane-track' },
+            h('div', { className: 'forge-heat', 'aria-hidden': 'true' },
+              h('div', { className: 'forge-heat-fill', style: { width: heat } })
+            ),
+            h('div', { className: 'forge-lane-beads', role: 'group', 'aria-label': L.name + ' pieces' }, beads)
+          ),
+          h('div', { className: 'forge-lane-actions' }, actions)
+        )
+      );
     });
-    return h('svg', { 'aria-hidden':true, focusable:false, viewBox:'0 0 1400 950', style:{ width:'100%', height:'100%', display:'block', fontFamily:"'Libre Franklin',sans-serif" } }, kids);
+    const allDone = this.vocabDone() === this.TERMS.length;
+    const temperKids = [
+      h('div', { className: 'forge-temper-copy', key: 'copy' },
+        h('div', { className: 'forge-temper-kicker' }, 'FINAL TEMPER'),
+        h('div', { className: 'forge-temper-title' }, allDone ? 'Crucible exam open' : 'Crucible exam locked'),
+        h('div', { className: 'forge-temper-sub' }, allDone
+          ? (this.EXAM.count + ' questions · ready when you are')
+          : (this.EXAM.count + ' questions · forge every piece first'))
+      )
+    ];
+    if (!allDone) {
+      temperKids.push(h('svg', {
+        key: 'lock',
+        className: 'forge-temper-lock',
+        'aria-hidden': true,
+        focusable: false,
+        xmlns: 'http://www.w3.org/2000/svg',
+        width: 28,
+        height: 28,
+        viewBox: '0 0 24 24',
+        fill: 'none',
+        stroke: 'currentColor',
+        strokeWidth: 2,
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round'
+      },
+        h('circle', { cx: 12, cy: 16, r: 1 }),
+        h('rect', { x: 3, y: 10, width: 18, height: 12, rx: 2 }),
+        h('path', { d: 'M7 10V7a5 5 0 0 1 10 0v3' })
+      ));
+    }
+    lanes.push(h('div', {
+      key: 'temper',
+      className: 'forge-temper' + (allDone ? ' is-open' : ''),
+      role: 'button',
+      tabIndex: 0,
+      onClick: this.goExam,
+      onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.goExam(); } }
+    }, temperKids));
+    return h('div', { className: 'forge-lanes' }, lanes);
   }
 
-  pathD(p, R){ const q = this.segs(p); let d = 'M ' + q[0].a[0] + ' ' + q[0].a[1];
-    for (let i=0;i<q.length;i++){ const s=q[i], nx=q[i+1];
-      if(!nx){ d += ' L '+s.b[0]+' '+s.b[1]; continue; }
-      const r = Math.min(R, s.L/2, nx.L/2);
-      const u=[(s.b[0]-s.a[0])/s.L,(s.b[1]-s.a[1])/s.L], v=[(nx.b[0]-nx.a[0])/nx.L,(nx.b[1]-nx.a[1])/nx.L];
-      d += ' L '+(s.b[0]-u[0]*r).toFixed(1)+' '+(s.b[1]-u[1]*r).toFixed(1)+' Q '+s.b[0]+' '+s.b[1]+' '+(s.b[0]+v[0]*r).toFixed(1)+' '+(s.b[1]+v[1]*r).toFixed(1); }
-    return d; }
-
-  MINI = [
-    [[24,34],[200,34],[265,99]],
-    [[24,78],[233,78],[265,110]],
-    [[24,168],[178,168],[236,110],[265,110]],
-    [[62,182],[62,140],[110,92],[265,92],[265,110]],
-    [[24,122],[202,122],[214,110],[265,110]]
-  ];
   buildMini(routes, opts){
-    const h = React.createElement, kids = [], o = opts || {};
-    routes.forEach((r, i) => {
-      const pts = this.MINI[i % this.MINI.length], d = this.pathD(pts, 9);
-      kids.push(h('path', { key:'g'+i, d, fill:'none', stroke:r.color, strokeOpacity:o.ghost || .34, strokeWidth:5, strokeLinecap:'round', strokeLinejoin:'round' }));
-      if (r.frac > 0) kids.push(h('path', { key:'p'+i, d, pathLength:1, fill:'none', stroke:r.color, strokeWidth:5, strokeLinecap:'round', strokeLinejoin:'round', strokeDasharray:(r.frac*0.9).toFixed(3)+' 1' }));
-      const n = 7;
-      for (let s=0;s<n;s++){
-        const t = (s/(n-1))*0.9, p = this.at(pts, t), on = t <= r.frac*0.9;
-        kids.push(h('circle', { key:'d'+i+'-'+s, cx:p[0], cy:p[1], r:3.4, fill:o.dotFill || '#fff', stroke: on ? r.color : (o.dim || '#c3c8d0'), strokeWidth:2 }));
-      }
+    const h = React.createElement, o = opts || {};
+    const ink = '#FF5722';
+    const rows = (routes || []).map((r, i) => {
+      const pct = Math.max(0, Math.min(100, Math.round((r.frac || 0) * 100)));
+      return h('div', { key: i, className: 'forge-mini-row' },
+        h('div', { className: 'forge-mini-rail', style: { opacity: o.ghost != null ? (0.35 + (1 - o.ghost) * 0.65) : 1 } },
+          h('div', {
+            className: 'forge-mini-fill',
+            style: { width: pct + '%', background: ink }
+          })
+        )
+      );
     });
-    kids.push(h('circle', { key:'hub', cx:265, cy:110, r:11, fill:o.dotFill || '#fff', stroke:o.hub || '#15171a', strokeWidth:4 }));
-    kids.push(h('circle', { key:'hub2', cx:265, cy:110, r:4.5, fill:o.hub || '#15171a' }));
-    return h('svg', { 'aria-hidden':true, focusable:false, viewBox:'0 0 300 200', style:{ width:'100%', height:'100%', display:'block' } }, kids);
+    return h('div', { className: 'forge-mini', 'aria-hidden': true },
+      h('div', { className: 'forge-mini-lanes' }, rows),
+      h('div', {
+        className: 'forge-mini-crucible',
+        style: { background: o.hub || '#15171a', borderColor: o.dotFill || '#fff' }
+      })
+    );
   }
 
   buildStrip(n, opts){
@@ -857,7 +1052,7 @@ class Component extends DCLogic {
     return 'M '+s[0].toFixed(2)+' '+s[1].toFixed(2)+' A '+r+' '+r+' 0 '+((a1-a0)>180?1:0)+' 1 '+e[0].toFixed(2)+' '+e[1].toFixed(2);
   }
   buildBadge(pct, dateStr){
-    const h = React.createElement, kids = [], accent = this.props.accent || '#b51b55';
+    const h = React.createElement, kids = [], accent = this.props.accent || '#FF5722';
     kids.push(h('circle',{key:'bg',cx:100,cy:100,r:97,fill:'#15171a'}));
     kids.push(h('circle',{key:'r1',cx:100,cy:100,r:91,fill:'none',stroke:'#3a4049',strokeWidth:1.5}));
     this.LINES.forEach((l,i) => {
@@ -865,12 +1060,13 @@ class Component extends DCLogic {
       kids.push(h('path',{key:'a'+i,d:this.arcPath(100,100,83,a0,a1),fill:'none',stroke:l.c,strokeWidth:9,strokeLinecap:'round'}));
     });
     kids.push(h('circle',{key:'in',cx:100,cy:100,r:70,fill:'#f4f6f8'}));
-    kids.push(h('path',{key:'g1',d:'M 74 112 L 87 112 L 108 91 L 121 91',fill:'none',stroke:accent,strokeWidth:5.5,strokeLinecap:'round',strokeLinejoin:'round'}));
-    kids.push(h('path',{key:'g2',d:'M 74 90 L 87 90 L 108 111 L 121 111',fill:'none',stroke:'#15171a',strokeWidth:5.5,strokeLinecap:'round',strokeLinejoin:'round'}));
-    kids.push(h('circle',{key:'g3',cx:97.5,cy:101,r:7.5,fill:'#f4f6f8',stroke:'#15171a',strokeWidth:4}));
-    kids.push(h('text',{key:'t1',x:100,y:136,fontSize:13,fontWeight:800,letterSpacing:2.4,fill:'#15171a',textAnchor:'middle'},this.COURSE.title.toUpperCase()));
-    kids.push(h('text',{key:'t2',x:100,y:148,fontSize:7.5,fontWeight:700,letterSpacing:1.5,fill:'#565c66',textAnchor:'middle'},'NETWORK COMPLETE'));
-    kids.push(h('text',{key:'t3',x:100,y:163,fontSize:9.5,fontWeight:800,letterSpacing:.6,fill:'#15171a',textAnchor:'middle'}, pct + '% · ' + dateStr));
+    kids.push(h('path',{key:'g1',d:'M100 54C92.5 63 90 68 90 72.5a10 10 0 0 0 20 0c0-4.5-2.5-9.5-10-18.5z',fill:accent}));
+    kids.push(h('path',{key:'g3',d:'M68 94h64c1.3 0 2.2 1.2 2 2.5L126 129a2.8 2.8 0 0 1-2.7 2.2H76.7A2.8 2.8 0 0 1 74 129L66 96.5c-.2-1.3.7-2.5 2-2.5z',fill:'#15171a'}));
+    kids.push(h('path',{key:'g3b',d:'M64 91h72',stroke:'#15171a',strokeWidth:6,strokeLinecap:'round'}));
+    kids.push(h('ellipse',{key:'g4',cx:100,cy:95,rx:23,ry:5.5,fill:accent}));
+    kids.push(h('text',{key:'t1',x:100,y:142,fontSize:13,fontWeight:800,letterSpacing:2.4,fill:'#15171a',textAnchor:'middle'},this.COURSE.title.toUpperCase()));
+    kids.push(h('text',{key:'t2',x:100,y:154,fontSize:7.5,fontWeight:700,letterSpacing:1.5,fill:'#565c66',textAnchor:'middle'},'FORGE COMPLETE'));
+    kids.push(h('text',{key:'t3',x:100,y:168,fontSize:9.5,fontWeight:800,letterSpacing:.6,fill:'#15171a',textAnchor:'middle'}, pct + '% · ' + dateStr));
     return h('svg',{ 'aria-hidden':true, focusable:false,viewBox:'0 0 200 200',style:{width:'100%',height:'100%',display:'block',fontFamily:"'Libre Franklin',sans-serif"}},kids);
   }
 
@@ -886,12 +1082,13 @@ class Component extends DCLogic {
   activeTerm(){ return this.state.view === 'cards' ? this.studyTerm() : this.current(); }
   setScope = s => this.set({ scope:s, sIdx:0, flipped:false });
   lineOf(n){ return this.LINES.find(l => l.n === n); }
-  resetActivity(){ return { actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false }; }
+  resetActivity(){ return { actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false, actTranscriptOpen:false }; }
   openStop(line, pos){ this.setState(Object.assign({ view:'learn', line, pos, flipped:false, quiz:null, result:null }, this.resetActivity()), () => this.save()); }
 
   // ---- actions ----
   goHub = () => this.set({ view:'hub', quiz:null, result:null });
   goMap = () => this.set({ view:'map', quiz:null, result:null });
+  startTraining = () => this.goMap();
   goGlossary = () => this.set({ view:'glossary', quiz:null, result:null });
   goCards = () => this.set({ view:'decks', flipped:false, sIdx:0, quiz:null, result:null });
   readThis = () => { const t = this.studyTerm(); if (t) this.jumpTo(t.id); };
@@ -930,18 +1127,41 @@ class Component extends DCLogic {
   toggleFlagFilter = () => this.setState({ flaggedOnly: !this.state.flaggedOnly });
   printGlossary = () => { if (this.state.view !== 'glossary') this.setState({ view:'glossary' }, () => setTimeout(() => window.print(), 300)); else window.print(); };
   goFlagged = () => this.setState({ view:'glossary', flaggedOnly:true, query:'' });
+  resetTrack = (n) => {
+    const line = this.lineOf(n);
+    const label = line ? line.name : ('track ' + n);
+    if (!window.confirm('Reset progress for the ' + label + ' track? This clears learned pieces, flags, misses, and the track checkpoint score for this track only.')) return;
+    const ids = {};
+    (this.byLine[n] || []).forEach(t => { ids[t.id] = true; });
+    const learned = Object.assign({}, this.state.learned);
+    const flagged = Object.assign({}, this.state.flagged);
+    const miss = Object.assign({}, this.state.miss);
+    Object.keys(ids).forEach(id => { delete learned[id]; delete flagged[id]; delete miss[id]; });
+    const scores = Object.assign({}, this.state.scores);
+    delete scores['line' + n];
+    const badges = Object.assign({}, this.state.badges || {});
+    delete badges.ai;
+    const patch = { learned, flagged, miss, scores, badges };
+    if (this.state.line === n) patch.pos = 0;
+    this.setState(Object.assign(patch, this.resetActivity()), () => this.save());
+  };
+  resetJourney = () => {
+    if (!window.confirm('Reset all progress for this journey? This clears your learned terms, flags, scores and badges.')) return;
+    this.setState(Object.assign({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0 }, this.resetActivity()), () => this.save());
+  };
   resetAll = () => { if(!window.confirm('Reset all learning progress in this browser? This clears your learned terms, flags, scores and badges.'))return; this.setState(Object.assign({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0, view:'hub' }, this.resetActivity()), () => this.save()); };
 
   activityStep(){ const cur=this.current(); if(!cur||cur.kind!=='activity') return null; return cur.steps[Math.min(this.state.actStep, cur.steps.length-1)] || null; }
   setActDraft = e => this.setState({ actDraft: e.target.value });
   toggleActCheck = i => { const actChecks=Object.assign({}, this.state.actChecks); actChecks[i]=!actChecks[i]; this.setState({ actChecks }); };
   pickActOption = i => { if(this.state.actRevealed) return; this.setState({ actPick:i, actRevealed:true }); };
+  toggleActTranscript = () => this.setState({ actTranscriptOpen: !this.state.actTranscriptOpen });
   activityContinue = () => {
     const cur=this.current(); if(!cur||cur.kind!=='activity') return;
     const step=this.activityStep();
     if(step&&step.type==='quiz'&&!this.state.actRevealed) return;
     if(this.state.actStep < cur.steps.length-1){
-      this.setState({ actStep:this.state.actStep+1, actDraft:'', actChecks:{}, actPick:null, actRevealed:false });
+      this.setState({ actStep:this.state.actStep+1, actDraft:'', actChecks:{}, actPick:null, actRevealed:false, actTranscriptOpen:false });
       return;
     }
     const learned=Object.assign({}, this.state.learned); learned[cur.id]=true;
@@ -980,7 +1200,7 @@ class Component extends DCLogic {
     let n, title, color;
     if(mode === 'checkpoint') { pool=pool.filter(q=>this.byId[q.term].line===lineN); n=this.lineOf(lineN).quizLength; title=this.lineOf(lineN).name+' · Checkpoint'; color=this.lineOf(lineN).c; }
     else if(exam){ n=this.EXAM.count; title=this.EXAM.title+(mode==='practice'?' · Practice':''); color='#15171a'; }
-    else { const ids=this.weakTerms().map(t=>t.id); pool=pool.filter(q=>ids.includes(q.term)); n=pool.length; title='Detour · Your weak stops'; color='#cc3311'; }
+    else { const ids=this.weakTerms().map(t=>t.id); pool=pool.filter(q=>ids.includes(q.term)); n=pool.length; title='Reheat · Soft spots'; color='#cc3311'; }
     if(!pool.length)return;
     const qs=this.shuffle(pool).slice(0,n).map(q=>({...q,term:this.byId[q.term],label:'Choose one answer',options:this.shuffle(q.options)}));
     this.set({view:'quiz',result:null,quiz:{qs,i:0,picked:null,answered:false,correct:0,wrong:[],title,color,mode,lineN}});
@@ -1016,20 +1236,22 @@ class Component extends DCLogic {
   };
 
   renderVals(){
-    const accent = this.props.accent || '#b51b55';
+    const accent = this.props.accent || '#FF5722';
+    const userName = String(this.state.userName||'').trim();
     const base = { accent, ready:this.state.ready, isHub:false, isMap:false, isLearn:false, isCards:false, isDecks:false, isQuiz:false, isResult:false, isGlossary:false, isLocked:false,
       focusStep:[this.state.view,this.state.line,this.state.pos,this.state.sIdx,this.state.quiz?.i].join(':'), flaggedOnly:this.state.flaggedOnly, nextDisabled:!this.state.quiz?.answered, flipLabel:this.state.flipped?'Hide answer':'Reveal answer', advanceCard:this.advanceCard, goHub:this.goHub, goMap:this.goMap, goGlossary:this.goGlossary, goCards:this.goCards, goExam:this.goExam,
-      crumb:'LEARNING JOURNEYS', showNav:false, programs:[], totalTerms:this.TERMS?.length||0, examDescription:this.EXAM?.description||'' };
+      crumb:'LEARNING JOURNEYS', showNav:false, programs:[], totalTerms:this.TERMS?.length||0, examDescription:this.EXAM?.description||'',
+      userInitials:this.initialsFromName(userName), userAccountLabel:userName ? 'Account, '+userName : 'Account' };
     if (!this.state.ready) {
       const ghost = { color:'#c3c8d0', frac:0 };
       return Object.assign(base, { isHub:true, isMap:false, crumb:'LEARNING JOURNEYS', showNav:false,
-        heroStats:[{n:'4',l:'journeys'},{n:'—',l:'stops in the network'},{n:'—',l:'travelled by you'}],
+        heroStats:[{n:'4',l:'journeys'},{n:'—',l:'pieces in the forge'},{n:'—',l:'forged by you'}],
         heroMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], { ghost:.18, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' }),
-        featName:'AI Lingo', featBlurb:'The shared vocabulary of artificial intelligence, from first principles to governance.',
+        featName:'AI for the Rest of Us', featBlurb:'The shared vocabulary of artificial intelligence, from first principles to governance.',
         featPill:this.state.error?'UNAVAILABLE':'LOADING', featMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], {}),
-        featLines:[], hasBadges:false, badgeList:[], featStat:this.state.error||'Loading the network…', featCta:'One moment →', featGo:() => {},
-        programs:[],
-        navMapColor:'#a6adb8', navMapBg:'transparent', navGlossColor:'#a6adb8', navGlossBg:'transparent', navCardsColor:'#a6adb8', navCardsBg:'transparent', navExamColor:'#a6adb8', navExamBg:'transparent' });
+        featLines:[], hasBadges:false, badgeList:[], featStat:this.state.error||'Heating the forge…', featCta:'One moment →', featGo:() => {},
+        programs:[], hasPrograms:false,
+        navMapColor:'#E2E8F0', navMapBg:'transparent', navGlossColor:'#E2E8F0', navGlossBg:'transparent', navCardsColor:'#E2E8F0', navCardsBg:'transparent', navExamColor:'#E2E8F0', navExamBg:'transparent' });
     }
 
     const v = this.state.view, cur = this.current(), L = this.lineOf(this.state.line), list = this.byLine[this.state.line];
@@ -1040,8 +1262,8 @@ class Component extends DCLogic {
       const other = this.PROGRAMS.filter(p => !p.live);
       base.heroStats = [
         { n: String(this.PROGRAMS.length), l: 'journeys' },
-        { n: String(total + other.reduce((a,p) => a + p.count, 0)), l: 'stops in the network' },
-        { n: done + '/' + total, l: 'travelled by you' }
+        { n: String(total + other.reduce((a,p) => a + p.count, 0)), l: 'pieces in the forge' },
+        { n: done + '/' + total, l: 'forged by you' }
       ];
       base.heroMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })),
         { ghost:.2, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' });
@@ -1051,32 +1273,33 @@ class Component extends DCLogic {
       base.featMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })), {});
       base.featLines = this.LINES.map(l => { const d = this.lineDone(l.n), t = this.byLine[l.n].length;
         return { name:l.name, journey:l.journey, color:l.c, count:d + ' / ' + t, w:Math.round(d/t*100)+'%' }; });
-      base.featStat = done + ' of ' + total + ' stops travelled · '+this.LINES.length+' lines · ' + (done ? 'pick up where you left off' : 'nothing travelled yet');
-      base.featCta = done ? 'Resume ride →' : 'Board the network →';
+      base.featStat = done + ' of ' + total + ' pieces forged · '+this.LINES.length+' lines · ' + (done ? 'pick up where you left off' : 'nothing forged yet');
+      base.featCta = done ? 'Resume forging →' : 'Enter the forge →';
       base.featGo = this.goMap;
       const bg = (this.state.badges || {}).ai;
       base.hasBadges = !!bg;
-      base.badgeList = bg ? [{ el:this.buildBadge(bg.pct, bg.date), kicker:this.COURSE.title.toUpperCase(), title:'Network complete',
-        note:'All '+total+' stops travelled and the Grand Terminus exam passed at ' + bg.pct + '% on ' + bg.date + '.' }] : [];
+      base.badgeList = bg ? [{ el:this.buildBadge(bg.pct, bg.date), kicker:this.COURSE.title.toUpperCase(), title:'Forge complete',
+        note:'All '+total+' pieces forged and the Final Temper exam passed at ' + bg.pct + '% on ' + bg.date + '.' }] : [];
       base.programs = other.map(p => ({
         name:p.name, blurb:p.blurb,
-        mini: this.buildMini(p.lines.map(() => ({ color:'#b9bfc9', frac:0 })), { ghost:.55, dim:'#cbd1d9' }),
+        mini: this.buildMini(p.lines.map(() => ({ color:'#5a6573', frac:0 })), { ghost:.7, hub:'#0c1a2e', dotFill:'#6b7582' }),
         lines: p.lines.join(' · '),
-        stat: '~' + p.count + ' stops · ' + p.lines.length + ' lines'
+        stat: '~' + p.count + ' pieces · ' + p.lines.length + ' lines'
       }));
+      base.hasPrograms = other.length > 0;
       return base;
     }
     base.showNav = true; base.crumb = this.COURSE.title.toUpperCase();
     const examish = (v === 'quiz' && this.state.quiz && this.state.quiz.mode === 'exam') || v === 'locked' || (v === 'result' && this.state.result && this.state.result.mode === 'exam');
     const learnish = !examish && ['map','learn','quiz','result'].indexOf(v) >= 0;
-    const tab = active => ({ color: active ? '#f4f6f8' : '#a6adb8', bg: active ? accent : 'transparent' });
+    const tab = active => ({ color: active ? '#FFFFFF' : '#E2E8F0', bg: active ? accent : 'transparent' });
     const nm = tab(learnish), nc = tab(v === 'cards' || v === 'decks'), ne = tab(examish), ng = tab(v === 'glossary');
     Object.assign(base, { navMapColor:nm.color, navMapBg:nm.bg, navGlossColor:ng.color, navGlossBg:ng.bg,
       navCardsColor:nc.color, navCardsBg:nc.bg, navExamColor:ne.color, navExamBg:ne.bg, readThis:this.readThis,
-      lineColor:L.c, lineLabel:L.name+' Line · '+L.journey, lineTag:(L.name+' LINE').toUpperCase(), curName:cur?cur.t:'', curPr:cur?cur.pr:'', curDef:cur?cur.d:'', curUsage:cur?cur.u:'',
-      stopLabel:'STOP '+(this.state.pos+1)+' / '+list.length, posTag:(cur?cur.pos:'').toUpperCase(),
+      lineColor:L.c, lineLabel:L.name+' · '+L.journey, lineTag:L.name.toUpperCase(), trackKicker:('TRACK '+L.n+' · '+L.name).toUpperCase(), curName:cur?cur.t:'', curPr:cur?cur.pr:'', curDef:cur?cur.d:'', curUsage:cur?cur.u:'',
+      stopLabel:'PIECE '+(this.state.pos+1)+' / '+list.length, posTag:(cur?cur.pos:'').toUpperCase(),
       gotIt:this.gotIt, stillFuzzy:this.stillFuzzy, toggleFlag:this.toggleFlag, prevStop:this.prevStop, flip:this.flip,
-      startDrill:this.startDrill, startCheckpoint:this.startCheckpoint, printGlossary:this.printGlossary, goFlagged:this.goFlagged, resetAll:this.resetAll, boardRide:this.boardRide });
+      startDrill:this.startDrill, startCheckpoint:this.startCheckpoint, printGlossary:this.printGlossary, goFlagged:this.goFlagged, resetAll:this.resetAll, resetJourney:this.resetJourney, boardRide:this.boardRide, startTraining:this.startTraining });
 
     if (v === 'map') {
       base.isMap = true;
@@ -1084,30 +1307,32 @@ class Component extends DCLogic {
       const target = list[this.nextStopIdx(L.n)] || cur;
       base.mapEl = this.buildMap();
       base.totalTerms = this.STOPS.length;
-      base.mapGroups=this.LINES.map(l=>({title:l.name+' · '+this.byLine[l.n].length+' stops',stops:this.byLine[l.n].map(t=>({title:t.t+(this.isLearned(t.id)?' · learned':' · not learned'),onClick:()=>this.jumpTo(t.id)}))}));
+      base.mapGroups=this.LINES.map(l=>({title:l.name+' · '+this.byLine[l.n].length+' pieces',stops:this.byLine[l.n].map(t=>({title:t.t+(this.isLearned(t.id)?' · learned':' · not learned'),onClick:()=>this.jumpTo(t.id)}))}));
       base.travelled = done;
       base.streak = this.state.streak;
       base.streakUnit = this.state.streak === 1 ? 'day' : 'days';
       base.week = this.state.week.length ? this.state.week : [];
-      base.nextLabel = 'NEXT STOP · ' + L.name.toUpperCase() + ' LINE';
-      base.nextStop = target ? target.t : 'Every line cleared';
+      base.nextLabel = 'NEXT PIECE · ' + L.name.toUpperCase() + ' TRACK';
+      base.nextStop = target ? target.t : 'Every track cleared';
       const left = list.length - this.lineDone(L.n);
-      base.nextSub = left > 0 ? (left === 1 ? 'One stop from clearing the line and earning its roundel.' : left + ' stops from clearing the line and earning its roundel.') : 'Line cleared. Pick another line from the key below.';
+      base.nextSub = left > 0 ? (left === 1 ? 'One piece from clearing this track and earning its mark.' : left + ' pieces from clearing this track and earning its mark.') : 'Track cleared. Pick another track below.';
       const earned = this.LINES.filter(l => this.lineDone(l.n) === this.byLine[l.n].length).length;
-      base.roundelLabel = 'ROUNDELS · ' + earned + ' OF '+this.LINES.length;
+      base.roundelLabel = 'MARKS · ' + earned + ' OF '+this.LINES.length;
       base.roundels = this.LINES.map(l => { const full = this.lineDone(l.n) === this.byLine[l.n].length;
-        return { color: full ? l.c : '#353a42', text: full ? '#f4f6f8' : '#a6adb8', label:'L'+l.n }; });
-      base.keyLines = this.LINES.map(l => ({ color:l.c, line:l.name+' Line', name:l.journey+' · '+this.byLine[l.n].length, onClick:() => this.startLine(l.n) }));
+        return { color: full ? '#FF5722' : '#353a42', text: full ? '#f4f6f8' : '#a6adb8', label:'T'+l.n }; });
+      base.keyLines = [];
       base.completion = this.LINES.map(l => { const d = this.lineDone(l.n), tot = this.byLine[l.n].length, p = Math.round(d/tot*100);
-        return { label:l.name+' · '+l.journey, pct:p+'%', w:p+'%', color:l.c, onClick:() => this.startLine(l.n) }; });
+        return { label:l.name+' · '+l.journey, pct:p+'%', w:p+'%', color:'#FF5722', onClick:() => this.startLine(l.n) }; });
       const weak = this.weakTerms().sort((a,b) => (this.state.miss[b.id]||0) - (this.state.miss[a.id]||0)).slice(0,4);
-      base.needsLook = weak.map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:this.lineOf(t.line).c,
+      base.needsLook = weak.map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:'#FF5722',
         note: this.state.miss[t.id] ? 'missed '+this.state.miss[t.id]+'×' : 'marked fuzzy', onClick:() => this.jumpTo(t.id) }));
       base.hasNeeds = weak.length > 0; base.noNeeds = weak.length === 0; base.needsCount = weak.length;
       const day = Math.floor(Date.now()/86400000) % this.TERMS.length, td = this.TERMS[day];
       base.totdName = td.t.replace(/\s*\(.*?\)\s*/g,''); base.totdPr = td.pr; base.totdDef = this.firstSentence(td.d);
-      base.totdColor = this.lineOf(td.line).c; base.totdLine = this.lineOf(td.line).name+' Line · '+this.lineOf(td.line).journey;
+      base.totdColor = '#FF5722'; base.totdLine = this.lineOf(td.line).name+' Track · '+this.lineOf(td.line).journey;
       base.totdGo = () => this.jumpTo(td.id);
+      base.canResetJourney = this.journeyHasProgress();
+      base.resetJourney = this.resetJourney;
       return base;
     }
 
@@ -1121,7 +1346,7 @@ class Component extends DCLogic {
           onClick:() => this.pickDeck('line', l.n) }; });
       const learnedN = this.vocabDone();
       base.studyStats = [
-        { n:String(this.TERMS.length), l:'cards in the network' },
+        { n:String(this.TERMS.length), l:'cards in the forge' },
         { n:String(learnedN), l:'learned so far' },
         { n:String(this.weakTerms().length), l:'still fuzzy' }
       ];
@@ -1139,7 +1364,16 @@ class Component extends DCLogic {
     if (v === 'learn' || v === 'cards') {
       const done = this.lineDone(L.n);
       const isAct = !!(cur && cur.kind === 'activity');
-      base.ticks = list.map((t,i) => ({ bg: i === this.state.pos ? L.c : (this.isLearned(t.id) ? L.c : '#d5d9df'), onClick: () => this.openStop(this.state.line, i) }));
+      base.ticks = list.map((t,i) => ({
+        cls: [
+          'forge-bead',
+          'progress-tick',
+          i === this.state.pos ? 'is-current' : '',
+          this.isLearned(t.id) ? 'is-learned' : '',
+          t.kind === 'activity' ? 'is-activity' : '',
+        ].filter(Boolean).join(' '),
+        onClick: () => this.openStop(this.state.line, i),
+      }));
       base.isFlagged = !!(cur && !isAct && (this.state.flagged[cur.id] || this.state.miss[cur.id]));
       base.flagLabel = base.isFlagged ? 'Clear flag' : 'Flag ⚑';
       const ap = cur && cur.apply;
@@ -1150,31 +1384,48 @@ class Component extends DCLogic {
       base.flagBorder = base.isFlagged ? '#cc3311' : '#a5abb5';
       base.flagBg = base.isFlagged ? '#fbeeea' : 'transparent';
       base.flagFg = base.isFlagged ? '#cc3311' : '#15171a';
-      base.gotItLabel = this.state.pos < list.length - 1 ? 'Got it — next stop' : 'Got it — finish line';
-      base.related = (cur ? cur.rel : []).map(id => this.byId[id]).filter(Boolean).map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:this.lineOf(t.line).c, line:this.lineOf(t.line).name+' Line · '+this.lineOf(t.line).journey, onClick:() => this.jumpTo(t.id) }));
-      base.comingLabel = 'COMING UP ON THE ' + L.name.toUpperCase() + ' LINE';
+      base.gotItLabel = 'Got it';
+      base.related = (cur ? cur.rel : []).map(id => this.byId[id]).filter(Boolean).map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:this.lineOf(t.line).c, line:this.lineOf(t.line).name+' · '+this.lineOf(t.line).journey, onClick:() => this.jumpTo(t.id) }));
+      base.comingLabel = 'COMING UP ON ' + L.name.toUpperCase();
       base.coming = list.slice(this.state.pos+1, this.state.pos+6).map((t,i) => ({ name:(t.kind==='activity'?'◈ ':'')+t.t.replace(/\s*\(.*?\)\s*/g,''), onClick:() => this.openStop(this.state.line, this.state.pos+1+i) }));
-      base.lineDone = done; base.lineDoneOf = 'of ' + list.length + ' stops';
-      base.lineHint = done === list.length ? 'Line cleared. Take the checkpoint to earn the roundel.' : (list.length - done) + ' more clears the ' + L.name + ' Line.';
+      base.lineDone = done; base.lineDoneOf = 'of ' + list.length + ' pieces';
+      base.lineHint = done === list.length ? 'Track cleared. Take the checkpoint to earn the mark.' : (list.length - done) + ' more clears the ' + L.name + ' track.';
       base.checkpointLabel = 'Take the ' + L.name + ' checkpoint';
+      base.checkpointCls = done === list.length ? 'piece-aside-cta is-ready' : 'piece-aside-cta';
       if (v === 'learn') {
         base.isLearn = true;
         base.isActivity = isAct;
         base.isTerm = !isAct;
         const step = this.activityStep();
-        const kinds = { read:'READ', prompt:'WRITE A PROMPT', checklist:'CHECKLIST', quiz:'QUICK CHECK' };
+        const kinds = { read:'READ', prompt:'WRITE A PROMPT', checklist:'CHECKLIST', quiz:'QUICK CHECK', video:'WATCH' };
         base.actStepLabel = isAct && cur ? 'STEP '+(this.state.actStep+1)+' / '+cur.steps.length : '';
+        base.actStepPct = isAct && cur && cur.steps.length
+          ? Math.round(((this.state.actStep + 1) / cur.steps.length) * 100) + '%'
+          : '0%';
         base.actStepKind = step ? (kinds[step.type] || step.type.toUpperCase()) : '';
         base.actIsRead = !!(step && step.type === 'read');
         base.actIsPrompt = !!(step && step.type === 'prompt');
         base.actIsChecklist = !!(step && step.type === 'checklist');
         base.actIsQuiz = !!(step && step.type === 'quiz');
+        base.actIsVideo = !!(step && step.type === 'video');
         base.actBody = step && step.body || '';
         base.actPrompt = step && step.prompt || '';
         base.actHint = step && step.hint || '';
         base.actHasHint = !!(step && step.hint);
         base.actExample = step && step.example || '';
         base.actHasExample = !!(step && step.example);
+        base.actVideoSrc = step && step.src || '';
+        base.actVideoPoster = step && step.poster || '';
+        base.actCaption = step && step.caption || '';
+        base.actHasCaption = !!(step && step.caption);
+        base.actTranscript = step && step.transcript || '';
+        base.actHasTranscript = !!(step && step.transcript);
+        base.actTrackSrc = step && step.trackSrc || '';
+        base.actHasTrack = !!(step && step.trackSrc);
+        base.actNoTrack = !(step && step.trackSrc);
+        base.actTranscriptOpen = !!this.state.actTranscriptOpen;
+        base.actTranscriptLabel = this.state.actTranscriptOpen ? 'Hide transcript' : 'Show transcript';
+        base.toggleActTranscript = this.toggleActTranscript;
         base.actDraft = this.state.actDraft || '';
         base.setActDraft = this.setActDraft;
         base.actChecks = (step && step.type === 'checklist' ? step.options : []).map((o,i) => ({ text:o.text, checked:!!this.state.actChecks[i], onChange:() => this.toggleActCheck(i) }));
@@ -1183,7 +1434,7 @@ class Component extends DCLogic {
           let border = '#c3c8d0', bg = '#fff', mark = String(i + 1), markBg = '#eef0f3', markFg = '#565c66';
           if (revealed && o.ok) { border = '#1a7a3c'; bg = '#eaf6ee'; mark = '✓'; markBg = '#1a7a3c'; markFg = '#fff'; }
           else if (revealed && picked) { border = '#cc3311'; bg = '#fbeeea'; mark = '✗'; markBg = '#cc3311'; markFg = '#fff'; }
-          else if (picked) { border = L.c; bg = '#f7f8fa'; markBg = L.c; markFg = '#fff'; }
+          else if (picked) { border = '#FF5722'; bg = '#fff5f0'; markBg = '#FF5722'; markFg = '#fff'; }
           return { text:o.text, mark, markBg, markFg, border, bg, onClick:() => this.pickActOption(i) };
         });
         base.actRevealed = !!this.state.actRevealed;
@@ -1194,8 +1445,9 @@ class Component extends DCLogic {
         const last = isAct && cur && this.state.actStep >= cur.steps.length - 1;
         const needPick = !!(step && step.type === 'quiz' && !this.state.actRevealed);
         base.actContinueLabel = needPick ? 'Pick an answer' : (last ? 'Complete activity' : 'Continue');
-        base.actContinueBg = needPick ? '#a5abb5' : L.c;
+        base.actContinueBg = needPick ? '#a5abb5' : '#FF5722';
         base.actContinueOpacity = needPick ? '0.7' : '1';
+        base.actContinueCls = needPick ? 'learn-cta is-disabled' : 'learn-cta';
         base.activityContinue = this.activityContinue;
         if (isAct) base.posTag = (cur.activityKind || 'activity').toUpperCase();
         return base;
@@ -1206,7 +1458,7 @@ class Component extends DCLogic {
       const scopeL = this.lineOf(this.state.scopeLine || this.LINES[0].n);
       base.lineColor = this.state.scope === 'line' ? scopeL.c : (this.state.scope === 'flagged' ? '#15171a' : '#1338b0');
       base.lineLabel = this.state.scope === 'flagged' ? 'Still fuzzy · marked fuzzy or missed'
-        : (this.state.scope === 'all' ? 'Whole network · all '+this.TERMS.length+' terms' : scopeL.name + ' Line · ' + scopeL.journey);
+        : (this.state.scope === 'all' ? 'Whole forge · all '+this.TERMS.length+' terms' : scopeL.name + ' Line · ' + scopeL.journey);
       base.curName = st ? st.t : ''; base.curPr = st ? st.pr : ''; base.curDef = st ? st.d : ''; base.curUsage = st ? st.u : '';
       const fuzzy = st && (this.state.flagged[st.id] || this.state.miss[st.id]);
       base.isFlagged = !!fuzzy;
@@ -1238,7 +1490,7 @@ class Component extends DCLogic {
       base.fbColor = okNow ? '#007a5e' : '#cc3311'; base.fbBg = okNow ? '#eaf6f1' : '#fbeeea';
       base.fbTitle = okNow ? 'CORRECT:' : 'INCORRECT:';
       base.fbBody = cq.explanation;
-      base.quizFootnote = q.answered ? 'Missed terms are added to your detour list.' : 'Pick an answer to continue.';
+      base.quizFootnote = q.answered ? 'Missed terms are added to your reheat list.' : 'Pick an answer to continue.';
       base.quizPrimaryLabel = !q.answered ? 'Pick an answer' : (q.i < q.qs.length-1 ? 'Next question →' : 'See results');
       base.nextBtnBg = q.answered ? '#15171a' : '#a5abb5';
       base.quizPrimary = this.quizPrimary;
@@ -1253,8 +1505,8 @@ class Component extends DCLogic {
       base.resultRing = r.pct >= this.EXAM.pass ? '#007a5e' : (r.pct >= 60 ? '#875500' : '#cc3311');
       base.awarded = !!r.awarded; base.notAwarded = !r.awarded;
       if (r.awarded) { const b = (this.state.badges || {}).ai; base.badgeEl = this.buildBadge(b.pct, b.date); }
-      base.resultVerdict = r.awarded ? 'Every line cleared and the terminus passed. The badge is yours — it now sits on your journeys page.'
-        : (r.pct >= this.EXAM.pass ? 'Solid. You can hold your own in these conversations.' : (r.pct >= 60 ? 'Close. A short detour through the missed stops should do it.' : 'Worth another ride through this line before moving on.'));
+      base.resultVerdict = r.awarded ? 'Every line cleared and the final temper passed. The badge is yours — it now sits on your journeys page.'
+        : (r.pct >= this.EXAM.pass ? 'Solid. You can hold your own in these conversations.' : (r.pct >= 60 ? 'Close. A short reheat of the soft spots should do it.' : 'Worth another pass through this line before moving on.'));
       const missed = [...new Set(r.wrong)].map(id => this.byId[id]).filter(Boolean);
       base.hasMissed = missed.length > 0;
       base.missedList = missed.map(t => ({ name:t.t, def:this.firstSentence(t.d), color:this.lineOf(t.line).c, onClick:() => this.jumpTo(t.id) }));
@@ -1286,12 +1538,12 @@ class Component extends DCLogic {
       base.isLocked = true;
       const left = this.TERMS.length - this.vocabDone();
       const earned = this.LINES.filter(l => this.lineDone(l.n) === this.byLine[l.n].length).length;
-      base.lockedSub = left + ' terms still ahead · ' + earned + ' of 5 roundels earned';
+      base.lockedSub = left + ' terms still ahead · ' + earned + ' of 5 marks earned';
       base.examMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })),
         { ghost:.2, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' });
       base.lockedRoundels = this.LINES.map(l => { const d = this.lineDone(l.n), tot = this.byLine[l.n].length, full = d === tot;
         return { color: full ? l.c : '#c3c8d0', text: full ? '#15171a' : '#565c66', label:l.name + ' Line',
-          note: full ? 'Cleared · roundel earned' : d + ' of ' + tot + ' learned', w: Math.round(d/tot*100)+'%',
+          note: full ? 'Cleared · mark earned' : d + ' of ' + tot + ' learned', w: Math.round(d/tot*100)+'%',
           onClick:() => this.startLine(l.n) }; });
       base.forceExam = this.forceExam;
       return base;
