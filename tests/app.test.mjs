@@ -23,7 +23,7 @@ test('content migrates all original definitions and references',async()=>{
  for(const term of original.TERMS){const t=content.TERMS.find(x=>x.id===term.id);assert.equal(t.d,term.d);assert.equal(t.u,term.u);assert.deepEqual(t.rel,term.rel);}
 });
 test('all main surfaces produce values and map geometry',()=>{
- const a=app();for(const view of ['hub','map','learn','decks','cards','glossary','locked']){a.state.view=view;assert.ok(a.renderVals());}
+ const a=app();for(const view of ['home','hub','map','learn','decks','cards','glossary','locked']){a.state.view=view;assert.ok(a.renderVals());}
  assert.equal(a.renderVals().isLocked,true);
 });
 test('learning and flashcards update and persist progress',()=>{

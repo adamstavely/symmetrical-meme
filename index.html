@@ -18,10 +18,12 @@
 <div class="app-shell" style="height:100vh;background:#eef0f3;font-family:'Libre Franklin',system-ui,sans-serif;color:#15171a;display:flex;flex-direction:column;overflow:hidden">
 
   <div role="banner" class="topbar" style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:#111827;color:#FFFFFF;flex:none;z-index:20">
-    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;min-width:0" role="button" tabindex="0" onClick="{{ goHub }}">
+    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;min-width:0" role="button" tabindex="0" onClick="{{ goHome }}">
       <img class="topbar-logo" src="./assets/crucible-logo.png" width="32" height="44" alt="" aria-hidden="true">
       <span style="font-size:1.1875rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase">Crucible</span>
-      <span style="font-size:0.875rem;font-weight:600;letter-spacing:.16em;color:#E2E8F0;border-left:1px solid rgba(226,232,240,.25);padding-left:12px">{{ crumb }}</span>
+      <sc-if value="{{ showCrumb }}" hint-placeholder-val="{{ false }}">
+        <span style="font-size:0.875rem;font-weight:600;letter-spacing:.16em;color:#E2E8F0;border-left:1px solid rgba(226,232,240,.25);padding-left:12px">{{ crumb }}</span>
+      </sc-if>
     </div>
     <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
       <div role="navigation" aria-label="Main" class="main-nav" style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:20px;font-size:0.9375rem;font-weight:600">
@@ -41,7 +43,48 @@
     </div>
   </div>
 
-  <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div role="main" data-view="Home" data-step="{{ focusStep }}" style="flex:1;min-height:0;overflow-y:auto">
+<h1 id="view-title" tabindex="-1" class="view-title">Crucible</h1>
+
+    <div class="hero-container">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="hero-brand">CRUCIBLE</div>
+          <div class="hero-headline">Grow the tech acumen. Keep the tradecraft.</div>
+          <p class="hero-support">Short journeys that build shared fluency, enough language to work with technical teammates, then take it back into the craft you already practice.</p>
+        </div>
+        <img class="hero-logo" src="./assets/crucible-logo.png" width="317" height="432" alt="" aria-hidden="true">
+      </div>
+    </div>
+
+    <div class="hub-content home-gates-wrap">
+      <div class="hub-kicker">CHOOSE A PATH</div>
+      <div class="home-gates">
+        <div class="home-gate is-soon" aria-disabled="true">
+          <div class="home-gate-kicker">COMING SOON</div>
+          <div class="home-gate-title">Tech Atlas</div>
+          <div class="home-gate-blurb">A living map of tools, systems, and concepts across the technical landscape.</div>
+          <div class="home-gate-cta">Not open yet</div>
+        </div>
+        <div class="home-gate is-live" role="button" tabindex="0" onClick="{{ goJourneys }}">
+          <div class="home-gate-kicker">AVAILABLE NOW</div>
+          <div class="home-gate-title">Learning Journeys</div>
+          <div class="home-gate-blurb">Self-paced tracks that forge shared vocabulary, then put it to work.</div>
+          <div class="home-gate-cta">Enter journeys →</div>
+        </div>
+        <div class="home-gate is-soon" aria-disabled="true">
+          <div class="home-gate-kicker">COMING SOON</div>
+          <div class="home-gate-title">Instructor Lead</div>
+          <div class="home-gate-blurb">Facilitated sessions where teams learn together with a guide in the room.</div>
+          <div class="home-gate-cta">Not open yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isHub }}" hint-placeholder-val="{{ false }}">
   <div role="main" data-view="Hub" data-step="{{ focusStep }}" style="flex:1;min-height:0;overflow-y:auto">
 <h1 id="view-title" tabindex="-1" class="view-title">Learning journeys</h1>
 
@@ -57,7 +100,7 @@
     </div>
 
     <div class="hub-content">
-
+      <div class="hub-back" role="button" tabindex="0" onClick="{{ goHome }}">← Back to Crucible</div>
       <div class="hub-featured" role="button" tabindex="0" onClick="{{ featGo }}">
         <div class="hub-featured-body">
           <div class="hub-featured-head">
@@ -714,7 +757,7 @@
 class Component extends DCLogic {
   PROGRAMS = [];
 
-  state = { ready:false, view:'hub', line:1, pos:0, sIdx:0, scope:'line', scopeLine:1, flipped:false, query:'', flaggedOnly:false,
+  state = { ready:false, view:'home', line:1, pos:0, sIdx:0, scope:'line', scopeLine:1, flipped:false, query:'', flaggedOnly:false,
     learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, streak:1, week:[], quiz:null, result:null,
     actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false, actTranscriptOpen:false,
     userName:'', userNameDraft:'', needsName:false, userId:'', authenticated:false, canEditName:true };
@@ -1094,7 +1137,9 @@ class Component extends DCLogic {
   openStop(line, pos){ this.setState(Object.assign({ view:'learn', line, pos, flipped:false, quiz:null, result:null }, this.resetActivity()), () => this.save()); }
 
   // ---- actions ----
+  goHome = () => this.set({ view:'home', quiz:null, result:null });
   goHub = () => this.set({ view:'hub', quiz:null, result:null });
+  goJourneys = () => this.goHub();
   goMap = () => this.set({ view:'map', quiz:null, result:null });
   startTraining = () => this.goMap();
   goGlossary = () => this.set({ view:'glossary', quiz:null, result:null });
@@ -1157,7 +1202,7 @@ class Component extends DCLogic {
     if (!window.confirm('Reset all progress for this journey? This clears your learned terms, flags, scores and badges.')) return;
     this.setState(Object.assign({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0 }, this.resetActivity()), () => this.save());
   };
-  resetAll = () => { if(!window.confirm('Reset all learning progress in this browser? This clears your learned terms, flags, scores and badges.'))return; this.setState(Object.assign({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0, view:'hub' }, this.resetActivity()), () => this.save()); };
+  resetAll = () => { if(!window.confirm('Reset all learning progress in this browser? This clears your learned terms, flags, scores and badges.'))return; this.setState(Object.assign({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0, view:'home' }, this.resetActivity()), () => this.save()); };
 
   activityStep(){ const cur=this.current(); if(!cur||cur.kind!=='activity') return null; return cur.steps[Math.min(this.state.actStep, cur.steps.length-1)] || null; }
   setActDraft = e => this.setState({ actDraft: e.target.value });
@@ -1246,13 +1291,13 @@ class Component extends DCLogic {
   renderVals(){
     const accent = this.props.accent || '#FF5722';
     const userName = String(this.state.userName||'').trim();
-    const base = { accent, ready:this.state.ready, isHub:false, isMap:false, isLearn:false, isCards:false, isDecks:false, isQuiz:false, isResult:false, isGlossary:false, isLocked:false,
-      focusStep:[this.state.view,this.state.line,this.state.pos,this.state.sIdx,this.state.quiz?.i].join(':'), flaggedOnly:this.state.flaggedOnly, nextDisabled:!this.state.quiz?.answered, flipLabel:this.state.flipped?'Hide answer':'Reveal answer', advanceCard:this.advanceCard, goHub:this.goHub, goMap:this.goMap, goGlossary:this.goGlossary, goCards:this.goCards, goExam:this.goExam,
-      crumb:'LEARNING JOURNEYS', showNav:false, programs:[], totalTerms:this.TERMS?.length||0, examDescription:this.EXAM?.description||'',
+    const base = { accent, ready:this.state.ready, isHome:false, isHub:false, isMap:false, isLearn:false, isCards:false, isDecks:false, isQuiz:false, isResult:false, isGlossary:false, isLocked:false,
+      focusStep:[this.state.view,this.state.line,this.state.pos,this.state.sIdx,this.state.quiz?.i].join(':'), flaggedOnly:this.state.flaggedOnly, nextDisabled:!this.state.quiz?.answered, flipLabel:this.state.flipped?'Hide answer':'Reveal answer', advanceCard:this.advanceCard, goHome:this.goHome, goHub:this.goHub, goJourneys:this.goJourneys, goMap:this.goMap, goGlossary:this.goGlossary, goCards:this.goCards, goExam:this.goExam,
+      crumb:'LEARNING JOURNEYS', showCrumb:false, showNav:false, programs:[], totalTerms:this.TERMS?.length||0, examDescription:this.EXAM?.description||'',
       userInitials:this.initialsFromName(userName), userAccountLabel:userName ? 'Account, '+userName : 'Account' };
     if (!this.state.ready) {
       const ghost = { color:'#c3c8d0', frac:0 };
-      return Object.assign(base, { isHub:true, isMap:false, crumb:'LEARNING JOURNEYS', showNav:false,
+      return Object.assign(base, { isHome:true, isHub:false, isMap:false, crumb:'', showCrumb:false, showNav:false,
         heroStats:[{n:'4',l:'journeys'},{n:'—',l:'pieces in the forge'},{n:'—',l:'forged by you'}],
         heroMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], { ghost:.18, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' }),
         featName:'AI for the Rest of Us', featBlurb:'The shared vocabulary of artificial intelligence, from first principles to governance.',
@@ -1265,8 +1310,16 @@ class Component extends DCLogic {
 
     const v = this.state.view, cur = this.current(), L = this.lineOf(this.state.line), list = this.byLine[this.state.line];
 
+    if (v === 'home') {
+      base.isHome = true;
+      base.crumb = '';
+      base.showCrumb = false;
+      base.showNav = false;
+      return base;
+    }
+
     if (v === 'hub') {
-      base.isHub = true; base.crumb = 'LEARNING JOURNEYS'; base.showNav = false;
+      base.isHub = true; base.crumb = 'LEARNING JOURNEYS'; base.showCrumb = true; base.showNav = false;
       const done = this.travelled(), total = this.STOPS.length;
       const other = this.PROGRAMS.filter(p => !p.live);
       base.heroStats = [
@@ -1301,7 +1354,7 @@ class Component extends DCLogic {
       base.hasPrograms = other.length > 0;
       return base;
     }
-    base.showNav = true; base.crumb = this.COURSE.title.toUpperCase();
+    base.showNav = true; base.crumb = this.COURSE.title.toUpperCase(); base.showCrumb = true;
     const examish = (v === 'quiz' && this.state.quiz && this.state.quiz.mode === 'exam') || v === 'locked' || (v === 'result' && this.state.result && this.state.result.mode === 'exam');
     const learnish = !examish && ['map','learn','quiz','result'].indexOf(v) >= 0;
     const tab = active => ({ color: active ? '#FFFFFF' : '#E2E8F0', bg: active ? accent : 'transparent' });
