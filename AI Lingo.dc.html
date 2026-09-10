@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><style>body{margin:0;background:#eef0f3}a{color:#1338b0}a:hover{color:#0d2a85}*{box-sizing:border-box}</style></helmet>
+
+<div style="height:100vh;background:#eef0f3;font-family:'Libre Franklin',system-ui,sans-serif;color:#15171a;display:flex;flex-direction:column;overflow:hidden">
+
+  <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:#15171a;color:#f4f6f8;flex:none;z-index:20">
+    <div style="display:flex;align-items:center;gap:12px;cursor:pointer" onClick="{{ goHub }}">
+      <svg width="30" height="30" viewBox="0 0 30 30" style="display:block;flex:none">
+        <path d="M 3 21 L 10 21 L 21 10 L 27 10" fill="none" stroke="{{ accent }}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M 3 9 L 10 9 L 21 20 L 27 20" fill="none" stroke="#f4f6f8" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle cx="15.5" cy="15" r="4.2" fill="#15171a" stroke="#f4f6f8" stroke-width="2.6"></circle>
+      </svg>
+      <span style="font-size:19px;font-weight:800;letter-spacing:-.035em">Interchange</span>
+      <span style="font-size:10px;font-weight:800;letter-spacing:.16em;color:#a6adb8;border-left:1px solid #353a42;padding-left:12px">{{ crumb }}</span>
+    </div>
+    <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:34px;font-size:14px;font-weight:600">
+        <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navMapBg }};color:{{ navMapColor }}" onClick="{{ goMap }}">Learn</span>
+        <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navCardsBg }};color:{{ navCardsColor }}" onClick="{{ goCards }}">Study</span>
+        <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navExamBg }};color:{{ navExamColor }}" onClick="{{ goExam }}">Exam</span>
+        <span style="cursor:pointer;padding:4px 1px;border-bottom:2px solid {{ navGlossBg }};color:{{ navGlossColor }}" onClick="{{ goGlossary }}">Glossary</span>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1;min-height:0;overflow-y:auto">
+
+    <div style="background:#15171a;color:#f4f6f8;padding:0">
+      <div style="max-width:1240px;margin:0 auto;padding:48px 30px 44px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:40px;align-items:center">
+        <div>
+          <div style="font-size:10.5px;font-weight:800;letter-spacing:.18em;color:{{ accent }}">LEARNING JOURNEYS</div>
+          <div style="font-size:52px;font-weight:800;letter-spacing:-.045em;line-height:1.02;margin-top:12px;max-width:17ch;text-wrap:pretty">Build the vocabulary your work runs on.</div>
+          <div style="font-size:15.5px;color:#a6adb8;margin-top:14px;max-width:58ch;line-height:1.6">Each journey maps a subject as a network. Lines group the terms that belong together, stops are the terms themselves, and a ten-question knowledge check waits at the end of every line.</div>
+          <div style="display:flex;gap:36px;margin-top:30px;flex-wrap:wrap">
+            <sc-for list="{{ heroStats }}" as="s" hint-placeholder-count="3">
+              <div>
+                <div style="font-size:32px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ s.n }}</div>
+                <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a6adb8;margin-top:6px">{{ s.l }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="height:230px">{{ heroMini }}</div>
+      </div>
+    </div>
+
+    <div style="max-width:1240px;margin:0 auto;padding:26px 30px 56px">
+
+      <div style="background:#fff;border:1px solid #d5d9df;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 360px;cursor:pointer;box-shadow:0 14px 34px -26px rgba(0,0,0,.5)" onClick="{{ featGo }}">
+        <div style="padding:28px 30px 26px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+            <div>
+              <div style="font-size:30px;font-weight:800;letter-spacing:-.035em">{{ featName }}</div>
+              <div style="font-size:14px;color:#565c66;margin-top:6px;line-height:1.55;max-width:48ch;text-wrap:pretty">{{ featBlurb }}</div>
+            </div>
+            <span style="font-size:9.5px;font-weight:800;letter-spacing:.12em;padding:6px 10px;border-radius:5px;white-space:nowrap;background:#15171a;color:#f4f6f8">{{ featPill }}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+            <sc-for list="{{ featLines }}" as="l" hint-placeholder-count="5">
+              <div>
+                <div style="display:flex;align-items:center;gap:7px"><span style="width:14px;height:5px;border-radius:3px;flex:none;background:{{ l.color }}"></span><span style="font-size:12.5px;font-weight:700">{{ l.name }}</span><span style="font-size:11px;color:#565c66;margin-left:auto">{{ l.count }}</span></div>
+                <div style="height:4px;border-radius:2px;background:#e6e9ee;margin-top:5px"><div style="height:100%;border-radius:2px;width:{{ l.w }};background:{{ l.color }}"></div></div>
+                <div style="font-size:10.5px;color:#8a919b;margin-top:4px">{{ l.journey }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e5ea;padding-top:16px;gap:14px;flex-wrap:wrap">
+            <span style="font-size:12.5px;color:#565c66">{{ featStat }}</span>
+            <span style="background:{{ accent }};color:#fff;border-radius:8px;padding:12px 22px;font-size:14px;font-weight:800;white-space:nowrap">{{ featCta }}</span>
+          </div>
+        </div>
+        <div style="background:#eef0f3;border-left:1px solid #e2e5ea;padding:22px 20px;display:flex;align-items:center">{{ featMini }}</div>
+      </div>
+
+      <sc-if value="{{ hasBadges }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-size:10.5px;font-weight:800;letter-spacing:.16em;color:#565c66;margin:34px 0 14px">YOUR BADGES</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+            <sc-for list="{{ badgeList }}" as="b" hint-placeholder-count="1">
+              <div style="background:#15171a;color:#f4f6f8;border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:20px">
+                <div style="width:104px;height:104px;flex:none">{{ b.el }}</div>
+                <div style="min-width:0">
+                  <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:{{ accent }}">{{ b.kicker }}</div>
+                  <div style="font-size:20px;font-weight:800;letter-spacing:-.03em;margin-top:5px;text-wrap:pretty">{{ b.title }}</div>
+                  <div style="font-size:12.5px;color:#a6adb8;margin-top:6px;line-height:1.5">{{ b.note }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="font-size:10.5px;font-weight:800;letter-spacing:.16em;color:#565c66;margin:34px 0 14px">NEXT ON THE NETWORK</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px">
+        <sc-for list="{{ programs }}" as="p" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
+            <div style="background:#f5f6f8;border-bottom:1px solid #e2e5ea;height:132px;padding:12px 14px">{{ p.mini }}</div>
+            <div style="padding:18px 20px 18px;display:flex;flex-direction:column;gap:10px;flex:1">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                <div style="font-size:19px;font-weight:800;letter-spacing:-.03em">{{ p.name }}</div>
+                <span style="font-size:9px;font-weight:800;letter-spacing:.12em;padding:5px 8px;border-radius:5px;white-space:nowrap;background:#e6e9ee;color:#565c66">IN DEVELOPMENT</span>
+              </div>
+              <div style="font-size:13px;color:#565c66;line-height:1.5;text-wrap:pretty">{{ p.blurb }}</div>
+              <div style="font-size:11.5px;color:#8a919b;margin-top:auto;padding-top:10px;border-top:1px solid #e2e5ea">{{ p.lines }}</div>
+              <div style="font-size:11.5px;color:#8a919b">{{ p.stat }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isMap }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden">
+    <div style="display:flex;align-items:stretch;background:#15171a;color:#f4f6f8;border-top:1px solid #353a42;flex:none">
+      <div style="flex:1;min-width:280px;padding:13px 24px 14px">
+        <div style="font-size:9.5px;font-weight:800;letter-spacing:.16em;color:{{ accent }}">{{ nextLabel }}</div>
+        <div style="font-size:27px;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:4px;text-wrap:pretty">{{ nextStop }}</div>
+        <div style="font-size:12.5px;color:#a6adb8;margin-top:4px">{{ nextSub }}</div>
+      </div>
+      <div style="flex:none;display:flex;align-items:center;padding:0 24px 13px">
+        <div style="background:{{ accent }};color:#fff;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap" onClick="{{ boardRide }}">Board ride →</div>
+      </div>
+      <div style="flex:none;padding:13px 24px 14px;display:flex;gap:26px;align-items:center;border-left:1px solid #353a42">
+        <div>
+          <div style="font-size:9.5px;font-weight:800;letter-spacing:.16em;color:#a6adb8">STOPS TRAVELLED</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px"><span style="font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ travelled }}</span><span style="font-size:13px;color:#a6adb8">/ 81</span></div>
+        </div>
+        <div>
+          <div style="font-size:9.5px;font-weight:800;letter-spacing:.16em;color:#a6adb8">STREAK</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:3px"><span style="font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1;color:{{ accent }}">{{ streak }}</span><span style="font-size:13px;color:#a6adb8">{{ streakUnit }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;padding:13px 20px 15px;flex:1;min-height:0">
+      <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:12px 14px 8px;display:flex;flex-direction:column;min-height:0">
+        <div style="flex:1;min-height:0">{{ mapEl }}</div>
+        <div style="margin:6px 2px 2px;background:#eef0f3;border:1px solid #d5d9df;border-radius:10px;padding:9px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:7px 20px">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.16em;color:#565c66">KEY</div>
+          <sc-for list="{{ keyLines }}" as="k" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ k.onClick }}">
+              <span style="width:20px;height:6px;border-radius:3px;background:{{ k.color }}"></span>
+              <span style="font-size:11px;font-weight:700">{{ k.line }}</span>
+              <span style="font-size:11px;color:#565c66">{{ k.name }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;align-items:center;gap:22px;border-left:1px solid #d5d9df;padding-left:24px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #15171a"></span><span style="font-size:11.5px;color:#565c66">learned</span></div>
+            <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #a5abb5"></span><span style="font-size:11.5px;color:#565c66">ahead</span></div>
+            <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#15171a;border:4px solid #15171a"></span><span style="font-size:11.5px;color:#565c66">terminus · exam</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:11px;min-height:0;overflow-y:auto;padding-right:2px">
+      <div style="background:#15171a;color:#f4f6f8;border-radius:12px;padding:14px 16px;flex:none">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><span style="font-size:9.5px;font-weight:800;letter-spacing:.14em;color:#a6adb8">{{ roundelLabel }}</span><span style="font-size:9.5px;font-weight:800;letter-spacing:.14em;color:{{ accent }}">THIS WEEK</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <div style="display:flex;gap:9px">
+            <sc-for list="{{ roundels }}" as="r" hint-placeholder-count="5">
+              <div style="text-align:center">
+                <div style="width:24px;height:24px;border-radius:50%;border:5px solid {{ r.color }}"></div>
+                <div style="font-size:8.5px;font-weight:800;margin-top:3px;color:{{ r.text }}">{{ r.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:3px;align-items:center">
+            <sc-for list="{{ week }}" as="d" hint-placeholder-count="7"><span style="width:9px;height:18px;border-radius:3px;background:{{ d.bg }}"></span></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:15px 17px;flex:none">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px"><span style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66">STILL FUZZY</span><span style="font-size:10px;font-weight:800;color:#cc3311">{{ needsCount }}</span></div>
+        <sc-if value="{{ hasNeeds }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <sc-for list="{{ needsLook }}" as="n" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:13.5px;cursor:pointer" onClick="{{ n.onClick }}">
+                  <span style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:{{ n.color }}"></span>{{ n.name }}</span>
+                  <span style="font-size:11px;color:#565c66">{{ n.note }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:14px;background:#15171a;color:#f4f6f8;border-radius:8px;text-align:center;padding:10px;font-size:13px;font-weight:700;cursor:pointer" onClick="{{ startDrill }}">Run the detour</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noNeeds }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px;color:#565c66;line-height:1.6">Nothing flagged and nothing missed. Flag a term while you read, or miss one in a checkpoint, and it shows up here.</div>
+        </sc-if>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:15px 17px;flex:none">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:11px">COMPLETION</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ completion }}" as="c" hint-placeholder-count="5">
+            <div style="cursor:pointer" onClick="{{ c.onClick }}">
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px"><span>{{ c.label }}</span><span style="font-weight:800">{{ c.pct }}</span></div>
+              <div style="height:5px;border-radius:3px;background:#e2e5ea"><div style="height:100%;border-radius:3px;width:{{ c.w }};background:{{ c.color }}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:15px 17px;flex:none">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:9px">TERM OF THE DAY</div>
+        <div style="font-size:21px;font-weight:800;letter-spacing:-.03em;text-wrap:pretty">{{ totdName }}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#565c66;margin-top:3px">{{ totdPr }}</div>
+        <div style="font-size:12.5px;line-height:1.55;margin-top:9px">{{ totdDef }}</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-top:11px;cursor:pointer" onClick="{{ totdGo }}"><span style="width:14px;height:6px;border-radius:3px;background:{{ totdColor }}"></span><span style="font-size:11px;font-weight:700;color:{{ totdColor }}">{{ totdLine }}</span></div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:#1338b0;font-weight:600;padding:2px 4px 4px;flex:none">
+        <span style="cursor:pointer" onClick="{{ printGlossary }}">Printable glossary</span>
+        <span style="cursor:pointer" onClick="{{ goFlagged }}">Still fuzzy terms</span>
+        <span style="cursor:pointer;color:#565c66" onClick="{{ resetAll }}">Reset progress</span>
+      </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isLearn }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto;padding:16px 20px 28px">
+    <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:start">
+
+      <div style="grid-column:1/-1;background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#565c66;flex-wrap:wrap;gap:12px">
+        <span style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600" onClick="{{ goMap }}"><span style="width:18px;height:18px;border-radius:50%;border:4px solid {{ lineColor }}"></span>← {{ lineLabel }}</span>
+        <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">
+          <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="19"><span style="width:14px;height:5px;border-radius:3px;background:{{ t.bg }};cursor:pointer" onClick="{{ t.onClick }}"></span></sc-for>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace">{{ stopLabel }}</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px -24px rgba(0,0,0,.5)">
+          <div style="height:6px;background:{{ lineColor }}"></div>
+          <div style="padding:26px 30px 28px">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap">
+              <span style="color:#fff;font-size:10px;font-weight:800;letter-spacing:.12em;padding:4px 9px;border-radius:4px;background:{{ lineColor }}">{{ lineTag }}</span>
+              <span style="border:1px solid #a5abb5;color:#565c66;font-size:10px;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">{{ posTag }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#565c66;margin-left:4px">{{ curPr }}</span>
+              <sc-if value="{{ isFlagged }}" hint-placeholder-val="{{ false }}"><span style="background:#fbeeea;border:1px solid #cc3311;color:#cc3311;font-size:10px;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">STILL FUZZY</span></sc-if>
+            </div>
+            <div style="font-size:48px;font-weight:800;letter-spacing:-.04em;line-height:1.04;text-wrap:pretty">{{ curName }}</div>
+            <div style="height:1px;background:#e2e5ea;margin:22px 0 20px"></div>
+            <div style="font-size:17px;line-height:1.65;max-width:62ch;text-wrap:pretty">{{ curDef }}</div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid {{ lineColor }}">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:9px">IN USE</div>
+          <div style="font-style:italic;font-size:16.5px;line-height:1.6;text-wrap:pretty">“{{ curUsage }}”</div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid #15171a">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:9px">
+            <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66">HOW IT APPLIES TO OUR WORK</div>
+            <span style="font-size:10px;font-weight:800;letter-spacing:.1em;color:{{ applyTagColor }}">{{ applyTag }}</span>
+          </div>
+          <div style="font-size:16.5px;line-height:1.6;text-wrap:pretty;color:{{ applyColor }}">{{ curApply }}</div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 22px">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div style="color:#fff;font-size:14px;font-weight:700;padding:13px 26px;border-radius:8px;cursor:pointer;background:{{ lineColor }}" onClick="{{ gotIt }}">{{ gotItLabel }}</div>
+            <div style="border:1.5px solid #a5abb5;font-size:14px;font-weight:600;padding:12px 22px;border-radius:8px;cursor:pointer" onClick="{{ stillFuzzy }}">Still fuzzy</div>
+            <div style="font-size:14px;font-weight:600;padding:12px 16px;border-radius:8px;cursor:pointer;color:#565c66;margin-left:auto" onClick="{{ prevStop }}">← Previous stop</div>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid #e2e5ea;font-family:'JetBrains Mono',monospace;font-size:11px;color:#565c66;flex-wrap:wrap">
+            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">1</span>got it</span>
+            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">2</span>still fuzzy</span>
+            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">← →</span>prev / next stop</span>
+            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">c</span>flashcard</span>
+            <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">esc</span>back to map</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div style="background:#15171a;color:#f4f6f8;border-radius:14px;padding:18px 20px">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#a6adb8;margin-bottom:8px">THIS LINE</div>
+          <div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1">{{ lineDone }}</span><span style="font-size:13px;color:#a6adb8">{{ lineDoneOf }}</span></div>
+          <div style="font-size:11.5px;color:#a6adb8;margin-top:8px;line-height:1.5">{{ lineHint }}</div>
+          <div style="margin-top:13px;border:1.5px solid #f4f6f8;border-radius:7px;text-align:center;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer" onClick="{{ startCheckpoint }}">{{ checkpointLabel }}</div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 20px">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:6px">INTERCHANGES</div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+              <div style="border-bottom:1px solid #e2e5ea;padding:10px 0;display:flex;gap:10px;align-items:center;cursor:pointer" onClick="{{ r.onClick }}">
+                <span style="width:10px;height:10px;border-radius:50%;flex:none;border:3px solid {{ r.color }}"></span>
+                <div style="min-width:0"><div style="font-size:13.5px;font-weight:600;text-wrap:pretty">{{ r.name }}</div><div style="font-size:11px;color:#565c66">{{ r.line }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 20px">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:12px">{{ comingLabel }}</div>
+          <div style="position:relative;padding-left:16px">
+            <div style="position:absolute;left:3px;top:6px;bottom:6px;width:3px;border-radius:2px;background:#e2e5ea"></div>
+            <div style="display:flex;flex-direction:column;gap:11px;font-size:13px">
+              <sc-for list="{{ coming }}" as="c" hint-placeholder-count="5">
+                <div style="position:relative;cursor:pointer;text-wrap:pretty" onClick="{{ c.onClick }}"><span style="position:absolute;left:-16px;top:4px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid #a5abb5"></span>{{ c.name }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isDecks }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto">
+    <div style="background:#15171a;color:#f4f6f8">
+      <div style="max-width:1080px;margin:0 auto;padding:38px 30px 34px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:36px;align-items:center">
+        <div>
+          <div style="font-size:10.5px;font-weight:800;letter-spacing:.18em;color:{{ accent }}">STUDY</div>
+          <div style="font-size:44px;font-weight:800;letter-spacing:-.045em;line-height:1.03;margin-top:10px">Pick a deck.</div>
+          <div style="font-size:15px;color:#a6adb8;margin-top:11px;max-width:56ch;line-height:1.6">One deck per line, plus a Still fuzzy deck that pulls everything you flagged or missed from across the whole network.</div>
+          <div style="display:flex;gap:34px;margin-top:24px;flex-wrap:wrap">
+            <sc-for list="{{ studyStats }}" as="s" hint-placeholder-count="3">
+              <div>
+                <div style="font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ s.n }}</div>
+                <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a6adb8;margin-top:5px">{{ s.l }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="height:180px">{{ studyMini }}</div>
+      </div>
+    </div>
+    <div style="max-width:1080px;margin:0 auto;padding:26px 30px 56px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+        <sc-for list="{{ deckList }}" as="d" hint-placeholder-count="5">
+          <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;box-shadow:0 10px 24px -22px rgba(0,0,0,.55)" onClick="{{ d.onClick }}">
+            <div style="height:6px;background:{{ d.color }}"></div>
+            <div style="padding:17px 20px 16px;display:flex;flex-direction:column;gap:12px;flex:1">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+                <div>
+                  <div style="font-size:19px;font-weight:800;letter-spacing:-.03em">{{ d.name }}</div>
+                  <div style="font-size:12.5px;color:#565c66;margin-top:3px">{{ d.sub }}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:none">
+                  <span style="width:26px;height:26px;border-radius:50%;border:5px solid {{ d.color }}"></span>
+                  <span style="font-size:9px;font-weight:800;letter-spacing:.08em;color:#8a919b">{{ d.num }}</span>
+                </div>
+              </div>
+              <div style="margin:0 -2px">{{ d.strip }}</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid #e2e5ea;padding-top:11px;margin-top:auto">
+                <span style="font-size:12px;color:#565c66">{{ d.stat }} · {{ d.pct }}</span>
+                <span style="font-size:13px;font-weight:700;color:{{ d.color }}">{{ d.cta }}</span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:16px">
+        <div style="background:#15171a;color:#f4f6f8;border-radius:14px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:11px" onClick="{{ fuzzyGo }}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+            <div>
+              <div style="font-size:19px;font-weight:800;letter-spacing:-.03em">Still fuzzy</div>
+              <div style="font-size:12.5px;color:#a6adb8;margin-top:3px">Everything you flagged or missed, across all five lines</div>
+            </div>
+            <span style="font-size:26px;font-weight:800;letter-spacing:-.04em;color:{{ accent }}">{{ fuzzyCount }}</span>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <sc-for list="{{ fuzzyDots }}" as="f" hint-placeholder-count="6"><span style="width:9px;height:9px;border-radius:50%;background:{{ f.color }}"></span></sc-for>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:{{ accent }}">{{ fuzzyCta }}</div>
+        </div>
+        <div style="background:#fff;border:1px dashed #b9bfc9;border-radius:14px;padding:20px 22px;cursor:pointer;display:flex;flex-direction:column;gap:9px" onClick="{{ allGo }}">
+          <div style="font-size:19px;font-weight:800;letter-spacing:-.03em">Whole network</div>
+          <div style="font-size:12.5px;color:#565c66">All 81 terms shuffled together. The long haul.</div>
+          <div style="font-size:13px;font-weight:700;color:#1338b0;margin-top:auto">Study all 81 →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isCards }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto;padding:30px 30px 50px;display:flex;flex-direction:column;align-items:center">
+    <div style="width:100%;max-width:820px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#565c66;margin-bottom:14px;gap:16px">
+      <span style="cursor:pointer;white-space:nowrap;font-weight:600" onClick="{{ goCards }}">← All decks</span>
+      <div style="flex:1;height:5px;border-radius:3px;background:#e2e5ea;overflow:hidden"><div style="height:100%;background:{{ lineColor }};width:{{ cardsPct }}"></div></div>
+      <span style="font-family:'JetBrains Mono',monospace;white-space:nowrap">{{ stopLabel }}</span>
+    </div>
+    <div style="width:100%;max-width:820px;display:flex;align-items:baseline;gap:10px;margin-bottom:18px">
+      <span style="width:16px;height:6px;border-radius:3px;background:{{ lineColor }}"></span>
+      <span style="font-size:15px;font-weight:800;letter-spacing:-.02em">{{ lineLabel }}</span>
+      <span style="font-size:12px;color:#565c66;margin-left:auto;cursor:pointer" onClick="{{ readThis }}">Read the full entry →</span>
+    </div>
+    <div style="width:100%;max-width:820px;min-height:340px;background:#fff;border:1px solid #d5d9df;border-top:6px solid {{ lineColor }};border-radius:16px;padding:44px 46px;cursor:pointer;box-shadow:0 12px 30px -20px rgba(0,0,0,.4)" onClick="{{ flip }}">
+      <div style="font-size:10px;font-weight:800;letter-spacing:.16em;color:{{ lineColor }}">{{ cardSide }}</div>
+      <sc-if value="{{ cardIsFront }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:14px;text-wrap:pretty">{{ curName }}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#565c66;margin-top:10px">{{ curPr }}</div>
+          <div style="font-size:13px;color:#565c66;margin-top:32px">Click the card or press space to reveal.</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cardIsBack }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-size:17px;line-height:1.65;margin-top:14px;text-wrap:pretty">{{ curDef }}</div>
+          <div style="margin-top:20px;padding-left:16px;font-style:italic;font-size:15.5px;line-height:1.55;color:#3d424a;border-left:3px solid {{ lineColor }}">“{{ curUsage }}”</div>
+        </div>
+      </sc-if>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:24px;align-items:center;flex-wrap:wrap;justify-content:center">
+      <div style="border:1.5px solid #a5abb5;border-radius:999px;padding:12px 26px;font-size:13.5px;font-weight:600;cursor:pointer" onClick="{{ stillFuzzy }}">Still fuzzy</div>
+      <div style="color:#fff;border-radius:999px;padding:12px 30px;font-size:13.5px;font-weight:700;cursor:pointer;background:{{ lineColor }}" onClick="{{ gotIt }}">Got it</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#565c66;margin-left:10px">space = flip · ← → = move · 1 / 2 = grade</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto;padding:30px 30px 50px;display:flex;flex-direction:column;align-items:center">
+    <div style="width:100%;max-width:900px;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:{{ quizColor }}">{{ quizTitle }}</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <sc-for list="{{ quizPips }}" as="p" hint-placeholder-count="10"><span style="width:22px;height:5px;border-radius:3px;background:{{ p.bg }}"></span></sc-for>
+      </div>
+    </div>
+    <div style="width:100%;max-width:900px;background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:34px 38px">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.08em;color:#565c66;text-transform:uppercase;margin-bottom:14px">{{ qKindLabel }}</div>
+      <div style="font-size:23px;font-weight:600;line-height:1.45;letter-spacing:-.01em;max-width:64ch;text-wrap:pretty">{{ qPrompt }}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:28px">
+        <sc-for list="{{ qOptions }}" as="o" hint-placeholder-count="4">
+          <div style="border-radius:10px;padding:15px 18px;font-size:14.5px;font-weight:600;display:flex;gap:12px;align-items:flex-start;cursor:pointer;line-height:1.45;border:{{ o.border }};background:{{ o.bg }};color:{{ o.fg }}" onClick="{{ o.onClick }}">
+            <span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none;background:{{ o.keyBg }};color:{{ o.keyFg }}">{{ o.key }}</span>
+            <span>{{ o.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ answered }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:24px;padding:18px 20px;border-radius:10px;background:{{ fbBg }};border-left:4px solid {{ fbColor }}">
+          <div style="font-size:13px;font-weight:800;color:{{ fbColor }};letter-spacing:.04em">{{ fbTitle }}</div>
+          <div style="font-size:14px;line-height:1.6;margin-top:7px;text-wrap:pretty">{{ fbBody }}</div>
+        </div>
+      </sc-if>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:26px;padding-top:22px;border-top:1px solid #e2e5ea;flex-wrap:wrap;gap:12px">
+        <div style="font-size:12.5px;color:#565c66">{{ quizFootnote }}</div>
+        <div style="color:#fff;border-radius:8px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;background:{{ nextBtnBg }}" onClick="{{ quizPrimary }}">{{ quizPrimaryLabel }}</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto;padding:44px 30px 60px;display:flex;flex-direction:column;align-items:center">
+    <div style="width:100%;max-width:760px;background:#fff;border:1px solid #d5d9df;border-radius:16px;padding:40px 44px;text-align:center">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.16em;color:{{ quizColor }}">{{ resultKicker }}</div>
+      <div style="font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:1;margin-top:12px">{{ resultPct }}</div>
+      <div style="font-size:15px;color:#565c66;margin-top:8px">{{ resultLine }}</div>
+      <sc-if value="{{ awarded }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:24px">
+          <div style="width:190px;height:190px;margin:0 auto">{{ badgeEl }}</div>
+          <div style="font-size:11px;font-weight:800;letter-spacing:.16em;color:{{ accent }};margin-top:16px">BADGE EARNED</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notAwarded }}" hint-placeholder-val="{{ true }}">
+        <div style="margin:26px auto 0;width:110px;height:110px;border-radius:50%;border:14px solid {{ resultRing }}"></div>
+      </sc-if>
+      <div style="font-size:16px;font-weight:700;margin-top:18px;text-wrap:pretty">{{ resultVerdict }}</div>
+      <sc-if value="{{ hasMissed }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:26px;text-align:left;background:#eef0f3;border-radius:12px;padding:20px 22px">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:12px">MISSED THIS ROUND</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ missedList }}" as="m" hint-placeholder-count="3">
+              <div style="display:flex;gap:10px;align-items:baseline;cursor:pointer" onClick="{{ m.onClick }}">
+                <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ m.color }}"></span>
+                <div><span style="font-size:14px;font-weight:700">{{ m.name }}</span><div style="font-size:12.5px;color:#3d424a;line-height:1.5;margin-top:2px">{{ m.def }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap">
+        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:13px 26px;font-size:14px;font-weight:700;cursor:pointer" onClick="{{ goMap }}">Back to the map</div>
+        <sc-if value="{{ hasMissed }}" hint-placeholder-val="{{ false }}"><div style="border:1.5px solid #a5abb5;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer" onClick="{{ startDrill }}">Drill the misses</div></sc-if>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isLocked }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto">
+    <div style="background:#15171a;color:#f4f6f8">
+      <div style="max-width:1080px;margin:0 auto;padding:40px 30px 36px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:36px;align-items:center">
+        <div>
+          <div style="font-size:10.5px;font-weight:800;letter-spacing:.18em;color:{{ accent }}">GRAND TERMINUS</div>
+          <div style="font-size:46px;font-weight:800;letter-spacing:-.045em;line-height:1.03;margin-top:10px;max-width:15ch;text-wrap:pretty">Where all five lines meet.</div>
+          <div style="font-size:15px;color:#a6adb8;margin-top:12px;max-width:54ch;line-height:1.6">Thirty questions drawn from the whole network — definitions, terms in context, and which line each one belongs to. It opens once every roundel is earned.</div>
+          <div style="display:inline-flex;align-items:center;gap:10px;margin-top:22px;background:#22262d;border:1px solid #353a42;border-radius:999px;padding:9px 16px">
+            <span style="width:9px;height:9px;border-radius:50%;background:{{ accent }}"></span>
+            <span style="font-size:12.5px;font-weight:700;color:#f4f6f8">{{ lockedSub }}</span>
+          </div>
+        </div>
+        <div style="height:200px">{{ examMini }}</div>
+      </div>
+    </div>
+    <div style="max-width:1080px;margin:0 auto;padding:28px 30px 56px">
+      <div style="font-size:10.5px;font-weight:800;letter-spacing:.16em;color:#565c66;margin-bottom:14px">ROUNDELS REQUIRED</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px">
+        <sc-for list="{{ lockedRoundels }}" as="r" hint-placeholder-count="5">
+          <div style="background:#fff;border:1px solid #d5d9df;border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer" onClick="{{ r.onClick }}">
+            <div style="width:34px;height:34px;border-radius:50%;flex:none;border:6px solid {{ r.color }}"></div>
+            <div style="min-width:0">
+              <div style="font-size:14px;font-weight:800;letter-spacing:-.02em;color:{{ r.text }}">{{ r.label }}</div>
+              <div style="font-size:11.5px;color:#565c66;margin-top:2px">{{ r.note }}</div>
+              <div style="height:4px;border-radius:2px;background:#e6e9ee;margin-top:7px"><div style="height:100%;border-radius:2px;width:{{ r.w }};background:{{ r.color }}"></div></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;align-items:center">
+        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:13px 26px;font-size:14px;font-weight:700;cursor:pointer" onClick="{{ goMap }}">Back to the map</div>
+        <div style="border:1.5px solid #a5abb5;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer" onClick="{{ forceExam }}">Sit it anyway</div>
+        <span style="font-size:12.5px;color:#565c66">A practice run does not count toward your roundels.</span>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isGlossary }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;min-height:0;overflow-y:auto;padding:30px 30px 60px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:20px">
+      <div>
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.035em">Glossary</div>
+        <div style="font-size:13.5px;color:#565c66;margin-top:5px">{{ glossCount }}</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="Search terms and definitions" style="width:320px;max-width:100%;padding:12px 14px;border:1px solid #a5abb5;border-radius:8px;font-size:14px;font-family:'Libre Franklin',sans-serif;background:#fff;color:#15171a" />
+        <div style="border:1.5px solid #a5abb5;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;background:{{ flagFilterBg }};color:{{ flagFilterFg }}" onClick="{{ toggleFlagFilter }}">Still fuzzy only</div>
+        <div style="background:#15171a;color:#f4f6f8;border-radius:8px;padding:12px 20px;font-size:13.5px;font-weight:700;cursor:pointer" onClick="{{ printGlossary }}">Print / save PDF</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:26px">
+      <sc-for list="{{ glossGroups }}" as="g" hint-placeholder-count="5">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;padding-bottom:9px;border-bottom:2px solid {{ g.color }};margin-bottom:14px">
+            <span style="width:22px;height:22px;border-radius:50%;border:5px solid {{ g.color }}"></span>
+            <span style="font-size:16px;font-weight:800;letter-spacing:-.02em">{{ g.title }}</span>
+            <span style="font-size:12px;color:#565c66">{{ g.sub }}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">
+            <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="6">
+              <div style="background:#fff;border:1px solid #d5d9df;border-radius:10px;padding:15px 17px;cursor:pointer;border-left:4px solid {{ i.mark }}" onClick="{{ i.onClick }}">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span style="font-size:14.5px;font-weight:700;text-wrap:pretty">{{ i.name }}</span><span style="font-size:10px;font-weight:800;color:{{ i.stateColor }};white-space:nowrap">{{ i.state }}</span></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#565c66;margin-top:3px">{{ i.pr }}</div>
+                <div style="font-size:13px;line-height:1.55;color:#3d424a;margin-top:8px;text-wrap:pretty">{{ i.def }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ glossEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:60px 0;text-align:center;color:#565c66;font-size:15px">No terms match that search.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#ff3d7f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#ff3d7f&quot;,&quot;#1338b0&quot;,&quot;#007a5e&quot;,&quot;#cc3311&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;quizLength&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:5,&quot;max&quot;:19,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Learning&quot;}}">
+class Component extends DCLogic {
+  PROGRAMS = [
+    { id:'ai', name:'AI Lingo', blurb:'The shared vocabulary of artificial intelligence, from first principles to governance.', live:true },
+    { id:'data', name:'Data Lingo', blurb:'How data is collected, modelled, governed, and turned into decisions.', live:false, lines:['Sources','Modelling','Quality','Reporting'], count:64 },
+    { id:'cyber', name:'Cyber Lingo', blurb:'Threats, controls, and the language of an incident response conversation.', live:false, lines:['Threats','Defences','Response','Compliance'], count:72 },
+    { id:'cloud', name:'Cloud Lingo', blurb:'Infrastructure, cost, and the vocabulary of a migration business case.', live:false, lines:['Foundations','Delivery','Cost','Operations'], count:58 }
+  ];
+
+  state = { ready:false, view:'hub', line:1, pos:0, sIdx:0, scope:'line', scopeLine:1, flipped:false, query:'', flaggedOnly:false,
+    learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, streak:1, week:[], quiz:null, result:null };
+
+  KEY = 'ailingo.v1';
+  GEO = {
+    1:{ pts:[[90,130],[1044,130],[1044,520],[1050,520]], d:'M 90 130 L 1024 130 Q 1044 130 1044 150 L 1044 517 Q 1044 520 1047 520 L 1050 520', dir:-1 },
+    2:{ pts:[[90,300],[830,300],[1050,520]], d:'M 90 300 L 810 300 Q 830 300 844.1 314.1 L 1050 520', dir:-1 },
+    3:{ pts:[[90,780],[560,780],[820,520],[1050,520]], d:'M 90 780 L 540 780 Q 560 780 574.1 765.9 L 805.9 534.1 Q 820 520 840 520 L 1050 520', dir:1 },
+    4:{ pts:[[200,860],[200,620],[440,380],[1200,380],[1200,520],[1050,520]], d:'M 200 860 L 200 640 Q 200 620 214.1 605.9 L 425.9 394.1 Q 440 380 460 380 L 1180 380 Q 1200 380 1200 400 L 1200 500 Q 1200 520 1180 520 L 1050 520', dir:1 },
+    5:{ pts:[[90,700],[870,700],[1050,520]], d:'M 90 700 L 850 700 Q 870 700 884.1 685.9 L 1050 520', dir:1 }
+  };
+  PACK = 0.86;
+
+  async componentDidMount() {
+    const m = await import('./terms.js');
+    this.TERMS = m.TERMS; this.LINES = m.LINES;
+    this.byId = {}; this.TERMS.forEach(t => { this.byId[t.id] = t; });
+    this.byLine = {}; this.LINES.forEach(l => { this.byLine[l.n] = this.TERMS.filter(t => t.line === l.n); });
+    const saved = this.load();
+    this.setState(Object.assign({ ready:true }, saved, this.streakState(saved)));
+    this.onKey = e => this.handleKey(e);
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount(){ if (this.onKey) window.removeEventListener('keydown', this.onKey); }
+
+  load(){ try { const r = JSON.parse(localStorage.getItem(this.KEY) || '{}');
+    return { learned:r.learned||{}, flagged:r.flagged||{}, miss:r.miss||{}, scores:r.scores||{}, badges:r.badges||{}, streak:r.streak||1, line:r.line||1, pos:r.pos||0 }; } catch(e){ return {}; } }
+  save(extra){ const s = Object.assign({}, this.state, extra||{});
+    try { localStorage.setItem(this.KEY, JSON.stringify({ learned:s.learned, flagged:s.flagged, miss:s.miss, scores:s.scores, badges:s.badges, streak:s.streak, line:s.line, pos:s.pos, day:this.today() })); } catch(e){} }
+  today(){ return new Date().toISOString().slice(0,10); }
+  streakState(saved){
+    let day = null, streak = saved && saved.streak ? saved.streak : 1;
+    try { day = (JSON.parse(localStorage.getItem(this.KEY)||'{}')).day; } catch(e){}
+    const t = this.today();
+    if (day && day !== t) { const diff = (new Date(t) - new Date(day)) / 86400000; streak = diff <= 1.5 ? streak + 1 : 1; }
+    const week = []; for (let i=6;i>=0;i--){ week.push({ bg: i < streak ? (this.props.accent || '#ff3d7f') : '#353a42' }); }
+    return { streak, week:week.reverse() };
+  }
+
+  set(patch){ this.setState(patch, () => this.save()); }
+
+  // ---- geometry ----
+  segs(p){ const o=[]; for(let i=0;i<p.length-1;i++){ const a=p[i],b=p[i+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]); if(L>0.5) o.push({a,b,L}); } return o; }
+  at(p,t){ const q=this.segs(p), T=q.reduce((x,s)=>x+s.L,0); let d=t*T;
+    for(const s of q){ if(d<=s.L){ const k=d/s.L; return [s.a[0]+(s.b[0]-s.a[0])*k, s.a[1]+(s.b[1]-s.a[1])*k, Math.abs(s.b[0]-s.a[0])<1?'v':(Math.abs(s.b[1]-s.a[1])<1?'h':'d')]; } d-=s.L; }
+    const l=q[q.length-1]; return [l.b[0], l.b[1], 'h']; }
+
+  isLearned(id){ return !!this.state.learned[id]; }
+  lineDone(n){ return this.byLine[n].filter(t => this.isLearned(t.id)).length; }
+  firstUnlearned(n){ const a = this.byLine[n]; const i = a.findIndex(t => !this.isLearned(t.id)); return i < 0 ? 0 : i; }
+  // single source of truth for "next stop": where you are, unless you're already past it
+  nextStopIdx(n){ const a = this.byLine[n];
+    if (n === this.state.line && a[this.state.pos] && !this.isLearned(a[this.state.pos].id)) return this.state.pos;
+    return this.firstUnlearned(n); }
+
+  buildMap(){
+    const h = React.createElement, kids = [];
+    this.LINES.forEach(L => {
+      const g = this.GEO[L.n], done = this.lineDone(L.n), frac = done / this.byLine[L.n].length;
+      kids.push(h('path', { key:'g'+L.n, d:g.d, fill:'none', stroke:L.c, strokeOpacity:.42, strokeWidth:11, strokeLinecap:'round', strokeLinejoin:'round' }));
+      if (done > 0) kids.push(h('path', { key:'p'+L.n, d:g.d, pathLength:1, fill:'none', stroke:L.c, strokeWidth:11, strokeLinecap:'round', strokeLinejoin:'round', strokeDasharray:(frac*this.PACK).toFixed(3)+' 1' }));
+    });
+    const hubClick = { style:{cursor:'pointer'}, onClick:this.goExam };
+    kids.push(h('circle',Object.assign({key:'h1',cx:1050,cy:520,r:30,fill:'#fff',stroke:'#15171a',strokeWidth:6},hubClick)));
+    kids.push(h('circle',Object.assign({key:'h2',cx:1050,cy:520,r:13,fill:'#15171a'},hubClick)));
+    kids.push(h('text',Object.assign({key:'h3',x:1050,y:588,fontSize:15,fontWeight:800,fill:'#15171a',textAnchor:'middle'},hubClick),'GRAND TERMINUS'));
+    kids.push(h('text',Object.assign({key:'h4',x:1050,y:607,fontSize:11,fontWeight:600,fill:'#565c66',textAnchor:'middle'},hubClick), this.travelled() === this.TERMS.length ? 'Final exam · 30 questions · open' : 'Final exam · 30 questions · locked'));
+    const cur = this.current();
+    this.LINES.forEach(L => {
+      const g = this.GEO[L.n], list = this.byLine[L.n];
+      list.forEach((t, i) => {
+        const [x, y, o] = this.at(g.pts, (i/(list.length-1))*this.PACK);
+        const learned = this.isLearned(t.id), isCur = cur && cur.id === t.id;
+        const jump = () => this.setState({ view:'learn', line:L.n, pos:i, flipped:false }, () => this.save());
+        kids.push(h('circle', { key:t.id+'d', cx:x, cy:y, r:isCur?15:7.5, fill:'#fff', stroke:learned?L.c:'#a5abb5', strokeWidth:isCur?5:4, style:{cursor:'pointer'}, onClick:jump }));
+        if (isCur) kids.push(h('circle', { key:t.id+'c', cx:x, cy:y, r:6, fill:L.c, style:{cursor:'pointer'}, onClick:jump }));
+        if (this.state.flagged[t.id]) kids.push(h('circle', { key:t.id+'f', cx:x+11, cy:y-11, r:4, fill:'#cc3311' }));
+        const fill = learned ? '#15171a' : (isCur ? L.c : '#565c66');
+        const w = isCur ? 700 : (learned ? 600 : 500);
+        const short = t.t.replace(/\s*\(.*?\)\s*/g, '').trim();
+        if (o === 'v') {
+          const left = L.n === 4;
+          kids.push(h('text', { key:t.id+'l', x:x+(left?-17:17), y:y+3.6, fontSize:10.5, fontWeight:w, fill, textAnchor:left?'end':'start', style:{cursor:'pointer'}, onClick:jump }, short));
+        } else {
+          const dy = g.dir < 0 ? -11 : 13, ang = g.dir < 0 ? -45 : 45, px = x+11, py = y+dy;
+          kids.push(h('text', { key:t.id+'l', x:px, y:py, fontSize:10.5, fontWeight:w, fill, transform:'rotate('+ang+' '+px+' '+py+')', style:{cursor:'pointer'}, onClick:jump }, (isCur?'▸ ':'')+short));
+        }
+        if (isCur) {
+          const fy = y + 52;
+          kids.push(h('g', { key:'flag' },
+            h('path', { d:'M '+x+' '+(fy-22)+' L '+(x+8)+' '+(fy-10)+' L '+(x-8)+' '+(fy-10)+' Z', fill:L.c }),
+            h('rect', { x:x-88, y:fy-10, width:176, height:30, rx:6, fill:L.c }),
+            h('text', { x:x, y:fy+10, fontSize:11.5, fontWeight:800, fill:'#fff', textAnchor:'middle', letterSpacing:1 }, 'YOU ARE HERE')));
+        }
+      });
+    });
+    return h('svg', { viewBox:'0 0 1400 950', style:{ width:'100%', height:'100%', display:'block', fontFamily:"'Libre Franklin',sans-serif" } }, kids);
+  }
+
+  pathD(p, R){ const q = this.segs(p); let d = 'M ' + q[0].a[0] + ' ' + q[0].a[1];
+    for (let i=0;i<q.length;i++){ const s=q[i], nx=q[i+1];
+      if(!nx){ d += ' L '+s.b[0]+' '+s.b[1]; continue; }
+      const r = Math.min(R, s.L/2, nx.L/2);
+      const u=[(s.b[0]-s.a[0])/s.L,(s.b[1]-s.a[1])/s.L], v=[(nx.b[0]-nx.a[0])/nx.L,(nx.b[1]-nx.a[1])/nx.L];
+      d += ' L '+(s.b[0]-u[0]*r).toFixed(1)+' '+(s.b[1]-u[1]*r).toFixed(1)+' Q '+s.b[0]+' '+s.b[1]+' '+(s.b[0]+v[0]*r).toFixed(1)+' '+(s.b[1]+v[1]*r).toFixed(1); }
+    return d; }
+
+  MINI = [
+    [[24,34],[200,34],[265,99]],
+    [[24,78],[233,78],[265,110]],
+    [[24,168],[178,168],[236,110],[265,110]],
+    [[62,182],[62,140],[110,92],[265,92],[265,110]],
+    [[24,122],[202,122],[214,110],[265,110]]
+  ];
+  buildMini(routes, opts){
+    const h = React.createElement, kids = [], o = opts || {};
+    routes.forEach((r, i) => {
+      const pts = this.MINI[i % this.MINI.length], d = this.pathD(pts, 9);
+      kids.push(h('path', { key:'g'+i, d, fill:'none', stroke:r.color, strokeOpacity:o.ghost || .34, strokeWidth:5, strokeLinecap:'round', strokeLinejoin:'round' }));
+      if (r.frac > 0) kids.push(h('path', { key:'p'+i, d, pathLength:1, fill:'none', stroke:r.color, strokeWidth:5, strokeLinecap:'round', strokeLinejoin:'round', strokeDasharray:(r.frac*0.9).toFixed(3)+' 1' }));
+      const n = 7;
+      for (let s=0;s<n;s++){
+        const t = (s/(n-1))*0.9, p = this.at(pts, t), on = t <= r.frac*0.9;
+        kids.push(h('circle', { key:'d'+i+'-'+s, cx:p[0], cy:p[1], r:3.4, fill:o.dotFill || '#fff', stroke: on ? r.color : (o.dim || '#c3c8d0'), strokeWidth:2 }));
+      }
+    });
+    kids.push(h('circle', { key:'hub', cx:265, cy:110, r:11, fill:o.dotFill || '#fff', stroke:o.hub || '#15171a', strokeWidth:4 }));
+    kids.push(h('circle', { key:'hub2', cx:265, cy:110, r:4.5, fill:o.hub || '#15171a' }));
+    return h('svg', { viewBox:'0 0 300 200', style:{ width:'100%', height:'100%', display:'block' } }, kids);
+  }
+
+  buildStrip(n, opts){
+    const h = React.createElement, o = opts || {}, L = this.lineOf(n), list = this.byLine[n], kids = [];
+    const x0 = 8, x1 = 292, y = 16, W = 300;
+    kids.push(h('line', { key:'t', x1:x0, y1:y, x2:x1, y2:y, stroke:L.c, strokeOpacity:.28, strokeWidth:6, strokeLinecap:'round' }));
+    const doneN = this.lineDone(n);
+    if (doneN > 0) {
+      const endX = x0 + (x1-x0) * ((doneN-0.999)/(list.length-1));
+      kids.push(h('line', { key:'p', x1:x0, y1:y, x2:Math.max(x0+1,endX), y2:y, stroke:L.c, strokeWidth:6, strokeLinecap:'round' }));
+    }
+    list.forEach((t,i) => {
+      const x = x0 + (x1-x0) * (i/(list.length-1)), on = this.isLearned(t.id);
+      kids.push(h('circle', { key:t.id, cx:x, cy:y, r:4.2, fill:o.dotFill || '#fff', stroke: on ? L.c : (o.dim || '#c3c8d0'), strokeWidth:2.4 }));
+      if (this.state.flagged[t.id]) kids.push(h('circle', { key:t.id+'f', cx:x, cy:y-8.5, r:2.2, fill:'#cc3311' }));
+    });
+    return h('svg', { viewBox:'0 0 '+W+' 32', style:{ width:'100%', height:'32px', display:'block' } }, kids);
+  }
+
+  arcPath(cx, cy, r, a0, a1){
+    const p = a => [cx + r*Math.cos(a*Math.PI/180), cy + r*Math.sin(a*Math.PI/180)];
+    const s = p(a0), e = p(a1);
+    return 'M '+s[0].toFixed(2)+' '+s[1].toFixed(2)+' A '+r+' '+r+' 0 '+((a1-a0)>180?1:0)+' 1 '+e[0].toFixed(2)+' '+e[1].toFixed(2);
+  }
+  buildBadge(pct, dateStr){
+    const h = React.createElement, kids = [], accent = this.props.accent || '#ff3d7f';
+    kids.push(h('circle',{key:'bg',cx:100,cy:100,r:97,fill:'#15171a'}));
+    kids.push(h('circle',{key:'r1',cx:100,cy:100,r:91,fill:'none',stroke:'#3a4049',strokeWidth:1.5}));
+    this.LINES.forEach((l,i) => {
+      const a0 = -90 + i*72 + 5, a1 = -90 + (i+1)*72 - 5;
+      kids.push(h('path',{key:'a'+i,d:this.arcPath(100,100,83,a0,a1),fill:'none',stroke:l.c,strokeWidth:9,strokeLinecap:'round'}));
+    });
+    kids.push(h('circle',{key:'in',cx:100,cy:100,r:70,fill:'#f4f6f8'}));
+    kids.push(h('path',{key:'g1',d:'M 74 112 L 87 112 L 108 91 L 121 91',fill:'none',stroke:accent,strokeWidth:5.5,strokeLinecap:'round',strokeLinejoin:'round'}));
+    kids.push(h('path',{key:'g2',d:'M 74 90 L 87 90 L 108 111 L 121 111',fill:'none',stroke:'#15171a',strokeWidth:5.5,strokeLinecap:'round',strokeLinejoin:'round'}));
+    kids.push(h('circle',{key:'g3',cx:97.5,cy:101,r:7.5,fill:'#f4f6f8',stroke:'#15171a',strokeWidth:4}));
+    kids.push(h('text',{key:'t1',x:100,y:136,fontSize:13,fontWeight:800,letterSpacing:2.4,fill:'#15171a',textAnchor:'middle'},'AI LINGO'));
+    kids.push(h('text',{key:'t2',x:100,y:148,fontSize:7.5,fontWeight:700,letterSpacing:1.5,fill:'#565c66',textAnchor:'middle'},'NETWORK COMPLETE'));
+    kids.push(h('text',{key:'t3',x:100,y:163,fontSize:9.5,fontWeight:800,letterSpacing:.6,fill:'#15171a',textAnchor:'middle'}, pct + '% · ' + dateStr));
+    return h('svg',{viewBox:'0 0 200 200',style:{width:'100%',height:'100%',display:'block',fontFamily:"'Libre Franklin',sans-serif"}},kids);
+  }
+
+  travelled(){ return Object.keys(this.state.learned).filter(k => this.state.learned[k]).length; }
+  current(){ const list = this.byLine[this.state.line]; return list ? list[Math.min(this.state.pos, list.length-1)] : null; }
+  deck(){ const s = this.state.scope;
+    if (s === 'flagged') { const w = this.weakTerms(); return w.length ? w : this.byLine[this.state.scopeLine || 1]; }
+    if (s === 'all') return this.TERMS;
+    return this.byLine[this.state.scopeLine || this.state.line]; }
+  pickDeck = (scope, lineN) => this.set({ view:'cards', scope, scopeLine: lineN || this.state.scopeLine || 1, sIdx:0, flipped:false, quiz:null, result:null });
+  studyTerm(){ const d = this.deck(); return d[Math.min(this.state.sIdx, d.length-1)]; }
+  activeTerm(){ return this.state.view === 'cards' ? this.studyTerm() : this.current(); }
+  setScope = s => this.set({ scope:s, sIdx:0, flipped:false });
+  lineOf(n){ return this.LINES.find(l => l.n === n); }
+
+  // ---- actions ----
+  goHub = () => this.set({ view:'hub', quiz:null, result:null });
+  goMap = () => this.set({ view:'map', quiz:null, result:null });
+  goGlossary = () => this.set({ view:'glossary', quiz:null, result:null });
+  goCards = () => this.set({ view:'decks', flipped:false, sIdx:0, quiz:null, result:null });
+  readThis = () => { const t = this.studyTerm(); if (t) this.jumpTo(t.id); };
+  goExam = () => { if (this.travelled() < this.TERMS.length) { this.set({ view:'locked', quiz:null, result:null }); return; } this.startQuiz('exam'); };
+  forceExam = () => this.startQuiz('exam');
+  boardRide = () => { const n = this.state.line; this.set({ view:'learn', pos:this.nextStopIdx(n), flipped:false }); };
+  startLine = n => this.set({ view:'learn', line:n, pos:this.firstUnlearned(n), flipped:false });
+  jumpTo = id => { const t = this.byId[id]; if(!t) return; const i = this.byLine[t.line].findIndex(x => x.id === id); this.set({ view:'learn', line:t.line, pos:i, flipped:false, quiz:null, result:null }); };
+
+  advance(){
+    if (this.state.view === 'cards') { const d = this.deck();
+      if (this.state.sIdx < d.length - 1) this.set({ sIdx:this.state.sIdx+1, flipped:false });
+      else this.set({ sIdx:0, flipped:false });
+      return; }
+    const list = this.byLine[this.state.line];
+    if (this.state.pos < list.length - 1) { this.set({ pos:this.state.pos+1, flipped:false }); return; }
+    // end of the line — go straight into the knowledge check
+    this.setState({ flipped:false }, () => this.startQuiz('checkpoint', this.state.line)); }
+  gotIt = () => { const t = this.activeTerm(); if(!t) return;
+    const learned = Object.assign({}, this.state.learned); learned[t.id] = true;
+    const miss = Object.assign({}, this.state.miss); delete miss[t.id];
+    const flagged = Object.assign({}, this.state.flagged); delete flagged[t.id];
+    this.setState({ learned, miss, flagged }, () => { this.save(); this.advance(); }); };
+  stillFuzzy = () => { const t = this.activeTerm(); if(!t) return;
+    const miss = Object.assign({}, this.state.miss); miss[t.id] = (miss[t.id]||0)+1;
+    const flagged = Object.assign({}, this.state.flagged); flagged[t.id] = true;
+    this.setState({ miss, flagged }, () => { this.save(); this.advance(); }); };
+  prevStop = () => { if (this.state.view === 'cards') { if (this.state.sIdx > 0) this.set({ sIdx:this.state.sIdx-1, flipped:false }); return; }
+    if (this.state.pos > 0) this.set({ pos:this.state.pos-1, flipped:false }); };
+  toggleFlag = () => { const t = this.activeTerm(); if(!t) return;
+    const flagged = Object.assign({}, this.state.flagged), miss = Object.assign({}, this.state.miss);
+    if (flagged[t.id] || miss[t.id]) { delete flagged[t.id]; delete miss[t.id]; } else flagged[t.id] = true;
+    this.set({ flagged, miss }); };
+  flip = () => this.set({ flipped: !this.state.flipped });
+  setQuery = e => this.setState({ query: e.target.value });
+  toggleFlagFilter = () => this.setState({ flaggedOnly: !this.state.flaggedOnly });
+  printGlossary = () => { if (this.state.view !== 'glossary') this.setState({ view:'glossary' }, () => setTimeout(() => window.print(), 300)); else window.print(); };
+  goFlagged = () => this.setState({ view:'glossary', flaggedOnly:true, query:'' });
+  resetAll = () => { this.setState({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:1, pos:0, view:'hub' }, () => this.save()); };
+
+  handleKey(e){
+    if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+    const v = this.state.view;
+    if (e.key === 'Escape') { this.goMap(); return; }
+    if (v === 'learn' || v === 'cards') {
+      if (e.key === 'ArrowRight') { e.preventDefault(); this.advance(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); this.prevStop(); }
+      else if (e.key === '1') this.gotIt();
+      else if (e.key === '2') this.stillFuzzy();
+      else if (e.key === 'c') { if (v === 'cards') this.set({ view:'learn', flipped:false });
+        else this.set({ view:'cards', scope:'line', scopeLine:this.state.line, sIdx:this.state.pos, flipped:false }); }
+      else if (e.key === ' ' && v === 'cards') { e.preventDefault(); this.flip(); }
+    }
+  }
+
+  // ---- quiz ----
+  shuffle(a){ const b = a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=b[i]; b[i]=b[j]; b[j]=t; } return b; }
+  firstSentence(s){
+    const m = s.match(/^.*?\.(\s|$)/);
+    let out = (m ? m[0] : s).trim();
+    if (out.length > 200) { const cut = out.slice(0, 200); out = cut.slice(0, cut.lastIndexOf(' ')) + '…'; }
+    return out;
+  }
+  blankable(t){
+    const core = t.t.replace(/\s*\(.*?\)\s*/g,'').split(' / ')[0].split(' vs. ')[0].trim();
+    const re = new RegExp(core.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i');
+    return re.test(t.u) ? { core, re } : null;
+  }
+  makeQuestion(t, kindHint){
+    const pool = this.byLine[t.line].filter(x => x.id !== t.id);
+    const others = this.shuffle(pool.length >= 3 ? pool : this.TERMS.filter(x => x.id !== t.id)).slice(0,3);
+    let kind = kindHint;
+    const b = this.blankable(t);
+    if (kind === 'blank' && !b) kind = 'def';
+    if (kind === 'def') return { kind, label:'Pick the definition', prompt:t.t,
+      options: this.shuffle([{ text:this.firstSentence(t.d), ok:true }].concat(others.map(o => ({ text:this.firstSentence(o.d), ok:false })))), term:t };
+    if (kind === 'term') return { kind, label:'Pick the term', prompt:this.firstSentence(t.d),
+      options: this.shuffle([{ text:t.t, ok:true }].concat(others.map(o => ({ text:o.t, ok:false })))), term:t };
+    if (kind === 'blank') return { kind, label:'Fill in the blank', prompt:'“'+t.u.replace(b.re,'__________')+'”',
+      options: this.shuffle([{ text:b.core, ok:true }].concat(others.map(o => ({ text:o.t.replace(/\s*\(.*?\)\s*/g,'').split(' / ')[0], ok:false })))), term:t };
+    return { kind:'line', label:'Which journey does this term belong to?', prompt:t.t,
+      options: this.LINES.map(l => ({ text:'Line '+l.n+' · '+l.name, ok:l.n === t.line })), term:t };
+  }
+  startQuiz = (mode, lineN) => {
+    const kinds = ['def','term','blank','line'];
+    let pool, n, title, color;
+    if (mode === 'checkpoint') { pool = this.byLine[lineN]; n = Math.min(this.props.quizLength || 10, pool.length); title = this.lineOf(lineN).name.toUpperCase()+' LINE CHECKPOINT'; color = this.lineOf(lineN).c; }
+    else if (mode === 'exam') { pool = this.TERMS; n = 30; title = 'GRAND TERMINUS · FINAL EXAM'; color = '#15171a'; }
+    else { pool = this.weakTerms(); n = Math.max(pool.length, 1); title = 'DETOUR · YOUR WEAK STOPS'; color = '#cc3311'; }
+    if (!pool.length) return;
+    const picks = this.shuffle(pool).slice(0, n);
+    const qs = picks.map((t,i) => this.makeQuestion(t, kinds[i % 4]));
+    this.set({ view:'quiz', result:null, quiz:{ qs, i:0, picked:null, answered:false, correct:0, wrong:[], title, color, mode, lineN } });
+  };
+  startCheckpoint = () => this.startQuiz('checkpoint', this.state.line);
+  startDrill = () => this.startQuiz('drill');
+  weakTerms(){ const ids = {};
+    Object.keys(this.state.miss).forEach(id => { if (this.state.miss[id] > 0) ids[id] = true; });
+    Object.keys(this.state.flagged).forEach(id => { if (this.state.flagged[id]) ids[id] = true; });
+    return Object.keys(ids).map(id => this.byId[id]).filter(Boolean); }
+  pickOption = idx => { const q = this.state.quiz; if (!q || q.answered) return;
+    const cur = q.qs[q.i], ok = cur.options[idx].ok;
+    const miss = Object.assign({}, this.state.miss);
+    if (!ok) miss[cur.term.id] = (miss[cur.term.id]||0)+1;
+    const nq = Object.assign({}, q, { picked:idx, answered:true, correct:q.correct + (ok?1:0), wrong: ok ? q.wrong : q.wrong.concat([cur.term.id]) });
+    this.set({ quiz:nq, miss });
+  };
+  quizPrimary = () => { const q = this.state.quiz; if (!q) return;
+    if (!q.answered) return;
+    if (q.i < q.qs.length - 1) { this.set({ quiz: Object.assign({}, q, { i:q.i+1, picked:null, answered:false }) }); return; }
+    const pct = Math.round(q.correct / q.qs.length * 100);
+    const scores = Object.assign({}, this.state.scores);
+    if (q.mode === 'checkpoint') scores['line'+q.lineN] = pct;
+    if (q.mode === 'exam') scores.exam = pct;
+    const badges = Object.assign({}, this.state.badges || {});
+    let awarded = false;
+    if (q.mode === 'exam' && pct >= 80 && this.travelled() === this.TERMS.length && !badges.ai) {
+      const d = new Date();
+      badges.ai = { pct, date: d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' }) };
+      awarded = true;
+    }
+    this.set({ view:'result', scores, badges, result:{ pct, correct:q.correct, total:q.qs.length, wrong:q.wrong, title:q.title, color:q.color, mode:q.mode, awarded } });
+  };
+
+  renderVals(){
+    const accent = this.props.accent || '#ff3d7f';
+    const base = { accent, ready:this.state.ready, isHub:false, isMap:false, isLearn:false, isCards:false, isDecks:false, isQuiz:false, isResult:false, isGlossary:false, isLocked:false,
+      goHub:this.goHub, goMap:this.goMap, goGlossary:this.goGlossary, goCards:this.goCards, goExam:this.goExam,
+      crumb:'LEARNING JOURNEYS', showNav:false, programs:[] };
+    if (!this.state.ready) {
+      const ghost = { color:'#c3c8d0', frac:0 };
+      return Object.assign(base, { isHub:true, isMap:false, crumb:'LEARNING JOURNEYS', showNav:false,
+        heroStats:[{n:'4',l:'journeys'},{n:'—',l:'stops in the network'},{n:'—',l:'travelled by you'}],
+        heroMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], { ghost:.18, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' }),
+        featName:'AI Lingo', featBlurb:'The shared vocabulary of artificial intelligence, from first principles to governance.',
+        featPill:'LOADING', featMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], {}),
+        featLines:[], hasBadges:false, badgeList:[], featStat:'Loading the network…', featCta:'One moment →', featGo:() => {},
+        programs:[],
+        navMapColor:'#a6adb8', navMapBg:'transparent', navGlossColor:'#a6adb8', navGlossBg:'transparent', navCardsColor:'#a6adb8', navCardsBg:'transparent', navExamColor:'#a6adb8', navExamBg:'transparent' });
+    }
+
+    const v = this.state.view, cur = this.current(), L = this.lineOf(this.state.line), list = this.byLine[this.state.line];
+
+    if (v === 'hub') {
+      base.isHub = true; base.crumb = 'LEARNING JOURNEYS'; base.showNav = false;
+      const done = this.travelled(), total = this.TERMS.length;
+      const other = this.PROGRAMS.filter(p => !p.live);
+      base.heroStats = [
+        { n: String(this.PROGRAMS.length), l: 'journeys' },
+        { n: String(total + other.reduce((a,p) => a + p.count, 0)), l: 'stops in the network' },
+        { n: done + '/' + total, l: 'travelled by you' }
+      ];
+      base.heroMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })),
+        { ghost:.2, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' });
+      base.featName = 'AI Lingo';
+      base.featBlurb = this.PROGRAMS[0].blurb;
+      base.featPill = done ? 'IN PROGRESS' : 'START HERE';
+      base.featMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })), {});
+      base.featLines = this.LINES.map(l => { const d = this.lineDone(l.n), t = this.byLine[l.n].length;
+        return { name:l.name, journey:l.journey, color:l.c, count:d + ' / ' + t, w:Math.round(d/t*100)+'%' }; });
+      base.featStat = done + ' of ' + total + ' stops travelled · 5 lines · ' + (done ? 'pick up where you left off' : 'nothing travelled yet');
+      base.featCta = done ? 'Resume ride →' : 'Board the network →';
+      base.featGo = this.goMap;
+      const bg = (this.state.badges || {}).ai;
+      base.hasBadges = !!bg;
+      base.badgeList = bg ? [{ el:this.buildBadge(bg.pct, bg.date), kicker:'AI LINGO', title:'Network complete',
+        note:'All 81 stops travelled and the Grand Terminus exam passed at ' + bg.pct + '% on ' + bg.date + '.' }] : [];
+      base.programs = other.map(p => ({
+        name:p.name, blurb:p.blurb,
+        mini: this.buildMini(p.lines.map(() => ({ color:'#b9bfc9', frac:0 })), { ghost:.55, dim:'#cbd1d9' }),
+        lines: p.lines.join(' · '),
+        stat: '~' + p.count + ' stops · ' + p.lines.length + ' lines'
+      }));
+      return base;
+    }
+    base.showNav = true; base.crumb = 'AI LINGO';
+    const examish = (v === 'quiz' && this.state.quiz && this.state.quiz.mode === 'exam') || v === 'locked' || (v === 'result' && this.state.result && this.state.result.mode === 'exam');
+    const learnish = !examish && ['map','learn','quiz','result'].indexOf(v) >= 0;
+    const tab = active => ({ color: active ? '#f4f6f8' : '#a6adb8', bg: active ? accent : 'transparent' });
+    const nm = tab(learnish), nc = tab(v === 'cards' || v === 'decks'), ne = tab(examish), ng = tab(v === 'glossary');
+    Object.assign(base, { navMapColor:nm.color, navMapBg:nm.bg, navGlossColor:ng.color, navGlossBg:ng.bg,
+      navCardsColor:nc.color, navCardsBg:nc.bg, navExamColor:ne.color, navExamBg:ne.bg, readThis:this.readThis,
+      lineColor:L.c, lineLabel:L.name+' Line · '+L.journey, lineTag:(L.name+' LINE').toUpperCase(), curName:cur?cur.t:'', curPr:cur?cur.pr:'', curDef:cur?cur.d:'', curUsage:cur?cur.u:'',
+      stopLabel:'STOP '+(this.state.pos+1)+' / '+list.length, posTag:(cur?cur.pos:'').toUpperCase(),
+      gotIt:this.gotIt, stillFuzzy:this.stillFuzzy, toggleFlag:this.toggleFlag, prevStop:this.prevStop, flip:this.flip,
+      startDrill:this.startDrill, startCheckpoint:this.startCheckpoint, printGlossary:this.printGlossary, goFlagged:this.goFlagged, resetAll:this.resetAll, boardRide:this.boardRide });
+
+    if (v === 'map') {
+      base.isMap = true;
+      const done = this.travelled();
+      const target = list[this.nextStopIdx(L.n)] || cur;
+      base.mapEl = this.buildMap();
+      base.travelled = done;
+      base.streak = this.state.streak;
+      base.streakUnit = this.state.streak === 1 ? 'day' : 'days';
+      base.week = this.state.week.length ? this.state.week : [];
+      base.nextLabel = 'NEXT STOP · ' + L.name.toUpperCase() + ' LINE';
+      base.nextStop = target ? target.t : 'Every line cleared';
+      const left = list.length - this.lineDone(L.n);
+      base.nextSub = left > 0 ? (left === 1 ? 'One stop from clearing the line and earning its roundel.' : left + ' stops from clearing the line and earning its roundel.') : 'Line cleared. Pick another line from the key below.';
+      const earned = this.LINES.filter(l => this.lineDone(l.n) === this.byLine[l.n].length).length;
+      base.roundelLabel = 'ROUNDELS · ' + earned + ' OF 5';
+      base.roundels = this.LINES.map(l => { const full = this.lineDone(l.n) === this.byLine[l.n].length;
+        return { color: full ? l.c : '#353a42', text: full ? '#f4f6f8' : '#a6adb8', label:'L'+l.n }; });
+      base.keyLines = this.LINES.map(l => ({ color:l.c, line:l.name+' Line', name:l.journey+' · '+this.byLine[l.n].length, onClick:() => this.startLine(l.n) }));
+      base.completion = this.LINES.map(l => { const d = this.lineDone(l.n), tot = this.byLine[l.n].length, p = Math.round(d/tot*100);
+        return { label:l.name+' · '+l.journey, pct:p+'%', w:p+'%', color:l.c, onClick:() => this.startLine(l.n) }; });
+      const weak = this.weakTerms().sort((a,b) => (this.state.miss[b.id]||0) - (this.state.miss[a.id]||0)).slice(0,4);
+      base.needsLook = weak.map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:this.lineOf(t.line).c,
+        note: this.state.miss[t.id] ? 'missed '+this.state.miss[t.id]+'×' : 'marked fuzzy', onClick:() => this.jumpTo(t.id) }));
+      base.hasNeeds = weak.length > 0; base.noNeeds = weak.length === 0; base.needsCount = weak.length;
+      const day = Math.floor(Date.now()/86400000) % this.TERMS.length, td = this.TERMS[day];
+      base.totdName = td.t.replace(/\s*\(.*?\)\s*/g,''); base.totdPr = td.pr; base.totdDef = this.firstSentence(td.d);
+      base.totdColor = this.lineOf(td.line).c; base.totdLine = this.lineOf(td.line).name+' Line · '+this.lineOf(td.line).journey;
+      base.totdGo = () => this.jumpTo(td.id);
+      return base;
+    }
+
+    if (v === 'decks') {
+      base.isDecks = true;
+      base.deckList = this.LINES.map(l => { const dn = this.lineDone(l.n), tot = this.byLine[l.n].length, p = Math.round(dn/tot*100);
+        return { name:l.name + ' Line', sub:l.journey + ' · ' + tot + ' terms', color:l.c, w:p+'%', num:'L'+l.n,
+          strip: this.buildStrip(l.n), pct: p + '%',
+          stat: dn + ' of ' + tot + ' learned', cta: dn === tot ? 'Review →' : 'Study →',
+          onClick:() => this.pickDeck('line', l.n) }; });
+      const learnedN = this.travelled();
+      base.studyStats = [
+        { n:String(this.TERMS.length), l:'cards in the network' },
+        { n:String(learnedN), l:'learned so far' },
+        { n:String(this.weakTerms().length), l:'still fuzzy' }
+      ];
+      base.studyMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })),
+        { ghost:.2, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' });
+      const weak = this.weakTerms();
+      base.fuzzyCount = String(weak.length);
+      base.fuzzyDots = weak.slice(0,14).map(t => ({ color:this.lineOf(t.line).c }));
+      base.fuzzyCta = weak.length ? 'Study these ' + weak.length + ' →' : 'Nothing fuzzy yet';
+      base.fuzzyGo = weak.length ? (() => this.pickDeck('flagged')) : this.goMap;
+      base.allGo = () => this.pickDeck('all');
+      return base;
+    }
+
+    if (v === 'learn' || v === 'cards') {
+      const done = this.lineDone(L.n);
+      base.ticks = list.map((t,i) => ({ bg: i === this.state.pos ? L.c : (this.isLearned(t.id) ? L.c : '#d5d9df'), onClick: () => this.set({ pos:i, flipped:false }) }));
+      base.isFlagged = !!(cur && (this.state.flagged[cur.id] || this.state.miss[cur.id]));
+      base.flagLabel = base.isFlagged ? 'Clear flag' : 'Flag ⚑';
+      const ap = cur && cur.apply;
+      base.curApply = ap || 'No local note yet. Add how your team uses this term — the policy it touches, the tool it shows up in, who to ask.';
+      base.applyColor = ap ? '#15171a' : '#8a919b';
+      base.applyTag = ap ? '' : 'NOT WRITTEN YET';
+      base.applyTagColor = '#8a919b';
+      base.flagBorder = base.isFlagged ? '#cc3311' : '#a5abb5';
+      base.flagBg = base.isFlagged ? '#fbeeea' : 'transparent';
+      base.flagFg = base.isFlagged ? '#cc3311' : '#15171a';
+      base.gotItLabel = this.state.pos < list.length - 1 ? 'Got it — next stop' : 'Got it — finish line';
+      base.related = (cur ? cur.rel : []).map(id => this.byId[id]).filter(Boolean).map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:this.lineOf(t.line).c, line:this.lineOf(t.line).name+' Line · '+this.lineOf(t.line).journey, onClick:() => this.jumpTo(t.id) }));
+      base.comingLabel = 'COMING UP ON THE ' + L.name.toUpperCase() + ' LINE';
+      base.coming = list.slice(this.state.pos+1, this.state.pos+6).map((t,i) => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), onClick:() => this.set({ pos:this.state.pos+1+i, flipped:false }) }));
+      base.lineDone = done; base.lineDoneOf = 'of ' + list.length + ' stops';
+      base.lineHint = done === list.length ? 'Line cleared. Take the checkpoint to earn the roundel.' : (list.length - done) + ' more clears the ' + L.name + ' Line.';
+      base.checkpointLabel = 'Take the ' + L.name + ' checkpoint';
+      if (v === 'learn') { base.isLearn = true; return base; }
+
+      base.isCards = true;
+      const d = this.deck(), st = this.studyTerm(), sL = st ? this.lineOf(st.line) : L;
+      const scopeL = this.lineOf(this.state.scopeLine || 1);
+      base.lineColor = this.state.scope === 'line' ? scopeL.c : (this.state.scope === 'flagged' ? '#15171a' : '#1338b0');
+      base.lineLabel = this.state.scope === 'flagged' ? 'Still fuzzy · marked fuzzy or missed'
+        : (this.state.scope === 'all' ? 'Whole network · all 81 terms' : scopeL.name + ' Line · ' + scopeL.journey);
+      base.curName = st ? st.t : ''; base.curPr = st ? st.pr : ''; base.curDef = st ? st.d : ''; base.curUsage = st ? st.u : '';
+      const fuzzy = st && (this.state.flagged[st.id] || this.state.miss[st.id]);
+      base.isFlagged = !!fuzzy;
+      base.flagLabel = fuzzy ? 'Clear flag' : 'Flag ⚑';
+      base.flagBorder = fuzzy ? '#cc3311' : '#a5abb5';
+      base.flagBg = fuzzy ? '#fbeeea' : 'transparent';
+      base.flagFg = fuzzy ? '#cc3311' : '#15171a';
+      base.stopLabel = 'CARD ' + (Math.min(this.state.sIdx, d.length-1)+1) + ' / ' + d.length;
+      base.cardsPct = Math.round((Math.min(this.state.sIdx, d.length-1)+1)/d.length*100) + '%';
+      base.cardIsFront = !this.state.flipped; base.cardIsBack = this.state.flipped;
+      base.cardSide = this.state.flipped ? 'DEFINITION' : 'TERM · ' + sL.name.toUpperCase() + ' LINE';
+      return base;
+    }
+
+    if (v === 'quiz' && this.state.quiz) {
+      const q = this.state.quiz, cq = q.qs[q.i];
+      base.isQuiz = true; base.quizTitle = q.title + ' · QUESTION ' + (q.i+1) + ' OF ' + q.qs.length; base.quizColor = q.color;
+      base.quizPips = q.qs.map((x,i) => ({ bg: i < q.i ? (q.wrong.indexOf(q.qs[i].term.id) >= 0 ? '#cc3311' : q.color) : (i === q.i ? '#15171a' : '#d5d9df') }));
+      base.qKindLabel = cq.label; base.qPrompt = cq.prompt; base.answered = q.answered;
+      base.qOptions = cq.options.map((o,i) => {
+        const picked = q.picked === i, reveal = q.answered;
+        let border = '1px solid #d5d9df', bg = '#fff', fg = '#15171a', keyBg = '#eef0f3', keyFg = '#565c66';
+        if (reveal && o.ok) { border = '2px solid #007a5e'; bg = '#eaf6f1'; keyBg = '#007a5e'; keyFg = '#fff'; }
+        else if (reveal && picked) { border = '2px solid #cc3311'; bg = '#fbeeea'; keyBg = '#cc3311'; keyFg = '#fff'; }
+        else if (picked) { border = '2px solid ' + q.color; bg = '#eef0f3'; }
+        return { key:'ABCDE'[i], label:o.text, border, bg, fg, keyBg, keyFg, onClick:() => this.pickOption(i) };
+      });
+      const okNow = q.answered && cq.options[q.picked] && cq.options[q.picked].ok;
+      base.fbColor = okNow ? '#007a5e' : '#cc3311'; base.fbBg = okNow ? '#eaf6f1' : '#fbeeea';
+      base.fbTitle = okNow ? 'Correct' : 'Not quite';
+      base.fbBody = cq.term.t + ' — ' + cq.term.d;
+      base.quizFootnote = q.answered ? 'Missed terms are added to your detour list.' : 'Pick an answer to continue.';
+      base.quizPrimaryLabel = !q.answered ? 'Pick an answer' : (q.i < q.qs.length-1 ? 'Next question →' : 'See results');
+      base.nextBtnBg = q.answered ? '#15171a' : '#a5abb5';
+      base.quizPrimary = this.quizPrimary;
+      return base;
+    }
+
+    if (v === 'result' && this.state.result) {
+      const r = this.state.result;
+      base.isResult = true; base.quizColor = r.color;
+      base.resultKicker = r.title; base.resultPct = r.pct + '%';
+      base.resultLine = r.correct + ' of ' + r.total + ' correct';
+      base.resultRing = r.pct >= 80 ? '#007a5e' : (r.pct >= 60 ? '#c98200' : '#cc3311');
+      base.awarded = !!r.awarded; base.notAwarded = !r.awarded;
+      if (r.awarded) { const b = (this.state.badges || {}).ai; base.badgeEl = this.buildBadge(b.pct, b.date); }
+      base.resultVerdict = r.awarded ? 'Every line cleared and the terminus passed. The badge is yours — it now sits on your journeys page.'
+        : (r.pct >= 80 ? 'Solid. You can hold your own in these conversations.' : (r.pct >= 60 ? 'Close. A short detour through the missed stops should do it.' : 'Worth another ride through this line before moving on.'));
+      const missed = r.wrong.map(id => this.byId[id]).filter(Boolean);
+      base.hasMissed = missed.length > 0;
+      base.missedList = missed.map(t => ({ name:t.t, def:this.firstSentence(t.d), color:this.lineOf(t.line).c, onClick:() => this.jumpTo(t.id) }));
+      return base;
+    }
+
+    if (v === 'glossary') {
+      base.isGlossary = true;
+      const qq = this.state.query.trim().toLowerCase();
+      const match = t => (!this.state.flaggedOnly || this.state.flagged[t.id]) && (!qq || (t.t+' '+t.d+' '+t.u).toLowerCase().indexOf(qq) >= 0);
+      const groups = this.LINES.map(l => {
+        const items = this.byLine[l.n].filter(match);
+        return { title:l.name+' Line', sub:l.journey+' · '+items.length+' terms', color:l.c, items: items.map(t => ({
+          name:t.t, pr:t.pr, def:this.firstSentence(t.d), mark:this.isLearned(t.id) ? l.c : '#d5d9df',
+          state:this.state.flagged[t.id] ? 'STILL FUZZY' : (this.isLearned(t.id) ? 'LEARNED' : ''),
+          stateColor:this.state.flagged[t.id] ? '#cc3311' : '#007a5e', onClick:() => this.jumpTo(t.id) })) };
+      }).filter(g => g.items.length);
+      base.glossGroups = groups;
+      base.glossEmpty = groups.length === 0;
+      const shown = groups.reduce((n,g) => n + g.items.length, 0);
+      base.glossCount = shown + ' of 81 terms · ' + this.travelled() + ' learned';
+      base.query = this.state.query; base.setQuery = this.setQuery; base.toggleFlagFilter = this.toggleFlagFilter;
+      base.flagFilterBg = this.state.flaggedOnly ? '#15171a' : '#fff';
+      base.flagFilterFg = this.state.flaggedOnly ? '#f4f6f8' : '#15171a';
+      return base;
+    }
+
+    if (v === 'locked') {
+      base.isLocked = true;
+      const left = this.TERMS.length - this.travelled();
+      const earned = this.LINES.filter(l => this.lineDone(l.n) === this.byLine[l.n].length).length;
+      base.lockedSub = left + ' stops still ahead · ' + earned + ' of 5 roundels earned';
+      base.examMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })),
+        { ghost:.2, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' });
+      base.lockedRoundels = this.LINES.map(l => { const d = this.lineDone(l.n), tot = this.byLine[l.n].length, full = d === tot;
+        return { color: full ? l.c : '#c3c8d0', text: full ? '#15171a' : '#565c66', label:l.name + ' Line',
+          note: full ? 'Cleared · roundel earned' : d + ' of ' + tot + ' learned', w: Math.round(d/tot*100)+'%',
+          onClick:() => this.startLine(l.n) }; });
+      base.forceExam = this.forceExam;
+      return base;
+    }
+    base.isMap = true; base.mapEl = this.buildMap();
+    return base;
+  }
+}
+</script>
+</body>
+</html>
