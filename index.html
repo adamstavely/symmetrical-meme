@@ -81,7 +81,17 @@
             <span class="hub-cta" style="background:{{ accent }}">{{ featCta }}</span>
           </div>
         </div>
-        <div class="hub-featured-side">{{ featMini }}</div>
+        <div class="hub-featured-side">
+          <div class="hub-mark" aria-hidden="true">
+            <div class="hub-mark-ring" style="--hub-pct:{{ featPct }}">
+              <div class="hub-mark-core">
+                <div class="hub-mark-num">{{ featDone }}<span class="hub-mark-of">/{{ featTotal }}</span></div>
+                <div class="hub-mark-label">forged</div>
+              </div>
+            </div>
+            <div class="hub-mark-meta">{{ featLinesMeta }}</div>
+          </div>
+        </div>
       </div>
 
       <sc-if value="{{ hasBadges }}" hint-placeholder-val="{{ false }}">
@@ -249,13 +259,12 @@
       <div class="learn-main">
 
         <sc-if value="{{ isTerm }}" hint-placeholder-val="{{ true }}">
-        <div>
+        <div class="piece-stack">
         <div class="piece-hero">
           <div class="piece-hero-edge" aria-hidden="true"></div>
           <div class="piece-hero-body">
             <div class="piece-meta">
               <span class="piece-kicker">{{ trackKicker }}</span>
-              <span class="piece-tag">{{ lineTag }}</span>
               <sc-if value="{{ isFlagged }}" hint-placeholder-val="{{ false }}"><span class="piece-tag-fuzzy">STILL FUZZY</span></sc-if>
             </div>
             <div class="piece-title-row">
@@ -299,13 +308,12 @@
         </sc-if>
 
         <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
-        <div>
+        <div class="piece-stack">
         <div class="piece-hero is-activity">
           <div class="piece-hero-edge" aria-hidden="true"></div>
           <div class="piece-hero-body">
             <div class="piece-meta">
               <span class="piece-kicker">{{ trackKicker }}</span>
-              <span class="piece-tag">{{ lineTag }}</span>
               <span class="piece-tag-outline">ACTIVITY</span>
               <span class="piece-tag-muted">{{ posTag }}</span>
               <span class="piece-step-label">{{ actStepLabel }}</span>
@@ -411,7 +419,7 @@
         </div>
 
         <div class="piece-aside-card">
-          <div class="piece-aside-kicker">RELATED TERMS</div>
+          <div class="piece-aside-kicker"><svg class="piece-aside-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/></svg>RELATED TERMS</div>
           <div>
             <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
               <div class="piece-related-row" role="button" tabindex="0" onClick="{{ r.onClick }}">
@@ -423,7 +431,7 @@
         </div>
 
         <div class="piece-aside-card">
-          <div class="piece-aside-kicker">{{ comingLabel }}</div>
+          <div class="piece-aside-kicker"><svg class="piece-aside-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg>{{ comingLabel }}</div>
           <div class="piece-coming">
             <div class="piece-coming-rail" aria-hidden="true"></div>
             <div class="piece-coming-list">
@@ -1248,7 +1256,8 @@ class Component extends DCLogic {
         heroStats:[{n:'4',l:'journeys'},{n:'—',l:'pieces in the forge'},{n:'—',l:'forged by you'}],
         heroMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], { ghost:.18, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' }),
         featName:'AI for the Rest of Us', featBlurb:'The shared vocabulary of artificial intelligence, from first principles to governance.',
-        featPill:this.state.error?'UNAVAILABLE':'LOADING', featMini: this.buildMini([ghost,ghost,ghost,ghost,ghost], {}),
+        featPill:this.state.error?'UNAVAILABLE':'LOADING',
+        featDone:'—', featTotal:'—', featPct:0, featLinesMeta:'Heating the forge…',
         featLines:[], hasBadges:false, badgeList:[], featStat:this.state.error||'Heating the forge…', featCta:'One moment →', featGo:() => {},
         programs:[], hasPrograms:false,
         navMapColor:'#E2E8F0', navMapBg:'transparent', navGlossColor:'#E2E8F0', navGlossBg:'transparent', navCardsColor:'#E2E8F0', navCardsBg:'transparent', navExamColor:'#E2E8F0', navExamBg:'transparent' });
@@ -1270,10 +1279,13 @@ class Component extends DCLogic {
       base.featName = this.COURSE.title;
       base.featBlurb = this.PROGRAMS[0].blurb;
       base.featPill = done ? 'IN PROGRESS' : 'START HERE';
-      base.featMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })), {});
+      base.featDone = done;
+      base.featTotal = total;
+      base.featPct = total ? Math.round(done / total * 100) : 0;
+      base.featLinesMeta = this.LINES.length + ' lines in the forge';
       base.featLines = this.LINES.map(l => { const d = this.lineDone(l.n), t = this.byLine[l.n].length;
         return { name:l.name, journey:l.journey, color:l.c, count:d + ' / ' + t, w:Math.round(d/t*100)+'%' }; });
-      base.featStat = done + ' of ' + total + ' pieces forged · '+this.LINES.length+' lines · ' + (done ? 'pick up where you left off' : 'nothing forged yet');
+      base.featStat = done ? 'Pick up where you left off' : 'Nothing forged yet — start with Foundations';
       base.featCta = done ? 'Resume forging →' : 'Enter the forge →';
       base.featGo = this.goMap;
       const bg = (this.state.badges || {}).ai;
