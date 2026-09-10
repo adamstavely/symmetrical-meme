@@ -1,25 +1,7 @@
-# Understanding AI
+# New Journey
 
 ## ID
-
-1
-
-## Name
-
-Foundations
-
-## Question
-
-What is this stuff everyone's talking about?
+new-journey
 
 ## Description
-
-The shared vocabulary everyone needs before any hands-on work.
-
-## Color
-
-#1338b0
-
-## Quiz length
-
-10
+One sentence on what this journey teaches.

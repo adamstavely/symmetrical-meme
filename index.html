@@ -621,7 +621,7 @@ class Component extends DCLogic {
     try { m = await import('./content.js'); } catch (error) { this.setState({error:'Content could not load. Refresh the page or rebuild the app.'}); return; }
     document.title='Interchange · '+m.COURSE.title;
     this.COURSE=m.COURSE; this.EXAM=m.EXAM; this.QUESTIONS=m.QUESTIONS;
-    this.PROGRAMS=[{id:'ai', name:m.COURSE.title, blurb:m.COURSE.description, live:true}];
+    this.PROGRAMS=(m.JOURNEYS||[{id:m.ACTIVE_JOURNEY||'ai-lingo',title:m.COURSE.title,description:m.COURSE.description,lines:m.LINES.map(l=>l.name),count:m.TERMS.length}]).map(j=>({id:j.id,name:j.title||m.COURSE.title,blurb:j.description||m.COURSE.description,live:j.id===(m.ACTIVE_JOURNEY||'ai-lingo'),lines:j.lines||[],count:j.count||0}));
     this.TERMS = m.TERMS; this.LINES = m.LINES;
     this.byId = {}; this.TERMS.forEach(t => { this.byId[t.id] = t; });
     this.byLine = {}; this.LINES.forEach(l => { this.byLine[l.n] = this.TERMS.filter(t => t.line === l.n); });

@@ -13,7 +13,7 @@ function app(){
  class DCLogic {props={accent:'#ff3d7f'};setState(p,cb){this.state={...this.state,...p};cb?.();}}
  const context=vm.createContext({DCLogic,React:{createElement:(...args)=>args},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},window:{},setTimeout,console});
  const Component=vm.runInContext(code+'\nComponent',context);const a=new Component();
- Object.assign(a,content);a.PROGRAMS=[{id:'ai',name:content.COURSE.title,blurb:content.COURSE.description,live:true}];
+ Object.assign(a,content);a.PROGRAMS=(content.JOURNEYS||[]).map(j=>({id:j.id,name:j.title,blurb:j.description,live:j.id===content.ACTIVE_JOURNEY,lines:j.lines,count:j.count}));
  a.byId=Object.fromEntries(a.TERMS.map(t=>[t.id,t]));a.byLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.TERMS.filter(t=>t.line===l.n)]));a.state.ready=true;return a;
 }
 test('content migrates all original definitions and references',async()=>{
@@ -46,9 +46,9 @@ test('malformed and duplicate Markdown headings fail clearly',()=>{
 });
 test('editor mistakes fail validation with actionable messages',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'interchange-test-'));try{
- await cp('content',dir,{recursive:true});const p=join(dir,'questions/ai.md');const original=await readFile(p,'utf8');
- await writeFile(p,original.replace('- [x]','- [ ]'));await assert.rejects(()=>loadContent(dir),/exactly one correct/);
- await writeFile(p,original.replace('## Term\n\nai','## Term\n\nmissing'));await assert.rejects(()=>loadContent(dir),/unknown Term/);
- await writeFile(p,original);await writeFile(join(dir,'exam.md'),'# Exam\n## Question count\n999\n## Pass percentage\n80\n## Description\nTest');await assert.rejects(()=>loadContent(dir),/exceeds/);
+ await cp('content',dir,{recursive:true});const p=join(dir,'journeys/ai-lingo/tracks/1/knowledge-check.md');const original=await readFile(p,'utf8');
+ await writeFile(p,original.replace('- [x] Artificial Intelligence (AI)','- [ ] Artificial Intelligence (AI)'));await assert.rejects(()=>loadContent(dir),/exactly one correct/);
+ await writeFile(p,original.replace('### Term\n\nai','### Term\n\nmissing'));await assert.rejects(()=>loadContent(dir),/unknown Term/);
+ await writeFile(p,original);await writeFile(join(dir,'journeys/ai-lingo/exam/metadata.md'),'# Exam\n## Question count\n999\n## Pass percentage\n80\n## Description\nTest');await assert.rejects(()=>loadContent(dir),/exceeds/);
  }finally{await rm(dir,{recursive:true,force:true});}
 });
