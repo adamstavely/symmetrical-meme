@@ -170,6 +170,7 @@
           <div style="display:flex;align-items:center;gap:22px;border-left:1px solid #d5d9df;padding-left:24px;flex-wrap:wrap">
             <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #15171a"></span><span style="font-size:0.875rem;color:#565c66">learned</span></div>
             <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #a5abb5"></span><span style="font-size:0.875rem;color:#565c66">ahead</span></div>
+            <div style="display:flex;align-items:center;gap:9px"><span style="width:14px;height:14px;background:#fff;border:4px solid #a5abb5"></span><span style="font-size:0.875rem;color:#565c66">activity</span></div>
             <div style="display:flex;align-items:center;gap:9px"><span style="width:15px;height:15px;border-radius:50%;background:#15171a;border:4px solid #15171a"></span><span style="font-size:0.875rem;color:#565c66">terminus · exam</span></div>
           </div>
         </div>
@@ -257,6 +258,8 @@
 
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
 
+        <sc-if value="{{ isTerm }}" hint-placeholder-val="{{ true }}">
+        <div>
         <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px -24px rgba(0,0,0,.5)">
           <div style="height:6px;background:{{ lineColor }}"></div>
           <div style="padding:26px 30px 28px">
@@ -272,12 +275,12 @@
           </div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid {{ lineColor }}">
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid {{ lineColor }};margin-top:14px">
           <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66;margin-bottom:9px">IN USE</div>
           <div style="font-style:italic;font-size:1.03125rem;line-height:1.6;text-wrap:pretty">“{{ curUsage }}”</div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid #15171a">
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:20px 24px;border-left:5px solid #15171a;margin-top:14px">
           <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:9px">
             <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66">HOW IT APPLIES TO OUR WORK</div>
             <span style="font-size:0.875rem;font-weight:800;letter-spacing:.1em;color:{{ applyTagColor }}">{{ applyTag }}</span>
@@ -285,7 +288,7 @@
           <div style="font-size:1.03125rem;line-height:1.6;text-wrap:pretty;color:{{ applyColor }}">{{ curApply }}</div>
         </div>
 
-        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 22px">
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 22px;margin-top:14px">
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <div style="color:#fff;font-size:0.875rem;font-weight:700;padding:13px 26px;border-radius:8px;cursor:pointer;background:{{ lineColor }}" role="button" tabindex="0" onClick="{{ gotIt }}">{{ gotItLabel }}</div>
             <div style="border:1.5px solid #a5abb5;font-size:0.875rem;font-weight:600;padding:12px 22px;border-radius:8px;cursor:pointer" role="button" tabindex="0" onClick="{{ stillFuzzy }}">Still fuzzy</div>
@@ -299,6 +302,85 @@
             <span><span style="background:#f4f5f7;border:1px solid #c3c8d0;border-radius:3px;padding:2px 6px;margin-right:5px">Alt Shift Esc</span>back to map</span>
           </div>
         </div>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
+        <div>
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px -24px rgba(0,0,0,.5)">
+          <div style="height:6px;background:{{ lineColor }}"></div>
+          <div style="padding:26px 30px 28px">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap">
+              <span style="color:#fff;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:4px 9px;border-radius:4px;background:{{ lineColor }}">{{ lineTag }}</span>
+              <span style="border:1px solid #15171a;color:#15171a;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">ACTIVITY</span>
+              <span style="border:1px solid #a5abb5;color:#565c66;font-size:0.875rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:4px">{{ posTag }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66;margin-left:4px">{{ actStepLabel }}</span>
+            </div>
+            <div style="font-size:2.5rem;font-weight:800;letter-spacing:-.04em;line-height:1.04;text-wrap:pretty">{{ curName }}</div>
+            <div style="height:1px;background:#e2e5ea;margin:22px 0 20px"></div>
+            <div style="font-size:1.0625rem;line-height:1.65;max-width:62ch;text-wrap:pretty">{{ curDef }}</div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:22px 26px;margin-top:14px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+            <div style="font-size:0.875rem;font-weight:800;letter-spacing:.14em;color:#565c66">{{ actStepKind }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#565c66">{{ actStepLabel }}</div>
+          </div>
+
+          <sc-if value="{{ actIsRead }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:1.0625rem;line-height:1.65;max-width:62ch;text-wrap:pretty">{{ actBody }}</div>
+          </sc-if>
+
+          <sc-if value="{{ actIsPrompt }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:1.03125rem;line-height:1.55;margin-bottom:12px;text-wrap:pretty">{{ actPrompt }}</div>
+              <textarea rows="7" style="width:100%;box-sizing:border-box;border:1.5px solid #c3c8d0;border-radius:10px;padding:14px 16px;font:inherit;font-size:0.96875rem;line-height:1.55;resize:vertical" placeholder="Write here…" value="{{ actDraft }}" onChange="{{ setActDraft }}"></textarea>
+              <sc-if value="{{ actHasHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;font-size:0.875rem;color:#565c66;line-height:1.55"><span style="font-weight:800;letter-spacing:.08em;color:#15171a">HINT · </span>{{ actHint }}</div></sc-if>
+              <sc-if value="{{ actHasExample }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;background:#f4f5f7;border:1px solid #e2e5ea;border-radius:10px;padding:14px 16px"><div style="font-size:0.875rem;font-weight:800;letter-spacing:.12em;color:#565c66;margin-bottom:8px">EXAMPLE</div><div style="font-size:0.9375rem;line-height:1.55;text-wrap:pretty">{{ actExample }}</div></div></sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ actIsChecklist }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:1.03125rem;line-height:1.55;margin-bottom:14px;text-wrap:pretty">{{ actPrompt }}</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ actChecks }}" as="c" hint-placeholder-count="4">
+                  <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:0.96875rem;line-height:1.45">
+                    <input type="checkbox" checked="{{ c.checked }}" onChange="{{ c.onChange }}" style="margin-top:3px;width:16px;height:16px;flex:none">
+                    <span>{{ c.text }}</span>
+                  </label>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ actIsQuiz }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:1.03125rem;line-height:1.55;margin-bottom:14px;text-wrap:pretty">{{ actPrompt }}</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ actOptions }}" as="o" hint-placeholder-count="4">
+                  <div style="border:1.5px solid {{ o.border }};background:{{ o.bg }};border-radius:10px;padding:12px 14px;cursor:pointer;font-size:0.96875rem;line-height:1.45;display:flex;gap:10px;align-items:flex-start" role="button" tabindex="0" onClick="{{ o.onClick }}">
+                    <span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:800;flex:none;background:{{ o.markBg }};color:{{ o.markFg }}" aria-hidden="true">{{ o.mark }}</span>
+                    <span>{{ o.text }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ actRevealed }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:14px;background:#f4f5f7;border:1px solid #e2e5ea;border-radius:10px;padding:14px 16px;font-size:0.9375rem;line-height:1.55;text-wrap:pretty">{{ actExplain }}</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="background:#fff;border:1px solid #d5d9df;border-radius:14px;padding:18px 22px;margin-top:14px">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div style="color:#fff;font-size:0.875rem;font-weight:700;padding:13px 26px;border-radius:8px;cursor:pointer;background:{{ actContinueBg }};opacity:{{ actContinueOpacity }}" role="button" tabindex="0" onClick="{{ activityContinue }}">{{ actContinueLabel }}</div>
+            <div style="font-size:0.875rem;font-weight:600;padding:12px 16px;border-radius:8px;cursor:pointer;color:#565c66;margin-left:auto" role="button" tabindex="0" onClick="{{ prevStop }}">← Previous stop</div>
+          </div>
+        </div>
+        </div>
+        </sc-if>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
@@ -461,7 +543,7 @@
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:28px">
         <sc-for list="{{ qOptions }}" as="o" hint-placeholder-count="4">
           <div style="border-radius:10px;padding:15px 18px;font-size:0.90625rem;font-weight:600;display:flex;gap:12px;align-items:flex-start;cursor:pointer;line-height:1.45;border:{{ o.border }};background:{{ o.bg }};color:{{ o.fg }}" aria-disabled="{{ answered }}" aria-pressed="{{ o.picked }}" role="button" tabindex="0" onClick="{{ o.onClick }}">
-            <span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:800;flex:none;background:{{ o.keyBg }};color:{{ o.keyFg }}">{{ o.key }}</span>
+            <span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:800;flex:none;background:{{ o.keyBg }};color:{{ o.keyFg }}" aria-hidden="true">{{ o.key }}</span>
             <span>{{ o.label }}</span>
           </div>
         </sc-for>
@@ -606,7 +688,8 @@ class Component extends DCLogic {
   PROGRAMS = [];
 
   state = { ready:false, view:'hub', line:1, pos:0, sIdx:0, scope:'line', scopeLine:1, flipped:false, query:'', flaggedOnly:false,
-    learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, streak:1, week:[], quiz:null, result:null };
+    learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, streak:1, week:[], quiz:null, result:null,
+    actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false };
 
   KEY = 'ailingo.v1';
   GEO = {
@@ -624,14 +707,16 @@ class Component extends DCLogic {
     document.title='Interchange · '+m.COURSE.title;
     this.COURSE=m.COURSE; this.EXAM=m.EXAM; this.QUESTIONS=m.QUESTIONS;
     this.PROGRAMS=(m.JOURNEYS||[{id:m.ACTIVE_JOURNEY||'ai-lingo',title:m.COURSE.title,description:m.COURSE.description,lines:m.LINES.map(l=>l.name),count:m.TERMS.length}]).map(j=>({id:j.id,name:j.title||m.COURSE.title,blurb:j.description||m.COURSE.description,live:j.id===(m.ACTIVE_JOURNEY||'ai-lingo'),lines:j.lines||[],count:j.count||0}));
-    this.TERMS = m.TERMS; this.LINES = m.LINES;
-    this.byId = {}; this.TERMS.forEach(t => { this.byId[t.id] = t; });
-    this.byLine = {}; this.LINES.forEach(l => { this.byLine[l.n] = this.TERMS.filter(t => t.line === l.n); });
+    this.TERMS = m.TERMS; this.ACTIVITIES = m.ACTIVITIES || []; this.LINES = m.LINES;
+    this.STOPS = this.TERMS.concat(this.ACTIVITIES).sort((a,b)=>a.line-b.line||a.order-b.order);
+    this.byId = {}; this.STOPS.forEach(t => { this.byId[t.id] = t; });
+    this.byLine = {}; this.LINES.forEach(l => { this.byLine[l.n] = this.STOPS.filter(t => t.line === l.n); });
+    this.termsByLine = {}; this.LINES.forEach(l => { this.termsByLine[l.n] = this.TERMS.filter(t => t.line === l.n); });
     const saved = this.load();
     if(!this.byLine[saved.line]) saved.line=this.LINES[0].n;
     saved.scopeLine=saved.line;
     saved.pos=Math.max(0,Math.min(Number(saved.pos)||0,this.byLine[saved.line].length-1));
-    this.setState(Object.assign({ ready:true }, saved, this.streakState(saved)));
+    this.setState(Object.assign({ ready:true, actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false }, saved, this.streakState(saved)));
     this.onKey = e => this.handleKey(e);
     window.addEventListener('keydown', this.onKey);
   }
@@ -678,19 +763,33 @@ class Component extends DCLogic {
     kids.push(h('circle',Object.assign({key:'h1',cx:1050,cy:520,r:30,fill:'#fff',stroke:'#15171a',strokeWidth:6},hubClick)));
     kids.push(h('circle',Object.assign({key:'h2',cx:1050,cy:520,r:13,fill:'#15171a'},hubClick)));
     kids.push(h('text',Object.assign({key:'h3',x:1050,y:588,fontSize:15,fontWeight:800,fill:'#15171a',textAnchor:'middle'},hubClick),'GRAND TERMINUS'));
-    kids.push(h('text',Object.assign({key:'h4',x:1050,y:607,fontSize:11,fontWeight:600,fill:'#565c66',textAnchor:'middle'},hubClick), this.travelled() === this.TERMS.length ? 'Final exam · '+this.EXAM.count+' questions · open' : 'Final exam · '+this.EXAM.count+' questions · locked'));
+    kids.push(h('text',Object.assign({key:'h4',x:1050,y:607,fontSize:11,fontWeight:600,fill:'#565c66',textAnchor:'middle'},hubClick), this.vocabDone() === this.TERMS.length ? 'Final exam · '+this.EXAM.count+' questions · open' : 'Final exam · '+this.EXAM.count+' questions · locked'));
     const cur = this.current();
     this.LINES.forEach(L => {
       const g = this.GEO[L.n], list = this.byLine[L.n];
       list.forEach((t, i) => {
         const [x, y, o] = this.at(g.pts, (i/(list.length-1))*this.PACK);
-        const learned = this.isLearned(t.id), isCur = cur && cur.id === t.id;
-        const jump = () => this.setState({ view:'learn', line:L.n, pos:i, flipped:false }, () => this.save());
-        kids.push(h('circle', { key:t.id+'d', cx:x, cy:y, r:isCur?15:7.5, fill:'#fff', stroke:learned?L.c:'#a5abb5', strokeWidth:isCur?5:4, style:{cursor:'pointer'}, onClick:jump }));
-        if (isCur) kids.push(h('circle', { key:t.id+'c', cx:x, cy:y, r:6, fill:L.c, style:{cursor:'pointer'}, onClick:jump }));
+        const learned = this.isLearned(t.id), isCur = cur && cur.id === t.id, isAct = t.kind === 'activity';
+        const jump = () => this.openStop(L.n, i);
+        if (isAct) {
+          const s = isCur ? 11 : 6;
+          kids.push(h('rect', { key:t.id+'d', x:x-s, y:y-s, width:s*2, height:s*2, rx:2, fill:'#fff', stroke:learned?L.c:'#a5abb5', strokeWidth:isCur?5:4, style:{cursor:'pointer'}, onClick:jump }));
+          if (isCur) kids.push(h('rect', { key:t.id+'c', x:x-4.5, y:y-4.5, width:9, height:9, rx:1, fill:L.c, style:{cursor:'pointer'}, onClick:jump }));
+        } else {
+          kids.push(h('circle', { key:t.id+'d', cx:x, cy:y, r:isCur?15:7.5, fill:'#fff', stroke:learned?L.c:'#a5abb5', strokeWidth:isCur?5:4, style:{cursor:'pointer'}, onClick:jump }));
+          if (isCur) kids.push(h('circle', { key:t.id+'c', cx:x, cy:y, r:6, fill:L.c, style:{cursor:'pointer'}, onClick:jump }));
+        }
         if (this.state.flagged[t.id]) kids.push(h('circle', { key:t.id+'f', cx:x+11, cy:y-11, r:4, fill:'#cc3311' }));
         const fill = learned ? '#15171a' : (isCur ? L.c : '#565c66');
         const w = isCur ? 700 : (learned ? 600 : 500);
+        const short = (isAct ? '◈ ' : '') + t.t.replace(/\s*\(.*?\)\s*/g, '').trim();
+        if (o === 'v') {
+          const left = L.n === 4;
+          kids.push(h('text', { key:t.id+'l', x:x+(left?-17:17), y:y+3.6, fontSize:10.5, fontWeight:w, fill, textAnchor:left?'end':'start', style:{cursor:'pointer'}, onClick:jump }, short));
+        } else {
+          const dy = g.dir < 0 ? -11 : 13, ang = g.dir < 0 ? -45 : 45, px = x+11, py = y+dy;
+          kids.push(h('text', { key:t.id+'l', x:px, y:py, fontSize:10.5, fontWeight:w, fill, transform:'rotate('+ang+' '+px+' '+py+')', style:{cursor:'pointer'}, onClick:jump }, (isCur&&!isAct?'▸ ':'')+short));
+        }
         if (isCur) {
           const fy = y + 52;
           kids.push(h('g', { key:'flag' },
@@ -775,17 +874,20 @@ class Component extends DCLogic {
     return h('svg',{ 'aria-hidden':true, focusable:false,viewBox:'0 0 200 200',style:{width:'100%',height:'100%',display:'block',fontFamily:"'Libre Franklin',sans-serif"}},kids);
   }
 
-  travelled(){ return this.TERMS.filter(t => this.state.learned[t.id]).length; }
+  travelled(){ return this.STOPS.filter(t => this.state.learned[t.id]).length; }
+  vocabDone(){ return this.TERMS.filter(t => this.state.learned[t.id]).length; }
   current(){ const list = this.byLine[this.state.line]; return list ? list[Math.min(this.state.pos, list.length-1)] : null; }
   deck(){ const s = this.state.scope;
-    if (s === 'flagged') { const w = this.weakTerms(); return w.length ? w : this.byLine[this.state.scopeLine || this.LINES[0].n]; }
+    if (s === 'flagged') { const w = this.weakTerms(); return w.length ? w : this.termsByLine[this.state.scopeLine || this.LINES[0].n]; }
     if (s === 'all') return this.TERMS;
-    return this.byLine[this.state.scopeLine || this.state.line]; }
+    return this.termsByLine[this.state.scopeLine || this.state.line]; }
   pickDeck = (scope, lineN) => this.set({ view:'cards', scope, scopeLine: lineN || this.state.scopeLine || this.LINES[0].n, sIdx:0, flipped:false, quiz:null, result:null });
   studyTerm(){ const d = this.deck(); return d[Math.min(this.state.sIdx, d.length-1)]; }
   activeTerm(){ return this.state.view === 'cards' ? this.studyTerm() : this.current(); }
   setScope = s => this.set({ scope:s, sIdx:0, flipped:false });
   lineOf(n){ return this.LINES.find(l => l.n === n); }
+  resetActivity(){ return { actStep:0, actDraft:'', actChecks:{}, actPick:null, actRevealed:false }; }
+  openStop(line, pos){ this.setState(Object.assign({ view:'learn', line, pos, flipped:false, quiz:null, result:null }, this.resetActivity()), () => this.save()); }
 
   // ---- actions ----
   goHub = () => this.set({ view:'hub', quiz:null, result:null });
@@ -793,11 +895,11 @@ class Component extends DCLogic {
   goGlossary = () => this.set({ view:'glossary', quiz:null, result:null });
   goCards = () => this.set({ view:'decks', flipped:false, sIdx:0, quiz:null, result:null });
   readThis = () => { const t = this.studyTerm(); if (t) this.jumpTo(t.id); };
-  goExam = () => { if (this.travelled() < this.TERMS.length) { this.set({ view:'locked', quiz:null, result:null }); return; } this.startQuiz('exam'); };
+  goExam = () => { if (this.vocabDone() < this.TERMS.length) { this.set({ view:'locked', quiz:null, result:null }); return; } this.startQuiz('exam'); };
   forceExam = () => this.startQuiz('practice');
-  boardRide = () => { const n = this.state.line; this.set({ view:'learn', pos:this.nextStopIdx(n), flipped:false }); };
-  startLine = n => this.set({ view:'learn', line:n, pos:this.firstUnlearned(n), flipped:false });
-  jumpTo = id => { const t = this.byId[id]; if(!t) return; const i = this.byLine[t.line].findIndex(x => x.id === id); this.set({ view:'learn', line:t.line, pos:i, flipped:false, quiz:null, result:null }); };
+  boardRide = () => { const n = this.state.line; this.openStop(n, this.nextStopIdx(n)); };
+  startLine = n => this.openStop(n, this.firstUnlearned(n));
+  jumpTo = id => { const t = this.byId[id]; if(!t) return; const i = this.byLine[t.line].findIndex(x => x.id === id); this.openStop(t.line, i); };
 
   advance(){
     if (this.state.view === 'cards') { const d = this.deck();
@@ -805,21 +907,20 @@ class Component extends DCLogic {
       else this.set({ sIdx:0, flipped:false });
       return; }
     const list = this.byLine[this.state.line];
-    if (this.state.pos < list.length - 1) { this.set({ pos:this.state.pos+1, flipped:false }); return; }
-    // end of the line — go straight into the knowledge check
-    this.setState({ flipped:false }, () => this.startQuiz('checkpoint', this.state.line)); }
-  gotIt = () => { const t = this.activeTerm(); if(!t) return;
+    if (this.state.pos < list.length - 1) { this.setState(Object.assign({ pos:this.state.pos+1, flipped:false }, this.resetActivity()), () => this.save()); return; }
+    this.setState(Object.assign({ flipped:false }, this.resetActivity()), () => this.startQuiz('checkpoint', this.state.line)); }
+  gotIt = () => { const t = this.activeTerm(); if(!t || t.kind === 'activity') return;
     const learned = Object.assign({}, this.state.learned); learned[t.id] = true;
     const miss = Object.assign({}, this.state.miss); delete miss[t.id];
     const flagged = Object.assign({}, this.state.flagged); delete flagged[t.id];
     this.setState({ learned, miss, flagged }, () => { this.save(); this.advance(); }); };
-  stillFuzzy = () => { const t = this.activeTerm(); if(!t) return;
+  stillFuzzy = () => { const t = this.activeTerm(); if(!t || t.kind === 'activity') return;
     const miss = Object.assign({}, this.state.miss); miss[t.id] = (miss[t.id]||0)+1;
     const flagged = Object.assign({}, this.state.flagged); flagged[t.id] = true;
     this.setState({ miss, flagged }, () => { this.save(); this.advance(); }); };
   prevStop = () => { if (this.state.view === 'cards') { if (this.state.sIdx > 0) this.set({ sIdx:this.state.sIdx-1, flipped:false }); return; }
-    if (this.state.pos > 0) this.set({ pos:this.state.pos-1, flipped:false }); };
-  toggleFlag = () => { const t = this.activeTerm(); if(!t) return;
+    if (this.state.pos > 0) this.setState(Object.assign({ pos:this.state.pos-1, flipped:false }, this.resetActivity()), () => this.save()); };
+  toggleFlag = () => { const t = this.activeTerm(); if(!t || t.kind === 'activity') return;
     const flagged = Object.assign({}, this.state.flagged), miss = Object.assign({}, this.state.miss);
     if (flagged[t.id] || miss[t.id]) { delete flagged[t.id]; delete miss[t.id]; } else flagged[t.id] = true;
     this.set({ flagged, miss }); };
@@ -829,7 +930,23 @@ class Component extends DCLogic {
   toggleFlagFilter = () => this.setState({ flaggedOnly: !this.state.flaggedOnly });
   printGlossary = () => { if (this.state.view !== 'glossary') this.setState({ view:'glossary' }, () => setTimeout(() => window.print(), 300)); else window.print(); };
   goFlagged = () => this.setState({ view:'glossary', flaggedOnly:true, query:'' });
-  resetAll = () => { if(!window.confirm('Reset all learning progress in this browser? This clears your learned terms, flags, scores and badges.'))return; this.setState({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0, view:'hub' }, () => this.save()); };
+  resetAll = () => { if(!window.confirm('Reset all learning progress in this browser? This clears your learned terms, flags, scores and badges.'))return; this.setState(Object.assign({ learned:{}, flagged:{}, miss:{}, scores:{}, badges:{}, line:this.LINES[0].n, pos:0, view:'hub' }, this.resetActivity()), () => this.save()); };
+
+  activityStep(){ const cur=this.current(); if(!cur||cur.kind!=='activity') return null; return cur.steps[Math.min(this.state.actStep, cur.steps.length-1)] || null; }
+  setActDraft = e => this.setState({ actDraft: e.target.value });
+  toggleActCheck = i => { const actChecks=Object.assign({}, this.state.actChecks); actChecks[i]=!actChecks[i]; this.setState({ actChecks }); };
+  pickActOption = i => { if(this.state.actRevealed) return; this.setState({ actPick:i, actRevealed:true }); };
+  activityContinue = () => {
+    const cur=this.current(); if(!cur||cur.kind!=='activity') return;
+    const step=this.activityStep();
+    if(step&&step.type==='quiz'&&!this.state.actRevealed) return;
+    if(this.state.actStep < cur.steps.length-1){
+      this.setState({ actStep:this.state.actStep+1, actDraft:'', actChecks:{}, actPick:null, actRevealed:false });
+      return;
+    }
+    const learned=Object.assign({}, this.state.learned); learned[cur.id]=true;
+    this.setState(Object.assign({ learned }, this.resetActivity()), () => { this.save(); this.advance(); });
+  };
 
   handleKey(e){
     if(!e.altKey || !e.shiftKey)return;
@@ -837,11 +954,12 @@ class Component extends DCLogic {
     const v = this.state.view;
     if (e.key === 'Escape') { this.goMap(); return; }
     if (v === 'learn' || v === 'cards') {
-      if (e.key === 'ArrowRight') { e.preventDefault(); this.advance(); }
+      const onAct = v === 'learn' && this.current() && this.current().kind === 'activity';
+      if (e.key === 'ArrowRight') { e.preventDefault(); if (onAct) this.activityContinue(); else this.advance(); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); this.prevStop(); }
-      else if (e.key === '1') this.gotIt();
-      else if (e.key === '2') this.stillFuzzy();
-      else if (e.key === 'c') { if (v === 'cards') this.set({ view:'learn', flipped:false });
+      else if (e.key === '1' && !onAct) this.gotIt();
+      else if (e.key === '2' && !onAct) this.stillFuzzy();
+      else if (e.key === 'c' && !onAct) { if (v === 'cards') this.set({ view:'learn', flipped:false });
         else this.set({ view:'cards', scope:'line', scopeLine:this.state.line, sIdx:this.state.pos, flipped:false }); }
       else if (e.key === ' ' && v === 'cards') { e.preventDefault(); this.flip(); }
     }
@@ -857,7 +975,7 @@ class Component extends DCLogic {
   }
   startQuiz = (mode, lineN) => {
     const exam = mode === 'exam' || mode === 'practice';
-    if(mode === 'exam' && this.travelled() < this.TERMS.length){this.goExam();return;}
+    if(mode === 'exam' && this.vocabDone() < this.TERMS.length){this.goExam();return;}
     let pool = this.QUESTIONS.filter(q => q.use.includes(exam ? 'exam' : 'quiz'));
     let n, title, color;
     if(mode === 'checkpoint') { pool=pool.filter(q=>this.byId[q.term].line===lineN); n=this.lineOf(lineN).quizLength; title=this.lineOf(lineN).name+' · Checkpoint'; color=this.lineOf(lineN).c; }
@@ -872,7 +990,7 @@ class Component extends DCLogic {
   weakTerms(){ const ids = {};
     Object.keys(this.state.miss).forEach(id => { if (this.state.miss[id] > 0) ids[id] = true; });
     Object.keys(this.state.flagged).forEach(id => { if (this.state.flagged[id]) ids[id] = true; });
-    return Object.keys(ids).map(id => this.byId[id]).filter(Boolean); }
+    return Object.keys(ids).map(id => this.byId[id]).filter(t => t && t.kind !== 'activity'); }
   pickOption = idx => { const q = this.state.quiz; if (!q || q.answered) return;
     const cur = q.qs[q.i]; if(!cur.options[idx])return; const ok = cur.options[idx].ok;
     const miss = Object.assign({}, this.state.miss);
@@ -889,7 +1007,7 @@ class Component extends DCLogic {
     if (q.mode === 'exam') scores.exam = pct;
     const badges = Object.assign({}, this.state.badges || {});
     let awarded = false;
-    if (q.mode === 'exam' && pct >= this.EXAM.pass && this.travelled() === this.TERMS.length && !badges.ai) {
+    if (q.mode === 'exam' && pct >= this.EXAM.pass && this.vocabDone() === this.TERMS.length && !badges.ai) {
       const d = new Date();
       badges.ai = { pct, date: d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' }) };
       awarded = true;
@@ -918,7 +1036,7 @@ class Component extends DCLogic {
 
     if (v === 'hub') {
       base.isHub = true; base.crumb = 'LEARNING JOURNEYS'; base.showNav = false;
-      const done = this.travelled(), total = this.TERMS.length;
+      const done = this.travelled(), total = this.STOPS.length;
       const other = this.PROGRAMS.filter(p => !p.live);
       base.heroStats = [
         { n: String(this.PROGRAMS.length), l: 'journeys' },
@@ -965,6 +1083,7 @@ class Component extends DCLogic {
       const done = this.travelled();
       const target = list[this.nextStopIdx(L.n)] || cur;
       base.mapEl = this.buildMap();
+      base.totalTerms = this.STOPS.length;
       base.mapGroups=this.LINES.map(l=>({title:l.name+' · '+this.byLine[l.n].length+' stops',stops:this.byLine[l.n].map(t=>({title:t.t+(this.isLearned(t.id)?' · learned':' · not learned'),onClick:()=>this.jumpTo(t.id)}))}));
       base.travelled = done;
       base.streak = this.state.streak;
@@ -994,12 +1113,13 @@ class Component extends DCLogic {
 
     if (v === 'decks') {
       base.isDecks = true;
-      base.deckList = this.LINES.map(l => { const dn = this.lineDone(l.n), tot = this.byLine[l.n].length, p = Math.round(dn/tot*100);
+      base.deckList = this.LINES.map(l => {
+        const terms = this.termsByLine[l.n], tot = terms.length, dn = terms.filter(t => this.isLearned(t.id)).length, p = Math.round(dn/tot*100);
         return { name:l.name + ' Line', sub:l.journey + ' · ' + tot + ' terms', color:l.c, w:p+'%', num:'L'+l.n,
           strip: this.buildStrip(l.n), pct: p + '%',
           stat: dn + ' of ' + tot + ' learned', cta: dn === tot ? 'Review →' : 'Study →',
           onClick:() => this.pickDeck('line', l.n) }; });
-      const learnedN = this.travelled();
+      const learnedN = this.vocabDone();
       base.studyStats = [
         { n:String(this.TERMS.length), l:'cards in the network' },
         { n:String(learnedN), l:'learned so far' },
@@ -1018,8 +1138,9 @@ class Component extends DCLogic {
 
     if (v === 'learn' || v === 'cards') {
       const done = this.lineDone(L.n);
-      base.ticks = list.map((t,i) => ({ bg: i === this.state.pos ? L.c : (this.isLearned(t.id) ? L.c : '#d5d9df'), onClick: () => this.set({ pos:i, flipped:false }) }));
-      base.isFlagged = !!(cur && (this.state.flagged[cur.id] || this.state.miss[cur.id]));
+      const isAct = !!(cur && cur.kind === 'activity');
+      base.ticks = list.map((t,i) => ({ bg: i === this.state.pos ? L.c : (this.isLearned(t.id) ? L.c : '#d5d9df'), onClick: () => this.openStop(this.state.line, i) }));
+      base.isFlagged = !!(cur && !isAct && (this.state.flagged[cur.id] || this.state.miss[cur.id]));
       base.flagLabel = base.isFlagged ? 'Clear flag' : 'Flag ⚑';
       const ap = cur && cur.apply;
       base.curApply = ap || 'No local note yet. Add how your team uses this term — the policy it touches, the tool it shows up in, who to ask.';
@@ -1032,11 +1153,53 @@ class Component extends DCLogic {
       base.gotItLabel = this.state.pos < list.length - 1 ? 'Got it — next stop' : 'Got it — finish line';
       base.related = (cur ? cur.rel : []).map(id => this.byId[id]).filter(Boolean).map(t => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), color:this.lineOf(t.line).c, line:this.lineOf(t.line).name+' Line · '+this.lineOf(t.line).journey, onClick:() => this.jumpTo(t.id) }));
       base.comingLabel = 'COMING UP ON THE ' + L.name.toUpperCase() + ' LINE';
-      base.coming = list.slice(this.state.pos+1, this.state.pos+6).map((t,i) => ({ name:t.t.replace(/\s*\(.*?\)\s*/g,''), onClick:() => this.set({ pos:this.state.pos+1+i, flipped:false }) }));
+      base.coming = list.slice(this.state.pos+1, this.state.pos+6).map((t,i) => ({ name:(t.kind==='activity'?'◈ ':'')+t.t.replace(/\s*\(.*?\)\s*/g,''), onClick:() => this.openStop(this.state.line, this.state.pos+1+i) }));
       base.lineDone = done; base.lineDoneOf = 'of ' + list.length + ' stops';
       base.lineHint = done === list.length ? 'Line cleared. Take the checkpoint to earn the roundel.' : (list.length - done) + ' more clears the ' + L.name + ' Line.';
       base.checkpointLabel = 'Take the ' + L.name + ' checkpoint';
-      if (v === 'learn') { base.isLearn = true; return base; }
+      if (v === 'learn') {
+        base.isLearn = true;
+        base.isActivity = isAct;
+        base.isTerm = !isAct;
+        const step = this.activityStep();
+        const kinds = { read:'READ', prompt:'WRITE A PROMPT', checklist:'CHECKLIST', quiz:'QUICK CHECK' };
+        base.actStepLabel = isAct && cur ? 'STEP '+(this.state.actStep+1)+' / '+cur.steps.length : '';
+        base.actStepKind = step ? (kinds[step.type] || step.type.toUpperCase()) : '';
+        base.actIsRead = !!(step && step.type === 'read');
+        base.actIsPrompt = !!(step && step.type === 'prompt');
+        base.actIsChecklist = !!(step && step.type === 'checklist');
+        base.actIsQuiz = !!(step && step.type === 'quiz');
+        base.actBody = step && step.body || '';
+        base.actPrompt = step && step.prompt || '';
+        base.actHint = step && step.hint || '';
+        base.actHasHint = !!(step && step.hint);
+        base.actExample = step && step.example || '';
+        base.actHasExample = !!(step && step.example);
+        base.actDraft = this.state.actDraft || '';
+        base.setActDraft = this.setActDraft;
+        base.actChecks = (step && step.type === 'checklist' ? step.options : []).map((o,i) => ({ text:o.text, checked:!!this.state.actChecks[i], onChange:() => this.toggleActCheck(i) }));
+        base.actOptions = (step && step.type === 'quiz' ? step.options : []).map((o,i) => {
+          const revealed = this.state.actRevealed, picked = this.state.actPick === i;
+          let border = '#c3c8d0', bg = '#fff', mark = String(i + 1), markBg = '#eef0f3', markFg = '#565c66';
+          if (revealed && o.ok) { border = '#1a7a3c'; bg = '#eaf6ee'; mark = '✓'; markBg = '#1a7a3c'; markFg = '#fff'; }
+          else if (revealed && picked) { border = '#cc3311'; bg = '#fbeeea'; mark = '✗'; markBg = '#cc3311'; markFg = '#fff'; }
+          else if (picked) { border = L.c; bg = '#f7f8fa'; markBg = L.c; markFg = '#fff'; }
+          return { text:o.text, mark, markBg, markFg, border, bg, onClick:() => this.pickActOption(i) };
+        });
+        base.actRevealed = !!this.state.actRevealed;
+        const actOk = !!(step && step.type === 'quiz' && step.options[this.state.actPick] && step.options[this.state.actPick].ok);
+        base.actExplain = (step && step.explanation)
+          ? ((actOk ? 'CORRECT: ' : 'INCORRECT: ') + step.explanation)
+          : '';
+        const last = isAct && cur && this.state.actStep >= cur.steps.length - 1;
+        const needPick = !!(step && step.type === 'quiz' && !this.state.actRevealed);
+        base.actContinueLabel = needPick ? 'Pick an answer' : (last ? 'Complete activity' : 'Continue');
+        base.actContinueBg = needPick ? '#a5abb5' : L.c;
+        base.actContinueOpacity = needPick ? '0.7' : '1';
+        base.activityContinue = this.activityContinue;
+        if (isAct) base.posTag = (cur.activityKind || 'activity').toUpperCase();
+        return base;
+      }
 
       base.isCards = true;
       const d = this.deck(), st = this.studyTerm(), sL = st ? this.lineOf(st.line) : L;
@@ -1065,15 +1228,15 @@ class Component extends DCLogic {
       base.qKindLabel = cq.label; base.qPrompt = cq.prompt; base.answered = q.answered;
       base.qOptions = cq.options.map((o,i) => {
         const picked = q.picked === i, reveal = q.answered;
-        let border = '1px solid #d5d9df', bg = '#fff', fg = '#15171a', keyBg = '#eef0f3', keyFg = '#565c66';
-        if (reveal && o.ok) { border = '2px solid #007a5e'; bg = '#eaf6f1'; keyBg = '#007a5e'; keyFg = '#fff'; }
-        else if (reveal && picked) { border = '2px solid #cc3311'; bg = '#fbeeea'; keyBg = '#cc3311'; keyFg = '#fff'; }
+        let border = '1px solid #d5d9df', bg = '#fff', fg = '#15171a', keyBg = '#eef0f3', keyFg = '#565c66', key = 'ABCDE'[i];
+        if (reveal && o.ok) { border = '2px solid #007a5e'; bg = '#eaf6f1'; keyBg = '#007a5e'; keyFg = '#fff'; key = '✓'; }
+        else if (reveal && picked) { border = '2px solid #cc3311'; bg = '#fbeeea'; keyBg = '#cc3311'; keyFg = '#fff'; key = '✗'; }
         else if (picked) { border = '2px solid ' + q.color; bg = '#eef0f3'; }
-        return { key:'ABCDE'[i], label:o.text+(reveal&&o.ok?' · Correct answer':picked?' · Your answer':''), picked, border, bg, fg, keyBg, keyFg, onClick:() => this.pickOption(i) };
+        return { key, label:o.text, picked, border, bg, fg, keyBg, keyFg, onClick:() => this.pickOption(i) };
       });
       const okNow = q.answered && cq.options[q.picked] && cq.options[q.picked].ok;
       base.fbColor = okNow ? '#007a5e' : '#cc3311'; base.fbBg = okNow ? '#eaf6f1' : '#fbeeea';
-      base.fbTitle = okNow ? 'Correct' : 'Not quite';
+      base.fbTitle = okNow ? 'CORRECT:' : 'INCORRECT:';
       base.fbBody = cq.explanation;
       base.quizFootnote = q.answered ? 'Missed terms are added to your detour list.' : 'Pick an answer to continue.';
       base.quizPrimaryLabel = !q.answered ? 'Pick an answer' : (q.i < q.qs.length-1 ? 'Next question →' : 'See results');
@@ -1121,9 +1284,9 @@ class Component extends DCLogic {
 
     if (v === 'locked') {
       base.isLocked = true;
-      const left = this.TERMS.length - this.travelled();
+      const left = this.TERMS.length - this.vocabDone();
       const earned = this.LINES.filter(l => this.lineDone(l.n) === this.byLine[l.n].length).length;
-      base.lockedSub = left + ' stops still ahead · ' + earned + ' of 5 roundels earned';
+      base.lockedSub = left + ' terms still ahead · ' + earned + ' of 5 roundels earned';
       base.examMini = this.buildMini(this.LINES.map(l => ({ color:l.c, frac:this.lineDone(l.n)/this.byLine[l.n].length })),
         { ghost:.2, dotFill:'#15171a', dim:'#3a4049', hub:'#f4f6f8' });
       base.lockedRoundels = this.LINES.map(l => { const d = this.lineDone(l.n), tot = this.byLine[l.n].length, full = d === tot;

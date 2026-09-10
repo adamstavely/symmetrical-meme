@@ -16,15 +16,14 @@ content/journeys/<journey-id>/
   exam/
     metadata.md
     questions.md
-  terms/
   tracks/
     1/
       metadata.md
       knowledge-check.md
+      terms/
+      activities/
     2/
-      metadata.md
-      knowledge-check.md
-    …
+      …
 ```
 
 AI Lingo lives at `content/journeys/ai-lingo/`. Add another journey by copying that folder structure (see `templates/`) and giving it a new id. The runtime currently boards one active journey (AI Lingo when present); hub support for switching journeys comes later.
@@ -35,15 +34,17 @@ Open `journey.md` for the featured title and description. Keep `## ID` identical
 
 Each track is a numbered folder under `tracks/`. `metadata.md` sets the line name, driving question (`## Question`), description, color, and checkpoint length (`## Quiz length`). `## ID` must match the folder name (`tracks/1/` → `1`). Colors use six-digit hex values such as `#1338b0`.
 
-`knowledge-check.md` holds every end-of-track / drill question as `## Question: id` blocks (see `templates/knowledge-check.md`). Quiz length cannot exceed the number of those blocks.
+`knowledge-check.md` holds every end-of-track / drill question as `## Question: id` blocks (see `templates/knowledge-check.md`). Quiz length cannot exceed the number of those blocks. Terms live in that track's `terms/` folder; optional practice activities live in `activities/`.
 
 In `exam/metadata.md`, Question count is how many items are sampled from `exam/questions.md`. Pass percentage controls the passing result and badge threshold.
 
 ## Edit a lesson or flashcard
 
-Open a file in that journey's `terms/` folder. The title is the flashcard front; Definition is the answer. Usage is its example sentence. Local note is optional team-specific guidance. Related is a comma-separated list of other term IDs and can be empty.
+Open a file in `tracks/<n>/terms/`. The title is the flashcard front; Definition is the answer. Usage is its example sentence. Local note is optional team-specific guidance. Related is a comma-separated list of other term IDs and can be empty.
 
-To add a term, copy `templates/term.md` into the journey's `terms/` folder and give it a unique filename and ID. Use lowercase words joined by hyphens for IDs. Track is the numbered line (1–5); Order determines its position on that line and must be unique within the track. Keep at least two terms per track. Add a matching `## Question: …` block in `tracks/<track>/knowledge-check.md` so the term works in review drills.
+To add a term, copy `templates/term.md` into the track's `terms/` folder and give it a unique filename and ID. Use lowercase words joined by hyphens for IDs. `## Track` must match the parent folder number; Order determines its position on that line and must be unique among that track's terms and activities. Keep at least two terms per track. Add a matching `## Question: …` block in the same track's `knowledge-check.md` so the term works in review drills.
+
+To add an activity, copy `templates/activity.md` into the track's `activities/` folder. Activity Order shares the same uniqueness pool as terms on that track.
 
 Keep IDs unchanged when renaming a term. Before deleting a term, remove its knowledge-check and exam question blocks and remove its ID from other terms' Related sections. Learners' old marks for removed terms do not count toward current progress.
 

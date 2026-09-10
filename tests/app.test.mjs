@@ -13,8 +13,10 @@ function app(){
  class DCLogic {props={accent:'#ff3d7f'};setState(p,cb){this.state={...this.state,...p};cb?.();}}
  const context=vm.createContext({DCLogic,React:{createElement:(...args)=>args},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},window:{},setTimeout,console});
  const Component=vm.runInContext(code+'\nComponent',context);const a=new Component();
- Object.assign(a,content);a.PROGRAMS=(content.JOURNEYS||[]).map(j=>({id:j.id,name:j.title,blurb:j.description,live:j.id===content.ACTIVE_JOURNEY,lines:j.lines,count:j.count}));
- a.byId=Object.fromEntries(a.TERMS.map(t=>[t.id,t]));a.byLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.TERMS.filter(t=>t.line===l.n)]));a.state.ready=true;return a;
+ Object.assign(a,content);a.ACTIVITIES=content.ACTIVITIES||[];a.STOPS=a.TERMS.concat(a.ACTIVITIES).sort((x,y)=>x.line-y.line||x.order-y.order);
+ a.PROGRAMS=(content.JOURNEYS||[]).map(j=>({id:j.id,name:j.title,blurb:j.description,live:j.id===content.ACTIVE_JOURNEY,lines:j.lines,count:j.count}));
+ a.byId=Object.fromEntries(a.STOPS.map(t=>[t.id,t]));a.byLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.STOPS.filter(t=>t.line===l.n)]));
+ a.termsByLine=Object.fromEntries(a.LINES.map(l=>[l.n,a.TERMS.filter(t=>t.line===l.n)]));a.state.ready=true;a.state.actStep=0;a.state.actDraft='';a.state.actChecks={};a.state.actPick=null;a.state.actRevealed=false;return a;
 }
 test('content migrates all original definitions and references',async()=>{
  const original=await import('../original/terms.js');assert.equal(content.TERMS.length,81);
@@ -40,6 +42,15 @@ test('exam requires completion, practice awards no badge, completed exam does',(
  const a=app();a.goExam();assert.equal(a.state.view,'locked');a.startQuiz('exam');assert.equal(a.state.view,'locked');
  a.forceExam();assert.equal(a.state.quiz.mode,'practice');assert.equal(a.state.quiz.qs.length,30);finish(a,true);assert.equal(a.state.badges.ai,undefined);assert.equal(a.state.scores.exam,undefined);
  a.state.learned=Object.fromEntries(a.TERMS.map(t=>[t.id,true]));a.goExam();finish(a,true);assert.equal(a.state.scores.exam,100);assert.equal(a.state.badges.ai.pct,100);assert.ok(a.renderVals().isResult);
+});
+test('activities sit on the line and complete through steps',()=>{
+ assert.ok(content.ACTIVITIES.length>=3);
+ const a=app();const act=a.ACTIVITIES.find(x=>x.id==='write-a-prompt');assert.ok(act);assert.equal(act.kind,'activity');
+ a.jumpTo(act.id);assert.equal(a.state.view,'learn');assert.equal(a.current().id,act.id);
+ const vals=a.renderVals();assert.equal(vals.isActivity,true);assert.equal(vals.actIsRead,true);
+ a.activityContinue();assert.equal(a.state.actStep,1);assert.equal(a.renderVals().actIsPrompt,true);
+ while(a.current()?.id===act.id){const step=a.activityStep();if(step?.type==='quiz'&&!a.state.actRevealed)a.pickActOption(step.options.findIndex(o=>o.ok));a.activityContinue();}
+ assert.equal(a.state.learned[act.id],true);
 });
 test('malformed and duplicate Markdown headings fail clearly',()=>{
  assert.throws(()=>parseMarkdown('No heading','bad.md'),/bad.md/);assert.throws(()=>parseMarkdown('# Title\n## ID\na\n## ID\nb'),/repeated/);

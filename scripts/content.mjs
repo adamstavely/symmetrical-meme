@@ -14,18 +14,19 @@ export function parseMarkdown(text, file='content') {
   for(const k in fields) fields[k]=fields[k].trim();
   return {title,fields,file};
 }
-function parseQuestionBlocks(lines, start, file){
+function parseQuestionBlocks(lines, start, file, heading='Question'){
+  const re=new RegExp(`^## ${heading}: ([a-z0-9]+(?:-[a-z0-9]+)*)$`);
   const questions=[]; let i=start;
   while(i<lines.length){
-    const qm=lines[i].match(/^## Question: ([a-z0-9]+(?:-[a-z0-9]+)*)$/);
-    if(!qm) throw Error(`${file}:${i+2}: expected ## Question: id`);
+    const qm=lines[i].match(re);
+    if(!qm) throw Error(`${file}:${i+2}: expected ## ${heading}: id`);
     const qid=qm[1]; i++;
     const fields={}; let key;
-    while(i<lines.length && !lines[i].startsWith('## Question:')){
+    while(i<lines.length && !lines[i].startsWith(`## ${heading}:`)){
       const m=lines[i].match(/^### (.+)$/);
-      if(m){key=m[1]; if(Object.hasOwn(fields,key)) throw Error(`${file} question ${qid}: repeated ### ${key}`); fields[key]='';}
+      if(m){key=m[1]; if(Object.hasOwn(fields,key)) throw Error(`${file} ${heading.toLowerCase()} ${qid}: repeated ### ${key}`); fields[key]='';}
       else if(key) fields[key]+=lines[i]+'\n';
-      else if(lines[i].trim()) throw Error(`${file} question ${qid}: text needs a ### field heading`);
+      else if(lines[i].trim()) throw Error(`${file} ${heading.toLowerCase()} ${qid}: text needs a ### field heading`);
       i++;
     }
     for(const k in fields) fields[k]=fields[k].trim();
@@ -45,24 +46,60 @@ export function parseQuestionBank(text, file='content') {
     if(lines[i].trim()) throw Error(`${file}: text needs a ## Question: id heading`);
     i++;
   }
-  const questions=parseQuestionBlocks(lines,i,file);
+  const questions=parseQuestionBlocks(lines,i,file,'Question');
   if(!questions.length) throw Error(`${file}: add at least one ## Question: id block`);
   return {title,questions,file};
+}
+/** Activity file: metadata fields, then ## Step: id blocks. */
+export function parseActivityFile(text, file='content') {
+  const lines=text.replace(/\r/g,'').split('\n');
+  const title=lines.shift()?.match(/^# (.+)$/)?.[1];
+  if(!title) throw Error(`${file}: start with # Title`);
+  const fields={}; let key; let i=0;
+  while(i<lines.length && !lines[i].startsWith('## Step:')){
+    const m=lines[i].match(/^## (.+)$/);
+    if(m){
+      if(m[1].startsWith('Step:')) break;
+      key=m[1]; if(Object.hasOwn(fields,key)) throw Error(`${file}: repeated section ${key}`); fields[key]='';
+    }else if(key) fields[key]+=lines[i]+'\n';
+    else if(lines[i].trim()) throw Error(`${file}: text needs a ## Section heading`);
+    i++;
+  }
+  for(const k in fields) fields[k]=fields[k].trim();
+  const steps=i<lines.length?parseQuestionBlocks(lines,i,file,'Step'):[];
+  if(!steps.length) throw Error(`${file}: add at least one ## Step: id block`);
+  return {title,fields,steps,file};
 }
 const required=(d,k)=>{if(!d.fields[k])throw Error(`${d.file}: missing ${k}`);return d.fields[k];};
 const number=(d,k,min,max)=>{const n=Number(required(d,k));if(!Number.isInteger(n)||n<min||n>max)throw Error(`${d.file}: ${k} must be a whole number from ${min} to ${max}`);return n;};
 const id=(d,k)=>{const s=required(d,k);if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s))throw Error(`${d.file}: ${k} must use lowercase letters, numbers and hyphens`);return s;};
 const unique=(list,key)=>{const seen=new Set;for(const x of list){if(seen.has(x[key]))throw Error(`Duplicate ${key}: ${x[key]}`);seen.add(x[key]);}};
-function parseQuestionFields(d, TERMS){
+function parseOptionsList(d, {requireCorrect=false}={}){
   const options=required(d,'Options').split('\n').map(s=>{const m=s.match(/^- \[([ xX])\] (.+)$/);if(!m)throw Error(`${d.file}: each option must be - [ ] Answer or - [x] Answer`);return {text:m[2],ok:m[1].toLowerCase()==='x'};});
-  if(options.length<2||options.length>5||options.filter(o=>o.ok).length!==1)throw Error(`${d.file}: use 2–5 options with exactly one correct answer`);
-  unique(options,'text');const term=id(d,'Term');if(!TERMS.some(t=>t.id===term))throw Error(`${d.file}: unknown Term ${term}`);
+  if(options.length<2||options.length>8)throw Error(`${d.file}: use 2–8 options`);
+  unique(options,'text');
+  if(requireCorrect && options.filter(o=>o.ok).length!==1) throw Error(`${d.file}: use exactly one correct [x] answer`);
+  return options;
+}
+function parseQuestionFields(d, TERMS){
+  const options=parseOptionsList(d,{requireCorrect:true});
+  const term=id(d,'Term');if(!TERMS.some(t=>t.id===term))throw Error(`${d.file}: unknown Term ${term}`);
   return {id:d.id,term,prompt:required(d,'Prompt'),options,explanation:required(d,'Explanation')};
+}
+function parseActivityStep(raw){
+  const type=required(raw,'Type');
+  if(!['read','prompt','checklist','quiz'].includes(type)) throw Error(`${raw.file}: Type must be read, prompt, checklist, or quiz`);
+  const step={id:raw.id,type};
+  if(type==='read'){ step.body=required(raw,'Body'); }
+  else if(type==='prompt'){ step.prompt=required(raw,'Prompt'); step.hint=raw.fields.Hint||''; step.example=raw.fields.Example||''; }
+  else if(type==='checklist'){ step.prompt=required(raw,'Prompt'); step.options=parseOptionsList(raw).map(o=>({text:o.text})); }
+  else { step.prompt=required(raw,'Prompt'); step.options=parseOptionsList(raw,{requireCorrect:true}); step.explanation=required(raw,'Explanation'); }
+  return step;
 }
 async function loadJourney(root, slug){
  const base=join(root,'journeys',slug);
  const read=async p=>parseMarkdown(await readFile(join(base,p),'utf8'),join('journeys',slug,p));
- const group=async p=>Promise.all((await readdir(join(base,p))).filter(f=>f.endsWith('.md')).sort().map(f=>read(join(p,f))));
+ const listMd=async p=>{try{return (await readdir(join(base,p))).filter(f=>f.endsWith('.md')).sort();}catch(e){if(e.code==='ENOENT')return [];throw e;}};
  const journey=await read('journey.md'), exam=await read('exam/metadata.md');
  const journeyId=id(journey,'ID');
  if(journeyId!==slug) throw Error(`journeys/${slug}/journey.md: ID must match folder name (${slug})`);
@@ -71,6 +108,8 @@ async function loadJourney(root, slug){
  if(!trackDirs.length) throw Error(`journeys/${slug}: at least one track folder is required under tracks/`);
  const LINES=[];
  const checks=[];
+ const TERMS=[];
+ const ACTIVITIES=[];
  for(const dir of trackDirs){
   const trackPath=join('journeys',slug,'tracks',dir);
   const meta=await read(join('tracks',dir,'metadata.md'));
@@ -79,15 +118,43 @@ async function loadJourney(root, slug){
   const checkFile=join(trackPath,'knowledge-check.md');
   const bank=parseQuestionBank(await readFile(join(base,'tracks',dir,'knowledge-check.md'),'utf8'),checkFile);
   LINES.push({n,name:required(meta,'Name'),journey:meta.title,q:required(meta,'Question'),blurb:required(meta,'Description'),c:required(meta,'Color'),quizLength:number(meta,'Quiz length',1,100),questions:bank.questions,file:meta.file});
+
+  for(const f of await listMd(join('tracks',dir,'terms'))){
+   const d=await read(join('tracks',dir,'terms',f));
+   const line=number(d,'Track',1,5);
+   if(line!==n) throw Error(`${d.file}: ## Track (${line}) must match folder tracks/${dir}/`);
+   TERMS.push({id:id(d,'ID'),line,order:number(d,'Order',1,100000),kind:'term',t:d.title,pos:required(d,'Part of speech'),pr:required(d,'Pronunciation'),d:required(d,'Definition'),u:required(d,'Usage'),rel:(d.fields.Related||'').split(',').map(s=>s.trim()).filter(Boolean),apply:d.fields['Local note']||''});
+  }
+  for(const f of await listMd(join('tracks',dir,'activities'))){
+   const file=join(trackPath,'activities',f);
+   const doc=parseActivityFile(await readFile(join(base,'tracks',dir,'activities',f),'utf8'),file);
+   const line=number(doc,'Track',1,5);
+   if(line!==n) throw Error(`${file}: ## Track (${line}) must match folder tracks/${dir}/`);
+   const kind=required(doc,'Kind');
+   if(!['tutorial','practice','scenario'].includes(kind)) throw Error(`${file}: Kind must be tutorial, practice, or scenario`);
+   const steps=doc.steps.map(parseActivityStep);
+   unique(steps,'id');
+   ACTIVITIES.push({
+    id:id(doc,'ID'),line,order:number(doc,'Order',1,100000),kind:'activity',activityKind:kind,
+    t:doc.title,pos:kind,pr:kind,d:required(doc,'Goal'),u:'',rel:(doc.fields.Related||'').split(',').map(s=>s.trim()).filter(Boolean),apply:doc.fields['Local note']||'',steps
+   });
+  }
  }
  unique(LINES,'n');
  LINES.sort((a,b)=>a.n-b.n);
  for(const l of LINES)if(!/^#[0-9a-f]{6}$/i.test(l.c))throw Error(`journeys/${slug} track ${l.n}: Color must be a six-digit hex color`);
 
- const TERMS=(await group('terms')).map(d=>({id:id(d,'ID'),line:number(d,'Track',1,5),order:number(d,'Order',1,100000),t:d.title,pos:required(d,'Part of speech'),pr:required(d,'Pronunciation'),d:required(d,'Definition'),u:required(d,'Usage'),rel:(d.fields.Related||'').split(',').map(s=>s.trim()).filter(Boolean),apply:d.fields['Local note']||''})).sort((a,b)=>a.line-b.line||a.order-b.order);
+ TERMS.sort((a,b)=>a.line-b.line||a.order-b.order);
+ ACTIVITIES.sort((a,b)=>a.line-b.line||a.order-b.order);
  unique(TERMS,'id');
- for(const t of TERMS){if(!LINES.some(l=>l.n===t.line))throw Error(`${t.id}: unknown Track ${t.line}`);for(const r of t.rel)if(!TERMS.some(x=>x.id===r))throw Error(`${t.id}: unknown Related term ${r}`);}
- for(const l of LINES){const ts=TERMS.filter(t=>t.line===l.n);if(ts.length<2)throw Error(`journeys/${slug} track ${l.n}: at least two terms required for the transit map`);unique(ts,'order');}
+ unique(ACTIVITIES,'id');
+ for(const t of TERMS){for(const r of t.rel)if(!TERMS.some(x=>x.id===r))throw Error(`${t.id}: unknown Related term ${r}`);}
+ for(const a of ACTIVITIES){for(const r of a.rel)if(!TERMS.some(t=>t.id===r)) throw Error(`${a.id}: unknown Related term ${r}`);}
+ for(const l of LINES){
+  const ts=TERMS.filter(t=>t.line===l.n);
+  if(ts.length<2)throw Error(`journeys/${slug} track ${l.n}: at least two terms required for the transit map`);
+  unique([...ts,...ACTIVITIES.filter(a=>a.line===l.n)],'order');
+ }
 
  for(const l of LINES){
   for(const raw of l.questions){
@@ -120,7 +187,7 @@ async function loadJourney(root, slug){
   COURSE:{title:journey.title,description:required(journey,'Description')},
   EXAM,
   LINES:LINES.map(({questions,file,...line})=>line),
-  TERMS,QUESTIONS,
+  TERMS,ACTIVITIES,QUESTIONS,
  };
 }
 export async function loadContent(root='content'){
@@ -138,13 +205,15 @@ export async function loadContent(root='content'){
    description:j.COURSE.description,
    tracks:j.LINES.length,
    terms:j.TERMS.length,
+   activities:j.ACTIVITIES.length,
    lines:j.LINES.map(l=>l.name),
-   count:j.TERMS.length,
+   count:j.TERMS.length+j.ACTIVITIES.length,
   })),
   COURSE:active.COURSE,
   EXAM:active.EXAM,
   LINES:active.LINES,
   TERMS:active.TERMS,
+  ACTIVITIES:active.ACTIVITIES,
   QUESTIONS:active.QUESTIONS,
   ACTIVE_JOURNEY:active.id,
  };
